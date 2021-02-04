@@ -32,11 +32,6 @@
           :class="{ active: showBlackList }"
           title="黑名单列表"
         ></div>
-        <div
-          id="group-live"
-          class="group-live"
-          title="群直播"
-        ></div>
       </div>
       <div class="bottom">
         <div class="iconfont icon-tuichu" @click="$store.dispatch('logout')" title="退出"></div>
@@ -64,7 +59,6 @@ const activeName = {
   GROUP_LIST: 'group-list',
   FRIEND_LIST: 'friend-list',
   BLACK_LIST: 'black-list',
-  GROUP_LIVE: 'group-live',
 }
 export default {
   name: 'SideBar',
@@ -122,9 +116,6 @@ export default {
         case activeName.BLACK_LIST:
           this.checkoutActive(activeName.BLACK_LIST)
           break
-        case activeName.GROUP_LIVE:
-          this.groupLive()
-          break
       }
     },
     handleRefresh() {
@@ -179,13 +170,6 @@ export default {
             message: error.message
           })
         })
-    },
-    groupLive() {
-      this.$store.commit('updateGroupLiveInfo', {
-        groupID: 0,
-        anchorID: this.userID,
-      })
-      this.$bus.$emit('open-group-live', { channel: 2 })
     },
   }
 }
@@ -305,16 +289,6 @@ export default {
     height: $height;
     position: relative;
     background-color: $background-dark;
-  }
-  .group-live {
-    position relative
-    top 10px
-    left 25px
-    width 30px
-    height 30px
-    background url('../../assets/image/live-icon-gray.png') center no-repeat
-    background-size cover
-    cursor pointer
   }
 }
 </style>
