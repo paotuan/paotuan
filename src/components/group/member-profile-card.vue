@@ -43,7 +43,7 @@
 
 <script>
 import { Divider } from 'element-ui'
-import { getFullDate } from '../../utils/date'
+import { getFullDate } from '@/utils/date'
 
 // 群成员资料卡片组件，全局共用同一个组件。
 export default {

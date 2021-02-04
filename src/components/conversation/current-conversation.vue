@@ -3,12 +3,12 @@
     <div class="current-conversation" @scroll="onScroll" v-if="showCurrentConversation">
       <div class="header">
         <div class="name">{{ name }}</div>
-        <div class="btn-more-info"
-          :class="showConversationProfile ? '' : 'left-arrow'"
-          @click="showMore"
-          v-show="!currentConversation.conversationID.includes('SYSTEM')"
-          title="查看详细信息">
-        </div>
+<!--        <div class="btn-more-info"-->
+<!--          :class="showConversationProfile ? '' : 'left-arrow'"-->
+<!--          @click="showMore"-->
+<!--          v-show="!currentConversation.conversationID.includes('SYSTEM')"-->
+<!--          title="查看详细信息">-->
+<!--        </div>-->
       </div>
       <div class="content">
         <div class="message-list" ref="message-list" @scroll="this.onScroll">
@@ -53,7 +53,7 @@ export default {
     return {
       isShowScrollButtomTips: false,
       preScrollHeight: 0,
-      showConversationProfile: false,
+      showConversationProfile: true,
       timeout: ''
     }
   },
@@ -95,10 +95,10 @@ export default {
     // 1. 系统会话隐藏右侧资料组件
     // 2. 没有当前会话时，隐藏右侧资料组件。
     //    背景：退出群组/删除会话时，会出现一处空白区域
-    if (this.currentConversation.conversationID === '@TIM#SYSTEM' ||
-        typeof this.currentConversation.conversationID === 'undefined') {
-      this.showConversationProfile = false
-    }
+    // if (this.currentConversation.conversationID === '@TIM#SYSTEM' ||
+    //     typeof this.currentConversation.conversationID === 'undefined') {
+    //   this.showConversationProfile = false
+    // }
   },
   watch: {
     currentUnreadCount(next) {
@@ -171,12 +171,12 @@ export default {
   .current-conversation
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 60%;
     height: $height;
   .profile
     height: $height;
     overflow-y: scroll;
-    width 220px
+    width 40%
     border-left 1px solid $border-base
     flex-shrink 0
   .more

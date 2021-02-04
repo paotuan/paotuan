@@ -12,10 +12,10 @@
     >
       <div class="chat-wrapper">
         <el-row>
-          <el-col :xs="10" :sm="10" :md="8" :lg="8" :xl="7">
+          <el-col :span="5">
             <side-bar/>
           </el-col>
-          <el-col :xs="14" :sm="14" :md="16" :lg="16" :xl="17">
+          <el-col :span="19">
             <current-conversation/>
           </el-col>
         </el-row>
@@ -402,21 +402,8 @@ body {
 }
 
 .chat-wrapper {
-  margin-top: 8vh;
   width: $width;
   height: $height;
-  max-width: 1280px;
-  box-shadow: 0 11px 20px 0 rgba(0, 0, 0, 0.3);
-
-  .official-link {
-    display: flex;
-    text-decoration: none;
-    color: #38c9ff;
-    width: fit-content;
-    float: right;
-    height: 45px;
-    align-items: center;
-  }
 }
 
 /* 设置滚动条的样式 */
