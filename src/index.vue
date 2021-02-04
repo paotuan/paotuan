@@ -1,26 +1,26 @@
 <template>
   <div class="container">
-    <div id="wrapper" v-if="!isLogin" >
-      <login />
+    <div id="wrapper" v-if="!isLogin">
+      <login :loading="loginBtnLoading" @submit="doLogin"/>
     </div>
     <div
-      class="loading"
-      v-else
-      v-loading="showLoading"
-      element-loading-text="正在拼命初始化..."
-      element-loading-background="rgba(0, 0, 0, 0.8)"
+        class="loading"
+        v-else
+        v-loading="showLoading"
+        element-loading-text="正在拼命初始化..."
+        element-loading-background="rgba(0, 0, 0, 0.8)"
     >
       <div class="chat-wrapper">
         <el-row>
           <el-col :xs="10" :sm="10" :md="8" :lg="8" :xl="7">
-            <side-bar />
+            <side-bar/>
           </el-col>
           <el-col :xs="14" :sm="14" :md="16" :lg="16" :xl="17">
-            <current-conversation />
+            <current-conversation/>
           </el-col>
         </el-row>
       </div>
-      <image-previewer />
+      <image-previewer/>
     </div>
     <div class="bg"></div>
   </div>
@@ -34,12 +34,13 @@ import SideBar from './components/layout/side-bar'
 import Login from './components/user/login'
 import ImagePreviewer from './components/message/image-previewer.vue'
 import { translateGroupSystemNotice } from './utils/common'
+import { initTimInstance } from '@/tim'
 
 export default {
-  title: 'TIMSDK DEMO',
-  data () {
+  title: 'paotuan',
+  data() {
     return {
-      loginType: 2 // github 登录只使用默认账号登录
+      loginBtnLoading: false
     }
   },
   components: {
@@ -48,7 +49,6 @@ export default {
     CurrentConversation,
     ImagePreviewer,
   },
-
   computed: {
     ...mapState({
       currentUserProfile: state => state.user.currentUserProfile,
@@ -68,8 +68,6 @@ export default {
     }
   },
   mounted() {
-    // 初始化监听器
-    this.initListener()
 
   },
 
@@ -100,9 +98,9 @@ export default {
       // this.handleVideoMessage(messageList)
       this.handleAt(messageList)
       this.handleQuitGroupTip(messageList)
-      this.handleCloseGroupLive(messageList)
+      // this.handleCloseGroupLive(messageList)
       this.$store.commit('pushCurrentMessageList', messageList)
-      this.$store.commit('pushAvChatRoomMessageList', messageList)
+      // this.$store.commit('pushAvChatRoomMessageList', messageList)
     },
     onError({ data }) {
       if (data.message !== 'Network Error') {
@@ -116,21 +114,21 @@ export default {
 
     },
     onReadyStateUpdate({ name }) {
-      const isSDKReady = name === this.TIM.EVENT.SDK_READY ? true : false
+      const isSDKReady = name === this.TIM.EVENT.SDK_READY
       this.$store.commit('toggleIsSDKReady', isSDKReady)
 
       if (isSDKReady) {
         this.tim
-          .getMyProfile()
-          .then(({ data }) => {
-            this.$store.commit('updateCurrentUserProfile', data)
-          })
-          .catch(error => {
-            this.$store.commit('showMessage', {
-              type: 'error',
-              message: error.message
+            .getMyProfile()
+            .then(({ data }) => {
+              this.$store.commit('updateCurrentUserProfile', data)
             })
-          })
+            .catch(error => {
+              this.$store.commit('showMessage', {
+                type: 'error',
+                message: error.message
+              })
+            })
         this.$store.dispatch('getBlacklist')
       }
     },
@@ -178,8 +176,8 @@ export default {
     onReceiveGroupSystemNotice(event) {
       const isKickedout = event.data.type === 4
       const isCurrentConversation =
-        `GROUP${event.data.message.payload.groupProfile.groupID}` ===
-        this.currentConversation.conversationID
+          `GROUP${event.data.message.payload.groupProfile.groupID}` ===
+          this.currentConversation.conversationID
       // 在当前会话被踢，需reset当前会话
       if (isKickedout && isCurrentConversation) {
         this.$store.commit('resetCurrentConversation')
@@ -201,9 +199,9 @@ export default {
     handleAt(messageList) {
       // 筛选有 @ 符号的文本消息
       const atTextMessageList = messageList.filter(
-        message =>
-          message.type === this.TIM.TYPES.MSG_TEXT &&
-          message.payload.text.includes('@')
+          message =>
+              message.type === this.TIM.TYPES.MSG_TEXT &&
+              message.payload.text.includes('@')
       )
       for (let i = 0; i < atTextMessageList.length; i++) {
         const message = atTextMessageList[i]
@@ -230,14 +228,14 @@ export default {
     },
     selectConversation(conversationID) {
       if (conversationID !== this.currentConversation.conversationID) {
-        this.$store.dispatch('checkoutConversation',conversationID)
+        this.$store.dispatch('checkoutConversation', conversationID)
       }
     },
     isJsonStr(str) {
-      try{
+      try {
         JSON.parse(str)
         return true
-      }catch {
+      } catch {
         return false
       }
     },
@@ -279,9 +277,9 @@ export default {
       // 筛选出当前会话的退群/被踢群的 groupTip
       const groupTips = messageList.filter(message => {
         return this.currentConversation.conversationID === message.conversationID &&
-          message.type === this.TIM.TYPES.MSG_GRP_TIP &&
-          (message.payload.operationType === this.TIM.TYPES.GRP_TIP_MBR_QUIT ||
-          message.payload.operationType === this.TIM.TYPES.GRP_TIP_MBR_KICKED_OUT)
+            message.type === this.TIM.TYPES.MSG_GRP_TIP &&
+            (message.payload.operationType === this.TIM.TYPES.GRP_TIP_MBR_QUIT ||
+                message.payload.operationType === this.TIM.TYPES.GRP_TIP_MBR_KICKED_OUT)
       })
       // 清理当前会话的群成员列表
       if (groupTips.length > 0) {
@@ -293,24 +291,42 @@ export default {
       }
     },
     /**
-     * 收到结束直播自定义消息，派发事件关闭组件
-     * @param {Message[]} messageList
+     * 登录
      */
-    handleCloseGroupLive(messageList) {
-      messageList.forEach(message => {
-        if (this.currentConversation.conversationID === message.conversationID && message.type === this.TIM.TYPES.MSG_CUSTOM) {
-          let data = {}
-          try {
-            data = JSON.parse(message.payload.data)
-          } catch(e) {
-            data = {}
-          }
-          if (data.roomId && Number(data.roomStatus) === 0) {
-            this.$bus.$emit('close-group-live')
-          }
-        }
-      })
-    },
+    doLogin({ appid, secret, userID }) {
+      this.loginBtnLoading = true
+      // 1. 根据提供的 appid 初始化 tim 实例
+      initTimInstance(appid)
+      // 2. 初始化实例以后，设置监听器
+      this.initListener()
+      // 3. 正式发起登录 TODO 不要放在window
+      const userSig = window.genTestUserSig(userID, appid, secret).userSig
+      this.tim
+          .login({ userID, userSig })
+          .then(() => {
+            this.loginBtnLoading = false
+            this.$store.commit('toggleIsLogin', true)
+            this.$store.commit('startComputeCurrent')
+            this.$store.commit({
+              type: 'GET_USER_INFO',
+              userID: userID,
+              userSig: userSig,
+              sdkAppID: appid
+            })
+            this.$store.commit('showMessage', {
+              type: 'success',
+              message: '登录成功'
+            })
+            // TODO 写 cookie
+          })
+          .catch(error => {
+            this.loginBtnLoading = false
+            this.$store.commit('showMessage', {
+              message: '登录失败：' + error.message,
+              type: 'error'
+            })
+          })
+    }
   }
 }
 </script>
@@ -354,9 +370,11 @@ body {
 .container
   position relative
   height 100vh
+
 .container
   position relative
   height 100vh
+
 // TODO filter mac chrome 会有问题，下次修改可以去掉
 .bg {
   position: absolute;
