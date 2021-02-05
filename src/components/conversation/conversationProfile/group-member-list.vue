@@ -21,14 +21,16 @@
                 <span v-else-if="member.nick" :title=member.nick>{{ member.nick }}</span>
                 <span v-else :title=member.userID>{{ member.userID }}</span>
               </div>
+              <el-button type="text" size="mini">查看人物卡</el-button>
+              <el-button type="text" size="mini">导入人物卡</el-button>
             </div>
           </popover>
         </div>
       </div>
     </div>
-    <div class="more">
-      <el-button v-if="showLoadMore" type="text" @click="loadMore">查看更多</el-button>
-    </div>
+<!--    <div class="more">-->
+<!--      <el-button v-if="showLoadMore" type="text" @click="loadMore">查看更多</el-button>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -60,7 +62,7 @@ export default {
       return this.members.length < this.groupProfile.memberCount
     },
     members() {
-      return this.currentMemberList.slice(0, this.count)
+      return this.currentMemberList//.slice(0, this.count)
     }
   },
   methods: {
@@ -108,34 +110,35 @@ export default {
       &:hover
         color $light-primary
   .scroll-content
-    max-height: 250px;
-    overflow-y: scroll;
+    /*max-height: 250px;*/
+    /*overflow-y: scroll;*/
     padding 10px 15px 10px 15px
     width 100%
     .group-member-list
-      display flex
-      justify-content flex-start
-      flex-wrap wrap
+      /*display flex*/
+      /*justify-content flex-start*/
+      /*flex-wrap wrap*/
       width 100%
     .group-member
-      width 40px
+      /*width 40px*/
       height 70px
       display: flex;
-      justify-content center
-      align-content center
-      flex-direction: column;
+      /*justify-content center*/
+      /*align-content center*/
+      /*flex-direction: column;*/
       text-align: center;
       color: $black;
       cursor: pointer;
-      margin: 0 20px 10px 0;
-      padding: 10px 0 0 0;
+      margin: 0 10px;
+      /*margin: 0 20px 10px 0;*/
+      /*padding: 10px 0 0 0;*/
       .avatar
         width 40px
         height 40px
         border-radius 50%
       .member-name
         font-size 12px
-        width: 50px;
+        width: 100px;
         text-align center
   .more
     padding 0 20px
