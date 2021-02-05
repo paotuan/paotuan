@@ -28,7 +28,8 @@
       </div>
     </div>
     <div class="profile" v-if="showConversationProfile" >
-      <conversation-profile/>
+      <right-panel v-if="currentConversation.type === TIM.TYPES.CONV_GROUP" />
+      <conversation-profile v-else />
     </div>
     <!-- 群成员资料组件 -->
     <member-profile-card />
@@ -41,13 +42,16 @@ import MessageSendBox from '../message/message-send-box'
 import MessageItem from '../message/message-item'
 import ConversationProfile from './conversation-profile.vue'
 import MemberProfileCard from '../group/member-profile-card'
+import RightPanel from './right-panels'
+
 export default {
   name: 'CurrentConversation',
   components: {
     MessageSendBox,
     MessageItem,
     ConversationProfile,
-    MemberProfileCard
+    MemberProfileCard,
+    RightPanel,
   },
   data() {
     return {
@@ -165,7 +169,7 @@ export default {
 /* 当前会话的骨架屏 */
 .current-conversation-wrapper
   height $height
-  background-color $background-light
+  background-color $white
   color $base
   display flex
   .current-conversation

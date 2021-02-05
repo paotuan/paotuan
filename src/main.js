@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { MessageBox, Row, Col, Button, Input, Loading, Dialog, Dropdown, DropdownMenu, DropdownItem, Checkbox, CheckboxGroup } from 'element-ui'
+import { MessageBox, Row, Col, Button, Input, Loading, Dialog, Dropdown, DropdownMenu, DropdownItem, Checkbox, CheckboxGroup, Tabs, TabPane } from 'element-ui'
 import Avatar from './components/avatar.vue'
 import Index from './index.vue'
 import store from './store/index'
@@ -37,6 +37,8 @@ Vue.use(DropdownItem)
 Vue.use(VueClipboard)
 Vue.use(Checkbox)
 Vue.use(CheckboxGroup)
+Vue.use(Tabs)
+Vue.use(TabPane)
 Vue.component('avatar', Avatar)
 new Vue({
   render: h => h(Index)
