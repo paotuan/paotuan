@@ -36,8 +36,21 @@ export default {
 }
 </script>
 <style scoped>
+::v-deep .el-tabs {
+  height: 100%;
+}
+
 ::v-deep .el-tabs__item {
   height: 50px;
   line-height: 50px;
+}
+
+::v-deep .el-tabs__header {
+  margin: 0;
+}
+
+::v-deep .el-tabs__content {
+  height: calc(100vh - 50px); /* 50px 是减去 tab 头部的高度 */
+  overflow-y: scroll;
 }
 </style>
