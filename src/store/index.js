@@ -3,10 +3,8 @@ import Vuex from 'vuex'
 import conversation from './modules/conversation'
 import group from './modules/group'
 import user from './modules/user'
-import video from './modules/video'
 import friend from './modules/friend'
 import blacklist from './modules/blacklist'
-import groupLive from './modules/groupLive'
 import {Message} from 'element-ui'
 
 Vue.use(Vuex)
@@ -55,7 +53,5 @@ export default new Vuex.Store({
     friend,
     blacklist,
     user,
-    video,
-    groupLive,
   }
 })
