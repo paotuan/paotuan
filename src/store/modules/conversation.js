@@ -197,6 +197,9 @@ const conversationModules = {
         context.dispatch('getMessageList', conversationID)
         // 3.3 拉取第一页群成员列表
         if (data.conversation.type === TIM.TYPES.CONV_GROUP) {
+          // 如果是一个群，则初始化群的游戏信息
+          context.dispatch('initGame', data.conversation.groupProfile.groupID)
+          // 拉取第一页群成员列表
           return context.dispatch('getGroupMemberList', data.conversation.groupProfile.groupID)
         }
         return Promise.resolve()

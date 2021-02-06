@@ -5,6 +5,7 @@ import group from './modules/group'
 import user from './modules/user'
 import friend from './modules/friend'
 import blacklist from './modules/blacklist'
+import game from './modules/game'
 import {Message} from 'element-ui'
 
 Vue.use(Vuex)
@@ -53,5 +54,6 @@ export default new Vuex.Store({
     friend,
     blacklist,
     user,
+    game,
   }
 })
