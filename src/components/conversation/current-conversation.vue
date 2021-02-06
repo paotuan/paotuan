@@ -27,7 +27,7 @@
         <message-send-box/>
       </div>
     </div>
-    <div class="profile" v-if="showConversationProfile" >
+    <div :key="currentConversation.conversationID" class="profile" v-if="showConversationProfile" >
       <right-panel v-if="currentConversation.type === TIM.TYPES.CONV_GROUP" />
       <conversation-profile v-else />
     </div>
