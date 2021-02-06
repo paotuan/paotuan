@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { enableBot, disableBot } from '@/tim'
 
 const gamePrototype = {
   botEnabled: false
@@ -21,6 +22,13 @@ const game = {
       if (!context.state.list[groupId]) {
         context.commit('initGame', groupId)
       }
+    },
+    toggleBotEnabled(context, { groupId, enabled }) {
+      return (enabled ? enableBot : disableBot)(groupId)
+          .then(resp => {
+            context.commit('toggleBotEnabled', { groupId, enabled })
+            return resp
+          })
     }
   }
 }

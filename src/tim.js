@@ -32,15 +32,49 @@ export function initTimInstance(appid, secret) {
   tim.registerPlugin({ 'cos-js-sdk': COSSDK })
 }
 
+// ==========================================================================
+
 const botims = {} // 群id -> 群骰子
 
-// 初始化 bot 实例，登陆以后调用
-export function initBotimInstance(groupId) {
-  console.log(groupId)
-  if (botims[groupId]) return // 已经初始化了
+// 为某个群启用 bot
+export function enableBot(groupId) {
+  // 如果这个群的 bot 实例还没有初始化，就新建一个
+  if (!botims[groupId]) {
+    initBotimInstance(groupId)
+  }
 
-  // TODO 在 panel 里要判断已经初始化但是下线的情况，eg 多次开开关关
+  const bot = botims[groupId]
+  const name = 'bot'
 
+  return new Promise((resolve, reject) => {
+    // 登录（重复登录也无所谓）
+    bot.login({ userID: name, userSig: window.genTestUserSig(name, sdkappid, sdksecret).userSig })
+        .then(() => {
+          console.log('登录成功')
+
+          // 判断是否加群，先让它加群
+          bot.joinGroup({ groupID: groupId })
+              .then(resp => resolve(resp.data))
+              .catch(e => reject(e))
+
+        })
+        .catch(e => {
+          console.log('登录失败', e)
+          reject(e)
+        })
+  })
+}
+
+// 为某个群禁用 bot
+export function disableBot(groupId) {
+  // 如果本来 bot 就没被启用，那没事了
+  if (!botims[groupId]) return new Promise(resolve => resolve())
+
+  return botims[groupId].logout()
+}
+
+// 初始化 bot 实例，登录以后调用
+function initBotimInstance(groupId) {
   // new 一个实例
   let bot = botims[groupId] = createTIM().create({ SDKAppID: sdkappid })
 
@@ -60,19 +94,4 @@ export function initBotimInstance(groupId) {
   bot.on(TIM.EVENT.MESSAGE_RECEIVED, function (event) {
     console.log(event.data)
   })
-
-  // 登录（重复登录也无所谓）
-  bot.login({ userID: 'bot', userSig: window.genTestUserSig('bot', sdkappid, sdksecret).userSig })
-      .then(() => {
-        console.log('登录成功')
-
-        // 判断是否加群，先让它加群
-        bot.joinGroup({ groupID: groupId })
-            .then(resp => console.log(resp.data))
-            .catch(e => console.log(e))
-
-      }).catch(e => {
-        console.log('登录失败', e)
-      })
-
 }
