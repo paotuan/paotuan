@@ -45,7 +45,7 @@ export function enableBot(groupId) {
   }
 
   const bot = botims[groupId]
-  const name = 'bot'
+  const name = groupId.replace('@TGS#', 'bot_') // bot 名字每个群唯一，避免冲突
 
   return new Promise((resolve, reject) => {
     // 登录（重复登录也无所谓）

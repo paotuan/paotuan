@@ -4,8 +4,12 @@ import { DiceRoll } from 'rpg-dice-roller'
 export function handleMessage(bot, msg) {
   const msgstr = msg.payload.text.trim()
   if (msgstr.startsWith('.') || msgstr.startsWith('。')) {
-    const roll = new DiceRoll(msgstr.substr(1))
-    sendGroupMessage(bot, msg.to, roll.output)
+    try {
+      const roll = new DiceRoll(msgstr.substr(1))
+      sendGroupMessage(bot, msg.to, roll.output)
+    } catch (e) {
+      // 表达式不合法，无视之
+    }
   }
 }
 
