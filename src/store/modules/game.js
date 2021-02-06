@@ -14,7 +14,7 @@ const game = {
   },
   mutations: {
     initGame(state, groupId) {
-      Vue.set(state.list, groupId, { ...gamePrototype })
+      Vue.set(state.list, groupId, JSON.parse(JSON.stringify(gamePrototype)))
     },
     toggleBotEnabled(state, { groupId, enabled }) {
       state.list[groupId].botEnabled = enabled
