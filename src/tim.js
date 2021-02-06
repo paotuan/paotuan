@@ -1,4 +1,5 @@
 import TIM, { createTIM } from '@/sdk'
+import { handleMessage } from '@/sdk/bot'
 import COSSDK from 'cos-js-sdk-v5'
 
 let tim = null
@@ -92,6 +93,6 @@ function initBotimInstance(groupId) {
   })
   bot.on(TIM.EVENT.SDK_READY, () => console.log('sdk ready'))
   bot.on(TIM.EVENT.MESSAGE_RECEIVED, function (event) {
-    console.log(event.data)
+    event.data.forEach(msg => handleMessage(bot, msg))
   })
 }
