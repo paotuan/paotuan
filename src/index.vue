@@ -296,7 +296,7 @@ export default {
     doLogin({ appid, secret, userID }) {
       this.loginBtnLoading = true
       // 1. 根据提供的 appid 初始化 tim 实例
-      initTimInstance(appid)
+      initTimInstance(appid, secret)
       // 2. 初始化实例以后，设置监听器
       this.initListener()
       // 3. 正式发起登录 TODO 不要放在window

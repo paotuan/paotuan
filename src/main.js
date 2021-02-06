@@ -4,27 +4,17 @@ import Avatar from './components/avatar.vue'
 import Index from './index.vue'
 import store from './store/index'
 import tim from 'tim'
-import TIM from 'tim-js-sdk'
-// import TWebLive from 'tweblive'
+import TIM from '@/sdk'
 import VueClipboard from 'vue-clipboard2'
 import './assets/icon/iconfont.css'
 import './assets/icon/tim.css'
-// import trtcCalling from './trtc-calling'
-// import TRTCCalling from 'trtc-calling-js'
 
-window.tim = tim
-window.TIM = TIM
-// window.TRTCCalling = TRTCCalling
-// window.trtcCalling = trtcCalling
 window.store = store
 Vue.prototype.$bus = new Vue() // event Bus 用于无关系组件间的通信。
 Vue.prototype.tim = tim
 Vue.prototype.TIM = TIM
-// Vue.prototype.TWebLive = TWebLive
 Vue.prototype.$store = store
 Vue.prototype.$confirm = MessageBox.confirm
-// Vue.prototype.trtcCalling = trtcCalling
-// Vue.prototype.TRTCCalling = TRTCCalling
 Vue.use(Button)
 Vue.use(Row)
 Vue.use(Col)

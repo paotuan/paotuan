@@ -1,5 +1,5 @@
 import tim from 'tim'
-import TIM from 'tim-js-sdk'
+import TIM from '@/sdk'
 import store from '..'
 import { titleNotify } from '../../utils'
 import { filterCallingMessage } from '../../utils/common'

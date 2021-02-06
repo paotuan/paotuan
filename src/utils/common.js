@@ -1,5 +1,3 @@
-import TIM from 'tim-js-sdk'
-
 export function translateGroupSystemNotice(message) {
   const groupName = message.payload.groupProfile.name || message.payload.groupProfile.groupID
   switch (message.payload.operationType) {
