@@ -12,7 +12,6 @@
 import { mapState } from 'vuex'
 import GroupProfile from '../conversationProfile/group-profile.vue'
 
-
 export default {
   name: 'RightPanel',
     components: {
@@ -51,6 +50,10 @@ export default {
 
 ::v-deep .el-tabs__content {
   height: calc(100vh - 50px); /* 50px 是减去 tab 头部的高度 */
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+
+::v-deep .el-tabs__content::-webkit-scrollbar {
+  width: 10px;
 }
 </style>
