@@ -101,6 +101,7 @@ export default {
       // this.handleCloseGroupLive(messageList)
       this.$store.commit('pushCurrentMessageList', messageList)
       // this.$store.commit('pushAvChatRoomMessageList', messageList)
+      this.$store.dispatch('insertGameLogs', messageList) // 记录 log
     },
     onError({ data }) {
       if (data.message !== 'Network Error') {

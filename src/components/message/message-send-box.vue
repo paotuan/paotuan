@@ -267,7 +267,7 @@ export default {
       })
       this.$store.commit('pushCurrentMessageList', message)
       this.$bus.$emit('scroll-bottom')
-      this.tim.sendMessage(message).catch(error => {
+      this._sendMessage(message).catch(error => {
         this.$store.commit('showMessage', {
           type: 'error',
           message: error.message
@@ -337,7 +337,7 @@ export default {
       this.$store.commit('pushCurrentMessageList', message)
 
       // 2. 发送消息
-      let promise = this.tim.sendMessage(message)
+      let promise = this._sendMessage(message)
       promise.catch(error => {
         this.$store.commit('showMessage', {
           type: 'error',
@@ -373,8 +373,7 @@ export default {
         })
       }
       this.$store.commit('pushCurrentMessageList', message)
-      this.tim
-        .sendMessage(message)
+      this._sendMessage(message)
         .then(() => {
           this.$refs.videoPicker.value = null
         })
@@ -404,7 +403,7 @@ export default {
       })
       this.$store.commit('pushCurrentMessageList', message)
       this.$bus.$emit('scroll-bottom')
-      this.tim.sendMessage(message).catch(error => {
+      this._sendMessage(message).catch(error => {
         this.$store.commit('showMessage', {
           type: 'error',
           message: error.message
@@ -434,7 +433,7 @@ export default {
         }
       })
       this.$store.commit('pushCurrentMessageList', message)
-      this.tim.sendMessage(message).catch(error => {
+      this._sendMessage(message).catch(error => {
         this.$store.commit('showMessage', {
           type: 'error',
           message: error.message
@@ -466,8 +465,7 @@ export default {
         description: '',
         extension: ''
       })
-      this.tim
-        .sendMessage(message)
+      this._sendMessage(message)
         .then(() => {
           Object.assign(this, {
             rate: 5,
@@ -513,8 +511,7 @@ export default {
         }
       })
       this.$store.commit('pushCurrentMessageList', message)
-      this.tim
-        .sendMessage(message)
+      this._sendMessage(message)
         .then(() => {
           this.$refs.imagePicker.value = null
         })
@@ -537,8 +534,7 @@ export default {
         }
       })
       this.$store.commit('pushCurrentMessageList', message)
-      this.tim
-        .sendMessage(message)
+      this._sendMessage(message)
         .then(() => {
           this.$refs.filePicker.value = null
         })
@@ -561,8 +557,7 @@ export default {
         }
       })
       this.$store.commit('pushCurrentMessageList', message)
-      this.tim
-        .sendMessage(message)
+      this._sendMessage(message)
         .then(() => {
           this.$refs.videoPicker.value = null
         })
@@ -572,6 +567,13 @@ export default {
             type: 'error'
           })
         })
+    },
+    _sendMessage(message) {
+      // 发消息接口收敛，为了记录 log
+      return this.tim.sendMessage(message).then(resp => {
+        this.$store.dispatch('insertGameLogs', [message])
+        return resp
+      })
     }
   }
 }

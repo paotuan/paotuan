@@ -7,17 +7,21 @@
       <kp-panel :groupProfile="currentConversation.groupProfile" />
     </el-tab-pane>
     <el-tab-pane label="重要信息" name="third">角色管理</el-tab-pane>
-    <el-tab-pane label="Log 录制" name="fourth">定时任务补偿</el-tab-pane>
+    <el-tab-pane label="Log 录制" name="fourth">
+      <log-panel :group-profile="currentConversation.groupProfile" />
+    </el-tab-pane>
   </el-tabs>
 </template>
 <script>
 import { mapState } from 'vuex'
 import GroupProfile from '../conversationProfile/group-profile.vue'
 import KpPanel from './kp-panel'
+import LogPanel from './log-panel'
 
 export default {
   name: 'RightPanel',
     components: {
+      LogPanel,
       KpPanel,
       GroupProfile,
     },
