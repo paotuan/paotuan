@@ -8,8 +8,8 @@
       <span>设置 bgm ，bgm 将对全部群员可见</span>
       <el-button @click="sendBgmVisible = true">设置 bgm</el-button>
     </div>
-    <el-button @click="sendNoteText">发送文字笔记</el-button>
-    <el-button @click="$refs.noteImgPicker.click()">发送图片笔记</el-button>
+    <el-button @click="sendTextVisible = true">发布文字笔记</el-button>
+    <el-button @click="$refs.noteImgPicker.click()">发布图片笔记</el-button>
     <input
         type="file"
         id="noteImgPicker"
@@ -18,7 +18,7 @@
         @change="sendNoteImage"
         style="display:none"
     />
-    <el-dialog title="设置 bgm" :visible.sync="sendBgmVisible" width="30%">
+    <el-dialog title="设置 bgm" :visible.sync="sendBgmVisible" width="40%">
       <div>设置 bgm，bgm 将对全部群员可见。如多次设置，则会覆盖之前设置的 bgm。</div>
       <div>bgm 链接需符合指定的格式</div>
       <ul>
@@ -34,6 +34,17 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="sendBgmVisible = false">取 消</el-button>
         <el-button type="primary" :disabled="bgmLink.trim().length === 0" @click="setBgm">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="发布文字笔记" :visible.sync="sendTextVisible" width="40%">
+      <el-input
+          type="textarea"
+          :rows="5"
+          placeholder="请输入内容"
+          v-model="textContent"/>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="sendTextVisible = false">取 消</el-button>
+        <el-button type="primary" :disabled="textContent.trim().length === 0" @click="sendNoteText">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -52,6 +63,8 @@ export default {
       botSwitchLoading: false, // 这个作为一个局部状态理论上是不严谨的，但是考虑到是瞬间状态所以无所谓了
       sendBgmVisible: false, // 发送 bgm 弹窗
       bgmLink: '', // 用户输入的 bgm 链接
+      sendTextVisible: false, // 发送文字笔记弹窗
+      textContent: '',
     }
   },
   computed: {
@@ -108,10 +121,12 @@ export default {
         conversationType: this.TIM.TYPES.CONV_GROUP,
         priority: this.TIM.TYPES.MSG_PRIORITY_HIGH, // 标注为高优先级
         payload: {
-          text: 'lalallalalal'
+          text: this.textContent
         }
       })
       this._sendNoteMessage(msg)
+      this.textContent = ''
+      this.sendTextVisible = false
     },
     sendNoteImage() {
       const message = this.tim.createImageMessage({

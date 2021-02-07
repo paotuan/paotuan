@@ -175,12 +175,12 @@ export default {
   .current-conversation
     display: flex;
     flex-direction: column;
-    width: 60%;
+    width: 65%;
     height: $height;
   .profile
     height: $height;
     overflow hidden
-    width 40%
+    width 35%
     border-left 1px solid $border-base
     flex-shrink 0
   .more
