@@ -8,6 +8,7 @@
       <span>设置 bgm ，bgm 将对全部群员可见</span>
       <el-button @click="sendBgmVisible = true">设置 bgm</el-button>
     </div>
+    <el-button @click="sendInfoText">发送文字信息</el-button>
     <el-dialog title="设置 bgm" :visible.sync="sendBgmVisible" width="30%">
       <div>设置 bgm，bgm 将对全部群员可见。如多次设置，则会覆盖之前设置的 bgm。</div>
       <div>bgm 链接需符合指定的格式</div>
@@ -31,6 +32,7 @@
 <script>
 import { Switch } from 'element-ui'
 import { mapState } from 'vuex'
+import TIM from "@/sdk";
 
 export default {
   props: ['groupProfile'],
@@ -82,24 +84,39 @@ export default {
       const message = this.tim.createCustomMessage({
         to: this.groupProfile.groupID,
         conversationType: this.TIM.TYPES.CONV_GROUP,
+        priority: this.TIM.TYPES.MSG_PRIORITY_HIGH, // 标注为高优先级
         payload: {
           data: JSON.stringify({ mtype: 'bgm', mdata: bgmData }),
           description: '主持人设置了新的 bgm，快点击右侧【重要信息】面板查看吧',
         }
       })
-      this.$store.commit('pushCurrentMessageList', message)
-      this.tim.sendMessage(message)
-        .then(() => {
-          this.$store.dispatch('handleKPInfo', [message])
-        })
-        .catch(error => {
-          this.$store.commit('showMessage', {
-            type: 'error',
-            message: error.message
-          })
-        })
+      this._sendInfoMessage(message)
       this.bgmLink = ''
       this.sendBgmVisible = false
+    },
+    sendInfoText() {
+      let msg = this.tim.createTextMessage({
+        to: this.groupProfile.groupID,
+        conversationType: this.TIM.TYPES.CONV_GROUP,
+        priority: this.TIM.TYPES.MSG_PRIORITY_HIGH, // 标注为高优先级
+        payload: {
+          text: 'lalallalalal'
+        }
+      })
+      this._sendInfoMessage(msg)
+    },
+    _sendInfoMessage(message) {
+      this.$store.commit('pushCurrentMessageList', message)
+      this.tim.sendMessage(message)
+          .then(() => {
+            this.$store.dispatch('handleKPInfo', [message])
+          })
+          .catch(error => {
+            this.$store.commit('showMessage', {
+              type: 'error',
+              message: error.message
+            })
+          })
     }
   }
 }

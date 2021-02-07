@@ -6,7 +6,8 @@
     <el-tab-pane label="主持人面板" name="second">
       <kp-panel :groupProfile="currentConversation.groupProfile" />
     </el-tab-pane>
-    <el-tab-pane label="重要信息" name="third">
+    <el-tab-pane name="third">
+      <el-badge slot="label" is-dot>重要笔记</el-badge>
       <info-panel />
     </el-tab-pane>
     <el-tab-pane label="Log 录制" name="fourth">
@@ -67,5 +68,14 @@ export default {
 
 ::v-deep .el-tabs__content::-webkit-scrollbar {
   width: 10px;
+}
+
+/* 调整红点位置 */
+::v-deep .el-badge {
+  display: block;
+}
+
+::v-deep .el-badge__content {
+  margin-top: 15px;
 }
 </style>

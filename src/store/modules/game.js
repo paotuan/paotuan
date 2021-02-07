@@ -7,6 +7,7 @@ const gamePrototype = {
   logEnabled: false,
   logs: [], // id\from\nick\time\content 不记录全部的 tim msg 属性
   bgm: {}, // platform\type\id 平台、类型（单曲、专辑）、歌曲 id
+  notes: [], // id\type\payload 主持人笔记
 }
 
 const game = {
@@ -33,6 +34,9 @@ const game = {
     setGameBgm(state, { groupId, bgm }) {
       state.list[groupId].bgm = bgm
     },
+    addNote(state, { groupId, note }) {
+      state.list[groupId].notes.push(note)
+    }
   },
   actions: {
     initGame(context, groupId) {
@@ -64,13 +68,22 @@ const game = {
       })
     },
     handleKPInfo(context, msglist) {
+      console.log(msglist)
+      // TODO 要考虑没打开群，但是收到了群的消息，没 initGame 的情况
       msglist.filter(msg =>
-        msg.conversationType === TIM.TYPES.CONV_GROUP
-        && msg.type === TIM.TYPES.MSG_CUSTOM // TODO
+          msg.conversationType === TIM.TYPES.CONV_GROUP
+          && msg.priority === TIM.TYPES.MSG_PRIORITY_HIGH
       ).forEach(msg => {
-        const data = JSON.parse(msg.payload.data)
-        if (data.mtype === 'bgm') {
-          context.commit('setGameBgm', { groupId: msg.to, bgm: data.mdata })
+        if (msg.type === TIM.TYPES.MSG_CUSTOM) {
+          const data = JSON.parse(msg.payload.data)
+          if (data.mtype === 'bgm') {
+            context.commit('setGameBgm', { groupId: msg.to, bgm: data.mdata })
+          }
+        } else if (msg.type === TIM.TYPES.MSG_TEXT) {
+          context.commit('addNote', {
+            groupId: msg.to,
+            note: { id: msg.ID, type: msg.type, payload: msg.payload.text }
+          })
         }
       })
     },
