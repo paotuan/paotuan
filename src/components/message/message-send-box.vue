@@ -572,6 +572,7 @@ export default {
       // 发消息接口收敛，为了记录 log
       return this.tim.sendMessage(message).then(resp => {
         this.$store.dispatch('insertGameLogs', [message])
+        this.$store.dispatch('handleKPInfo', [message])
         return resp
       })
     }

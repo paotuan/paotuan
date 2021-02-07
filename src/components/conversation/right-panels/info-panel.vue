@@ -1,8 +1,18 @@
 <template>
-  <div>
-    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=1&id=2810024&auto=1&height=266"></iframe>
-  </div>
+  <bgm :bgm="currentGame.bgm"/>
 </template>
 <script>
-export default {}
+import bgm from './widgets/bgm'
+import { mapState } from 'vuex'
+
+export default {
+  components: {
+    bgm
+  },
+  computed: {
+    ...mapState({
+      currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID]
+    })
+  },
+}
 </script>

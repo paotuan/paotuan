@@ -102,6 +102,7 @@ export default {
       this.$store.commit('pushCurrentMessageList', messageList)
       // this.$store.commit('pushAvChatRoomMessageList', messageList)
       this.$store.dispatch('insertGameLogs', messageList) // 记录 log
+      this.$store.dispatch('handleKPInfo', messageList) // 过滤 kp 指令
     },
     onError({ data }) {
       if (data.message !== 'Network Error') {
