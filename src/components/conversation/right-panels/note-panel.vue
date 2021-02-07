@@ -7,22 +7,28 @@
         description="你也可以把自己觉得重要的消息收藏在这里（敬请期待）"
         show-icon
     />
-    <div>
+    <draggable
+        ghost-class="moving"
+        :value="currentGame.notes"
+        @input="$store.commit('updateNotes', { groupId: groupProfile.groupID, notes: $event })">
       <el-card v-for="note in currentGame.notes" :key="note.id">
         <div v-if="note.type === TIM.TYPES.MSG_TEXT">{{ note.payload }}</div>
         <img v-else-if="note.type === TIM.TYPES.MSG_IMAGE" class="note-img" :src="formatUrl(note.payload)"
              @click="handlePreview(note.payload)"/>
       </el-card>
-    </div>
+    </draggable>
   </div>
 </template>
 <script>
 import bgm from './widgets/bgm'
 import { mapState } from 'vuex'
+import draggable from 'vuedraggable'
 
 export default {
+  props: ['groupProfile'],
   components: {
-    bgm
+    bgm,
+    draggable,
   },
   computed: {
     ...mapState({
@@ -43,5 +49,9 @@ export default {
 .note-img {
   width: 100%;
   cursor: zoom-in;
+}
+
+::v-deep .moving {
+  background-color: rgb(238, 238, 238);
 }
 </style>

@@ -9,6 +9,7 @@
     </div>
     <draggable
         handle=".handle"
+        ghost-class="moving"
         :value="currentGame.logs"
         @input="$store.commit('updateLogs', { groupId: groupProfile.groupID, logs: $event })">
       <div v-for="log in currentGame.logs" :key="log.id">
@@ -46,3 +47,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+::v-deep .moving {
+  background-color: rgb(238, 238, 238);
+}
+</style>

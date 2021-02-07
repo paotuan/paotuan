@@ -8,7 +8,7 @@
     </el-tab-pane>
     <el-tab-pane name="third">
       <el-badge slot="label" is-dot>重要笔记</el-badge>
-      <note-panel />
+      <note-panel :group-profile="currentConversation.groupProfile" />
     </el-tab-pane>
     <el-tab-pane label="Log 录制" name="fourth">
       <log-panel :group-profile="currentConversation.groupProfile" />

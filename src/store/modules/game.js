@@ -36,7 +36,11 @@ const game = {
     },
     addNote(state, { groupId, note }) {
       state.list[groupId].notes.push(note)
-    }
+    },
+    updateNotes(state, { groupId, notes }) {
+      // TODO action 里可以存 localstorage
+      state.list[groupId].notes = notes
+    },
   },
   actions: {
     initGame(context, groupId) {
