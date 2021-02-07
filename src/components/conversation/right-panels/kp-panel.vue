@@ -8,7 +8,16 @@
       <span>设置 bgm ，bgm 将对全部群员可见</span>
       <el-button @click="sendBgmVisible = true">设置 bgm</el-button>
     </div>
-    <el-button @click="sendNoteText">发送文字信息</el-button>
+    <el-button @click="sendNoteText">发送文字笔记</el-button>
+    <el-button @click="$refs.noteImgPicker.click()">发送图片笔记</el-button>
+    <input
+        type="file"
+        id="noteImgPicker"
+        ref="noteImgPicker"
+        accept=".jpg, .jpeg, .png, .gif, .bmp"
+        @change="sendNoteImage"
+        style="display:none"
+    />
     <el-dialog title="设置 bgm" :visible.sync="sendBgmVisible" width="30%">
       <div>设置 bgm，bgm 将对全部群员可见。如多次设置，则会覆盖之前设置的 bgm。</div>
       <div>bgm 链接需符合指定的格式</div>
@@ -32,7 +41,6 @@
 <script>
 import { Switch } from 'element-ui'
 import { mapState } from 'vuex'
-import TIM from "@/sdk";
 
 export default {
   props: ['groupProfile'],
@@ -104,6 +112,18 @@ export default {
         }
       })
       this._sendNoteMessage(msg)
+    },
+    sendNoteImage() {
+      const message = this.tim.createImageMessage({
+        to: this.groupProfile.groupID,
+        conversationType: this.TIM.TYPES.CONV_GROUP,
+        priority: this.TIM.TYPES.MSG_PRIORITY_HIGH, // 标注为高优先级
+        payload: {
+          file: document.getElementById('noteImgPicker')
+        },
+      })
+      this._sendNoteMessage(message)
+      this.$refs.noteImgPicker.value = null
     },
     _sendNoteMessage(message) {
       this.$store.commit('pushCurrentMessageList', message)

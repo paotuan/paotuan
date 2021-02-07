@@ -9,7 +9,9 @@
     />
     <div>
       <el-card v-for="note in currentGame.notes" :key="note.id">
-        {{ note.payload }}
+        <div v-if="note.type === TIM.TYPES.MSG_TEXT">{{ note.payload }}</div>
+        <img v-else-if="note.type === TIM.TYPES.MSG_IMAGE" class="note-img" :src="formatUrl(note.payload)"
+             @click="handlePreview(note.payload)"/>
       </el-card>
     </div>
   </div>
@@ -27,5 +29,19 @@ export default {
       currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID]
     })
   },
+  methods: {
+    formatUrl(url) {
+      return url.slice(0, 2) === '//' ? `https:${url}` : url
+    },
+    handlePreview(url) {
+      this.$bus.$emit('image-preview', { url })
+    },
+  }
 }
 </script>
+<style scoped>
+.note-img {
+  width: 100%;
+  cursor: zoom-in;
+}
+</style>
