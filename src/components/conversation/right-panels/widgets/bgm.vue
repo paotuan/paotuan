@@ -1,6 +1,6 @@
 <template>
-  <iframe v-if="bgm.platform === 1" class="player"
-          frameborder="no" border="0" marginwidth="0" marginheight="0"
+  <iframe v-if="bgm.platform === 1" :key="bgm.id" class="player"
+          frameborder="no" border="0" marginwidth="0" marginheight="0" :height="bgm.type === 2 ? 110 : 450"
           :src="`//music.163.com/outchain/player?type=${bgm.type}&id=${bgm.id}`" />
 </template>
 <script>
@@ -13,6 +13,7 @@ export default {
 <style scoped>
 .player {
   width: 100%;
-  height: auto;
+  /* 看下高度在不同电脑上表现 */
+  /*height: auto;*/
 }
 </style>

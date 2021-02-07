@@ -1,7 +1,31 @@
 <template>
   <div>
-    <span>启用骰子</span>
-    <el-switch :value="currentGame.botEnabled" :disabled="botSwitchLoading" @change="onBotSwitch"/>
+    <div>
+      <span>启用骰子</span>
+      <el-switch :value="currentGame.botEnabled" :disabled="botSwitchLoading" @change="onBotSwitch"/>
+    </div>
+    <div>
+      <span>设置 bgm ，bgm 将对全部群员可见</span>
+      <el-button @click="sendBgmVisible = true">设置 bgm</el-button>
+    </div>
+    <el-dialog title="设置 bgm" :visible.sync="sendBgmVisible" width="30%">
+      <div>设置 bgm，bgm 将对全部群员可见。如多次设置，则会覆盖之前设置的 bgm。</div>
+      <div>bgm 链接需符合指定的格式</div>
+      <ul>
+        <li>网易云音乐
+          <ul>
+            <li>歌单：https://music.163.com/#/playlist?id=xxxxxxx</li>
+            <li>单曲：https://music.163.com/#/song?id=xxxxxxx</li>
+            <li>专辑：https://music.163.com/#/album?id=xxxxxxx</li>
+          </ul>
+        </li>
+      </ul>
+      <el-input placeholder="请输入音乐链接" v-model="bgmLink" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="sendBgmVisible = false">取 消</el-button>
+        <el-button type="primary" :disabled="bgmLink.trim().length === 0" @click="setBgm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -16,6 +40,8 @@ export default {
   data() {
     return {
       botSwitchLoading: false, // 这个作为一个局部状态理论上是不严谨的，但是考虑到是瞬间状态所以无所谓了
+      sendBgmVisible: false, // 发送 bgm 弹窗
+      bgmLink: '', // 用户输入的 bgm 链接
     }
   },
   computed: {
@@ -39,6 +65,42 @@ export default {
             this.botSwitchLoading = false
           })
     },
+    setBgm() {
+      const result = this.bgmLink.match(/https:\/\/music\.163\.com\/#\/(playlist|song|album)\?id=(\d+)/)
+      if (!result) {
+        this.$store.commit('showMessage', {
+          type: 'error',
+          message: '链接格式不正确',
+        })
+        return
+      }
+      const bgmData = {
+        platform: 1,
+        type: ['playlist', 'album', 'song'].indexOf(result[1]),
+        id: Number(result[2])
+      }
+      const message = this.tim.createCustomMessage({
+        to: this.groupProfile.groupID,
+        conversationType: this.TIM.TYPES.CONV_GROUP,
+        payload: {
+          data: JSON.stringify({ mtype: 'bgm', mdata: bgmData }),
+          description: '主持人设置了新的 bgm，快点击右侧【重要信息】面板查看吧',
+        }
+      })
+      this.$store.commit('pushCurrentMessageList', message)
+      this.tim.sendMessage(message)
+        .then(() => {
+          this.$store.dispatch('handleKPInfo', [message])
+        })
+        .catch(error => {
+          this.$store.commit('showMessage', {
+            type: 'error',
+            message: error.message
+          })
+        })
+      this.bgmLink = ''
+      this.sendBgmVisible = false
+    }
   }
 }
 </script>
