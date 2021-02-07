@@ -8,7 +8,7 @@
     </el-tab-pane>
     <el-tab-pane name="third">
       <el-badge slot="label" is-dot>重要笔记</el-badge>
-      <info-panel />
+      <note-panel />
     </el-tab-pane>
     <el-tab-pane label="Log 录制" name="fourth">
       <log-panel :group-profile="currentConversation.groupProfile" />
@@ -20,14 +20,14 @@ import { mapState } from 'vuex'
 import GroupProfile from '../conversationProfile/group-profile.vue'
 import KpPanel from './kp-panel'
 import LogPanel from './log-panel'
-import InfoPanel from './info-panel'
+import NotePanel from './note-panel'
 
 export default {
   name: 'RightPanel',
     components: {
       LogPanel,
       KpPanel,
-      InfoPanel,
+      NotePanel,
       GroupProfile,
     },
   data() {

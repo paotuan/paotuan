@@ -8,7 +8,7 @@
       <span>设置 bgm ，bgm 将对全部群员可见</span>
       <el-button @click="sendBgmVisible = true">设置 bgm</el-button>
     </div>
-    <el-button @click="sendInfoText">发送文字信息</el-button>
+    <el-button @click="sendNoteText">发送文字信息</el-button>
     <el-dialog title="设置 bgm" :visible.sync="sendBgmVisible" width="30%">
       <div>设置 bgm，bgm 将对全部群员可见。如多次设置，则会覆盖之前设置的 bgm。</div>
       <div>bgm 链接需符合指定的格式</div>
@@ -90,11 +90,11 @@ export default {
           description: '主持人设置了新的 bgm，快点击右侧【重要信息】面板查看吧',
         }
       })
-      this._sendInfoMessage(message)
+      this._sendNoteMessage(message)
       this.bgmLink = ''
       this.sendBgmVisible = false
     },
-    sendInfoText() {
+    sendNoteText() {
       let msg = this.tim.createTextMessage({
         to: this.groupProfile.groupID,
         conversationType: this.TIM.TYPES.CONV_GROUP,
@@ -103,13 +103,13 @@ export default {
           text: 'lalallalalal'
         }
       })
-      this._sendInfoMessage(msg)
+      this._sendNoteMessage(msg)
     },
-    _sendInfoMessage(message) {
+    _sendNoteMessage(message) {
       this.$store.commit('pushCurrentMessageList', message)
       this.tim.sendMessage(message)
           .then(() => {
-            this.$store.dispatch('handleKPInfo', [message])
+            this.$store.dispatch('handleKPNote', [message])
           })
           .catch(error => {
             this.$store.commit('showMessage', {

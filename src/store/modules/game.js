@@ -67,7 +67,7 @@ const game = {
         context.commit('insertLog', { groupId: msg.to, log })
       })
     },
-    handleKPInfo(context, msglist) {
+    handleKPNote(context, msglist) {
       console.log(msglist)
       // TODO 要考虑没打开群，但是收到了群的消息，没 initGame 的情况
       msglist.filter(msg =>
