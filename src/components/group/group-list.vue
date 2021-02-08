@@ -1,28 +1,28 @@
 <template>
   <div class="list-container">
-    <div class="header-bar">
-      <el-autocomplete
-        :value-key="'groupID'"
-        :debounce="500"
-        size="mini"
-        v-model="groupID"
-        placeholder="输入群ID搜索"
-        :fetch-suggestions="searchGroupByID"
-        class="group-seach-bar"
-        prefix-icon="el-icon-search"
-        :hide-loading="hideSearchLoading"
-        @input="hideSearchLoading = false"
-        @select="applyJoinGroup"
-      ></el-autocomplete>
-      <button title="创建群组" @click="showCreateGroupModel">
-        <i class="tim-icon-add"></i>
-      </button>
-    </div>
+<!--    <div class="header-bar">-->
+<!--      <el-autocomplete-->
+<!--        :value-key="'groupID'"-->
+<!--        :debounce="500"-->
+<!--        size="mini"-->
+<!--        v-model="groupID"-->
+<!--        placeholder="输入群ID搜索"-->
+<!--        :fetch-suggestions="searchGroupByID"-->
+<!--        class="group-seach-bar"-->
+<!--        prefix-icon="el-icon-search"-->
+<!--        :hide-loading="hideSearchLoading"-->
+<!--        @input="hideSearchLoading = false"-->
+<!--        @select="applyJoinGroup"-->
+<!--      ></el-autocomplete>-->
+<!--      <button title="创建群组" @click="showCreateGroupModel">-->
+<!--        <i class="tim-icon-add"></i>-->
+<!--      </button>-->
+<!--    </div>-->
     <div class="group-container">
       <group-item v-for="group in groupList" :key="group.groupID" :group="group" />
-      <el-dialog title="创建群组" :visible="createGroupModelVisible" @close="closeCreateGroupModel" width="30%">
-        <create-group></create-group>
-      </el-dialog>
+<!--      <el-dialog title="创建群组" :visible="createGroupModelVisible" @close="closeCreateGroupModel" width="30%">-->
+<!--        <create-group></create-group>-->
+<!--      </el-dialog>-->
     </div>
   </div>
 </template>

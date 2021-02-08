@@ -47,9 +47,9 @@
 <!--        </el-select>-->
 <!--      </el-form-item>-->
     </el-form>
-    <div slot="footer">
+    <div slot="footer" class="dialog-footer" :style="{ 'text-align': 'right' }">
+      <el-button @click="closeCreateGroupModel">取 消</el-button>
       <el-button type="primary" @click="onSubmit('createGroupForm')">立即创建</el-button>
-      <el-button @click="closeCreateGroupModel">取消</el-button>
     </div>
   </div>
 </template>
