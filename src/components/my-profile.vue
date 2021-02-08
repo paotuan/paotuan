@@ -1,7 +1,7 @@
 <template>
   <div class="my-profile-wrapper">
     <el-dialog title="编辑个人资料" :visible.sync="showEditMyProfile" width="40%">
-      <el-form v-model="form" label-width="100px">
+      <el-form v-model="form" label-width="60px">
         <el-form-item label="头像" class="avatar-edit">
           <el-input v-model="form.avatar" placeholder="头像地址(URL)" />
           <el-button type="primary" @click="useQQAvatar">使用我的QQ头像</el-button>
@@ -22,15 +22,16 @@
         <el-button type="primary" @click="editMyProfile">确 定</el-button>
       </span>
     </el-dialog>
-    <el-popover :width="200" trigger="click" placement="right" class="popover">
-      <profile-card :profile="currentUserProfile" />
-      <i class="el-icon-setting edit-my-profile" @click="handleEdit"></i>
+<!--    <el-popover :width="200" trigger="click" placement="right" class="popover">-->
+<!--      <profile-card :profile="currentUserProfile" />-->
+<!--      <i class="el-icon-setting edit-my-profile" @click="handleEdit"></i>-->
+    <div @click="handleEdit">
       <avatar
-        slot="reference"
-        :src="currentUserProfile.avatar"
-        class="my-avatar"
+          :src="currentUserProfile.avatar"
+          class="my-avatar"
       />
-    </el-popover>
+    </div>
+<!--    </el-popover>-->
   </div>
 </template>
 
