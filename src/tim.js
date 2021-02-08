@@ -33,6 +33,10 @@ export function initTimInstance(appid, secret) {
   tim.registerPlugin({ 'cos-js-sdk': COSSDK })
 }
 
+export function generateShareSig() {
+  return btoa(sdkappid + '/' + sdksecret.split('').reverse().join(''))
+}
+
 // ==========================================================================
 
 const botims = {} // 群id -> 群骰子

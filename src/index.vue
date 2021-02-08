@@ -66,7 +66,7 @@ export default {
   mounted() {
     // 做一些初始化逻辑
     // 1. 提取参数
-    let params = new URLSearchParams(window.location.search)
+    let params = new URLSearchParams(location.hash.startsWith('#/') ? location.hash.substr(2) : '')
     let sig = params.get('s') || Cookies.get('s') // sig 首选 url 里的，次选 cookie 里的
     this.invitedGroup = params.get('g') || '' // 是否是邀请进群的链接
     let userid = Cookies.get('uin') // 是否记住了用户名
@@ -85,6 +85,8 @@ export default {
       // 不能自动登录就保持在登录页面
       this.loading = false
     }
+    // 做完了就把参数去掉，避免污染地址栏
+    location.hash = ''
   },
 
   methods: {

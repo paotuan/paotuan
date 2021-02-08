@@ -2,10 +2,10 @@
   <div>
     <group-member-list :groupProfile="groupProfile" />
     <div class="group-info-content">
-      <div class="info-item">
-        <div class="label">群ID</div>
-        <div class="content">{{ groupProfile.groupID }}</div>
-      </div>
+<!--      <div class="info-item">-->
+<!--        <div class="label">群ID</div>-->
+<!--        <div class="content">{{ groupProfile.groupID }}</div>-->
+<!--      </div>-->
       <div class="info-item">
         <div class="label">
           群头像

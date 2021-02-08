@@ -2,6 +2,7 @@
   <div class="group-member-list-wrapper">
     <div class="header">
       <span class="member-count text-ellipsis">群成员：{{currentConversation.groupProfile.memberCount}}</span>
+      <i class="el-icon-link" title="复制邀请链接" @click="copyInviteLink" />
       <popover v-model="addGroupMemberVisible">
         <add-group-member></add-group-member>
         <div slot="reference" class="btn-add-member" title="添加群成员">
@@ -39,6 +40,8 @@ import { Popover } from 'element-ui'
 import { mapState } from 'vuex'
 import AddGroupMember from './add-group-member.vue'
 import GroupMemberInfo from './group-member-info.vue'
+import { generateShareSig } from '@/tim'
+
 export default {
   data() {
     return {
@@ -81,6 +84,22 @@ export default {
         .dispatch('getGroupMemberList', this.groupProfile.groupID)
         .then(() => {
           this.count += 30
+        })
+    },
+    copyInviteLink() {
+      this.$copyText(`点击链接加入群聊一起玩~\n${location.origin}/#/?s=${generateShareSig()}&g=${this.groupProfile.groupID.replace('@TGS#', '')}`)
+        .then(() => {
+          this.$store.commit('showMessage', {
+            type: 'success',
+            message: '邀请链接复制成功！快发给小伙伴们一起玩吧~'
+          })
+        })
+        .catch((e) => {
+          console.log('copy link error', e)
+          this.$store.commit('showMessage', {
+            type: 'error',
+            message: '邀请链接复制失败'
+          })
         })
     }
   }
@@ -153,6 +172,15 @@ export default {
 //   line-height: 30px;
 // }
 
-
+.el-icon-link
+  width 30px
+  height 30px
+  font-size 28px
+  text-align center
+  line-height 32px
+  cursor pointer
+  float right
+  &:hover
+    color $light-primary
 
 </style>
