@@ -1,16 +1,18 @@
 <template>
-  <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-    <el-tab-pane label="群信息" name="first">
+  <el-tabs :value="currentGame.currentTab" type="card"
+           @input="$store.commit('setCurrentTab', { groupId: currentConversation.groupProfile.groupID, tab: $event })"
+           @tab-click="handleClick">
+    <el-tab-pane label="群信息" name="group">
       <group-profile :groupProfile="currentConversation.groupProfile" />
     </el-tab-pane>
-    <el-tab-pane label="主持人面板" name="second">
+    <el-tab-pane label="主持人面板" name="kp">
       <kp-panel :groupProfile="currentConversation.groupProfile" />
     </el-tab-pane>
-    <el-tab-pane name="third">
-      <el-badge slot="label" is-dot>重要笔记</el-badge>
+    <el-tab-pane name="note">
+      <el-badge slot="label" is-dot :hidden="!currentGame.noteUnread">重要笔记</el-badge>
       <note-panel :group-profile="currentConversation.groupProfile" />
     </el-tab-pane>
-    <el-tab-pane label="Log 录制" name="fourth">
+    <el-tab-pane label="Log 录制" name="log">
       <log-panel :group-profile="currentConversation.groupProfile" />
     </el-tab-pane>
   </el-tabs>
@@ -32,17 +34,22 @@ export default {
     },
   data() {
     return {
-      activeName: 'first'
+      activeName: 'group'
     }
   },
   computed: {
+    // todo provide 给下面
     ...mapState({
-      currentConversation: state => state.conversation.currentConversation
+      currentConversation: state => state.conversation.currentConversation,
+      currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID]
     })
   },
   methods: {
-    handleClick(tab, event) {
-      // console.log(tab, event);
+    handleClick(tab) {
+      // 如果点了笔记 tab 则清除红点
+      if (tab.name === 'note') {
+        this.$store.commit('setNoteUnread', { groupId: this.currentConversation.groupProfile.groupID, unread: false })
+      }
     }
   }
 }

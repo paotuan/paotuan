@@ -3,11 +3,13 @@ import { enableBot, disableBot } from '@/tim'
 import TIM from '@/sdk'
 
 const gamePrototype = {
-  botEnabled: false,
-  logEnabled: false,
+  currentTab: 'group', // 当前打开的 tab，默认是群信息 tab
+  botEnabled: false, // 是否打开骰子开关
+  logEnabled: false, // 是否打开日志记录开关
   logs: [], // id\from\nick\time\content 不记录全部的 tim msg 属性
   bgm: {}, // platform\type\id 平台、类型（单曲、专辑）、歌曲 id
   notes: [], // id\type\payload 主持人笔记
+  noteUnread: false, // 是否有未读的笔记
 }
 
 const game = {
@@ -41,6 +43,12 @@ const game = {
       // TODO action 里可以存 localstorage
       state.list[groupId].notes = notes
     },
+    setNoteUnread(state, { groupId, unread }) {
+      state.list[groupId].noteUnread = unread
+    },
+    setCurrentTab(state, { groupId, tab }) {
+      state.list[groupId].currentTab = tab
+    }
   },
   actions: {
     initGame(context, groupId) {
@@ -82,20 +90,29 @@ const game = {
           const data = JSON.parse(msg.payload.data)
           if (data.mtype === 'bgm') {
             context.commit('setGameBgm', { groupId: msg.to, bgm: data.mdata })
+            context.dispatch('handleNoteUnread', msg.to)
           }
         } else if (msg.type === TIM.TYPES.MSG_TEXT) {
           context.commit('addNote', {
             groupId: msg.to,
             note: { id: msg.ID, type: msg.type, payload: msg.payload.text }
           })
+          context.dispatch('handleNoteUnread', msg.to)
         } else if (msg.type === TIM.TYPES.MSG_IMAGE) {
           context.commit('addNote', {
             groupId: msg.to,
             note: { id: msg.ID, type: msg.type, payload: msg.payload.imageInfoArray[0].url }
           })
+          context.dispatch('handleNoteUnread', msg.to)
         }
       })
     },
+    handleNoteUnread(context, groupId) {
+      // 为 note 增加红点，如果用户当前停留在 note tab 则不增加
+      if (context.state.list[groupId].currentTab !== 'note') {
+        context.commit('setNoteUnread', { groupId, unread: true })
+      }
+    }
   }
 }
 

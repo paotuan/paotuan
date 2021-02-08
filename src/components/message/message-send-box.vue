@@ -572,7 +572,6 @@ export default {
       // 发消息接口收敛，为了记录 log
       return this.tim.sendMessage(message).then(resp => {
         this.$store.dispatch('insertGameLogs', [message])
-        this.$store.dispatch('handleKPNote', [message]) // TODO 这里应该是不需要的，因为 kpinfo 都不在这里发
         return resp
       })
     }
