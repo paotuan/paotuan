@@ -24,7 +24,7 @@ const game = {
     list: {} // groupId => game
   },
   mutations: {
-    initGame(state, groupId) { // 是否不需要了
+    initGame(state, groupId) {
       Vue.set(state.list, groupId, JSON.parse(JSON.stringify(gamePrototype)))
     },
     toggleBotEnabled(state, { groupId, enabled }) {
@@ -88,8 +88,6 @@ const game = {
       })
     },
     handleKPNote(context, msglist) {
-      console.log(msglist)
-      // TODO 要考虑没打开群，但是收到了群的消息，没 initGame 的情况
       msglist.filter(msg =>
           msg.conversationType === TIM.TYPES.CONV_GROUP
           && msg.priority === TIM.TYPES.MSG_PRIORITY_HIGH

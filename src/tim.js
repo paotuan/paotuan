@@ -54,6 +54,7 @@ export function enableBot(groupId) {
           console.log('登录成功')
 
           // 判断是否加群，先让它加群
+          // 这个接口倒不用在 sdk ready 后调用？否则写起来麻烦一点 TODO 后面最好还是改一下严谨起见
           bot.joinGroup({ groupID: groupId })
               .then(resp => resolve(resp.data))
               .catch(e => reject(e))
@@ -71,6 +72,7 @@ export function disableBot(groupId) {
   // 如果本来 bot 就没被启用，那没事了
   if (!botims[groupId]) return new Promise(resolve => resolve())
 
+  // 目前是退出登录，也可以还是在线但是不处理消息
   return botims[groupId].logout()
 }
 
@@ -89,9 +91,17 @@ function initBotimInstance(groupId) {
   bot.on(TIM.EVENT.SDK_NOT_READY, () => console.log('sdk not ready'))
   bot.on(TIM.EVENT.ERROR, e => console.log(e.data))
   bot.on(TIM.EVENT.KICKED_OUT, e => {
+    // TODO 给用户提示
     console.log('sdk kick reason ' + e.data.type)
   })
-  bot.on(TIM.EVENT.SDK_READY, () => console.log('sdk ready'))
+  bot.on(TIM.EVENT.SDK_READY, () => {
+    console.log('sdk ready')
+    // 把自己的昵称改为 bot，也不做重复判断了，实际应该不会有人一直无聊开开关关
+    // 也不等待成功了，失败也无所谓
+    // 如果用户想自定义 bot 的名字，可以改它的群名片
+    // 注意要在 sdk ready 后调用
+    bot.updateMyProfile({ nick: 'bot' })
+  })
   bot.on(TIM.EVENT.MESSAGE_RECEIVED, function (event) {
     event.data.forEach(msg => handleMessage(bot, msg))
   })
