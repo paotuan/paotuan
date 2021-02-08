@@ -34,7 +34,7 @@
         ></div>
       </div>
       <div class="bottom">
-        <div class="iconfont icon-tuichu" @click="$store.dispatch('logout')" title="退出"></div>
+        <div class="iconfont icon-tuichu" @click="handleExit" title="退出"></div>
       </div>
     </div>
     <div class="bar-right">
@@ -48,7 +48,6 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import MyProfile from '../my-profile'
 import ConversationList from '../conversation/conversation-list'
 import GroupList from '../group/group-list'
 import FriendList from '../friend/friend-list'
@@ -63,7 +62,6 @@ const activeName = {
 export default {
   name: 'SideBar',
   components: {
-    MyProfile,
     ConversationList,
     GroupList,
     FriendList,
@@ -171,6 +169,12 @@ export default {
           })
         })
     },
+    handleExit() {
+      this.$confirm('确定要退出登录吗？')
+          .then(() => {
+            this.$store.dispatch('logout')
+          })
+    }
   }
 }
 </script>
