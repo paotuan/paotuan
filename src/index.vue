@@ -148,8 +148,29 @@ export default {
               })
             })
         this.$store.dispatch('getBlacklist')
-        // TODO 判断要不要自动加群
-        this.loading = false
+
+        // 判断要不要自动加群
+        if (this.invitedGroup) {
+          this.tim.joinGroup({ groupID: '@TGS#' + this.invitedGroup })
+            .then(() => { // TODO 是否需要判断已经在群内
+              this.$store.commit('showMessage', {
+                type: 'success',
+                message: '邀请入群成功'
+              })
+            })
+            .catch((e) => {
+              console.log('invited failed', e)
+              this.$store.commit('showMessage', {
+                type: 'error',
+                message: '邀请入群失败'
+              })
+            })
+            .finally(() => {
+              this.loading = false
+            })
+        } else {
+          this.loading = false
+        }
       }
     },
     kickedOutReason(type) {
