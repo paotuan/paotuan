@@ -24,7 +24,6 @@
         type="primary"
         @click="submit"
         style="width:100%; margin-top: 6px;"
-        :loading="loading"
     >登录
     </el-button>
   </div>
@@ -32,6 +31,7 @@
 <script>
 import { Form, FormItem } from 'element-ui'
 import logo from '../../assets/image/logo.png'
+import Cookies from 'js-cookie'
 
 export default {
   name: 'Login',
@@ -39,7 +39,7 @@ export default {
     ElForm: Form,
     ElFormItem: FormItem,
   },
-  props: ['loading'],
+  props: ['initialAppid', 'initialSecret'],
   data() {
     const checkUserID = (rule, value, callback) => {
       if (!/^[a-zA-Z0-9_]{3,23}$/.test(value)) {
@@ -51,9 +51,9 @@ export default {
 
     return {
       form: {
-        appid: 1400294749,
-        secret: '29e433950484389c3050ede42055dce934c0a335a87494495008794d740b8e48',
-        userID: '410155683',
+        appid: this.initialAppid,
+        secret: this.initialSecret,
+        userID: Cookies.get('uin'),
       },
       rules: {
         userID: [

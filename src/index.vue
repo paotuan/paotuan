@@ -1,27 +1,23 @@
 <template>
-  <div class="container">
+  <div
+      class="container"
+      v-loading="loading"
+      element-loading-text="正在拼命初始化..."
+      element-loading-background="rgba(0, 0, 0, 0.8)">
     <div id="wrapper" v-if="!isLogin">
-      <login :loading="loginBtnLoading" @submit="doLogin"/>
+      <login :key="initialAppid" :initial-appid="initialAppid" :initial-secret="initialSecret" @submit="doLogin"/>
     </div>
-    <div
-        class="loading"
-        v-else
-        v-loading="showLoading"
-        element-loading-text="正在拼命初始化..."
-        element-loading-background="rgba(0, 0, 0, 0.8)"
-    >
-      <div class="chat-wrapper">
-        <el-row>
-          <el-col :span="5">
-            <side-bar/>
-          </el-col>
-          <el-col :span="19">
-            <current-conversation/>
-          </el-col>
-        </el-row>
-      </div>
-      <image-previewer/>
+    <div v-else class="chat-wrapper">
+      <el-row>
+        <el-col :span="5">
+          <side-bar/>
+        </el-col>
+        <el-col :span="19">
+          <current-conversation/>
+        </el-col>
+      </el-row>
     </div>
+    <image-previewer/>
     <div class="bg"></div>
   </div>
 </template>
@@ -35,12 +31,16 @@ import Login from './components/user/login'
 import ImagePreviewer from './components/message/image-previewer.vue'
 import { translateGroupSystemNotice } from './utils/common'
 import { initTimInstance } from '@/tim'
+import Cookies from 'js-cookie'
 
 export default {
   title: 'paotuan',
   data() {
     return {
-      loginBtnLoading: false
+      loading: true, // 初始化过程中
+      initialAppid: '',
+      initialSecret: '',
+      invitedGroup: '', // 被邀请进群的 id
     }
   },
   components: {
@@ -62,13 +62,29 @@ export default {
       userSig: state => state.user.userSig,
       sdkAppID: state => state.user.sdkAppID
     }),
-    // 是否显示 Loading 状态
-    showLoading() {
-      return !this.isSDKReady
-    }
   },
   mounted() {
-
+    // 做一些初始化逻辑
+    // 1. 提取参数
+    let params = new URLSearchParams(window.location.search)
+    let sig = params.get('s') || Cookies.get('s') // sig 首选 url 里的，次选 cookie 里的
+    this.invitedGroup = params.get('g') || '' // 是否是邀请进群的链接
+    let userid = Cookies.get('uin') // 是否记住了用户名
+    try {
+      // MTQwMDI5NDc0OS84NGU4YjA0N2Q0OTc4MDA1OTQ0OTQ3OGE1MzNhMGM0MzllY2Q1NTAyNGVkZTA1MDNjOTgzNDg0MDU5MzM0ZTky
+      [this.initialAppid, this.initialSecret] = atob(sig).split('/').map((value, index) => {
+        return index === 0 ? value : value.split('').reverse().join('')
+      })
+    } catch (e) {
+      console.log('invalid sig', sig, e)
+    }
+    // 2. 判断是否能自动登录，3个参数俱全都可以
+    if (this.initialAppid && this.initialSecret && userid) {
+      this.doLogin({ appid: this.initialAppid, secret: this.initialSecret, userID: userid })
+    } else {
+      // 不能自动登录就保持在登录页面
+      this.loading = false
+    }
   },
 
   methods: {
@@ -132,6 +148,8 @@ export default {
               })
             })
         this.$store.dispatch('getBlacklist')
+        // TODO 判断要不要自动加群
+        this.loading = false
       }
     },
     kickedOutReason(type) {
@@ -296,17 +314,19 @@ export default {
      * 登录
      */
     doLogin({ appid, secret, userID }) {
-      this.loginBtnLoading = true
       // 1. 根据提供的 appid 初始化 tim 实例
       initTimInstance(appid, secret)
       // 2. 初始化实例以后，设置监听器
       this.initListener()
       // 3. 正式发起登录 TODO 不要放在window
-      const userSig = window.genTestUserSig(userID, appid, secret).userSig
-      this.tim
+      const numappid = Number(appid)
+      // 参数校验，之所以放在这里而不是表单的 validate，是因为自动登录逻辑不走表单
+      if (numappid > 0) {
+        this.loading = true
+        const userSig = window.genTestUserSig(userID, numappid, secret).userSig
+        this.tim
           .login({ userID, userSig })
           .then(() => {
-            this.loginBtnLoading = false
             this.$store.commit('toggleIsLogin', true)
             this.$store.commit('startComputeCurrent')
             this.$store.commit({
@@ -319,15 +339,23 @@ export default {
               type: 'success',
               message: '登录成功'
             })
-            // TODO 写 cookie
+            // 写 cookie
+            Cookies.set('s', btoa(appid + '/' + secret.split('').reverse().join('')), { expires: 7 })
+            Cookies.set('uin', userID, { expires: 7 })
           })
           .catch(error => {
-            this.loginBtnLoading = false
+            this.loading = false
             this.$store.commit('showMessage', {
               message: '登录失败：' + error.message,
               type: 'error'
             })
           })
+      } else {
+        this.$store.commit('showMessage', {
+          message: '登录失败：参数不合法',
+          type: 'error'
+        })
+      }
     }
   }
 }
