@@ -1,9 +1,10 @@
 <template>
   <div class="my-profile-wrapper">
-    <el-dialog title="编辑个人资料" :visible.sync="showEditMyProfile" width="30%">
+    <el-dialog title="编辑个人资料" :visible.sync="showEditMyProfile" width="40%">
       <el-form v-model="form" label-width="100px">
-        <el-form-item label="头像">
+        <el-form-item label="头像" class="avatar-edit">
           <el-input v-model="form.avatar" placeholder="头像地址(URL)" />
+          <el-button type="primary" @click="useQQAvatar">使用我的QQ头像</el-button>
         </el-form-item>
         <el-form-item label="昵称">
           <el-input v-model="form.nick" placeholder="昵称" />
@@ -55,6 +56,7 @@ export default {
   },
   computed: {
     ...mapState({
+      currentUserId: state => state.user.userID,
       currentUserProfile: state => state.user.currentUserProfile,
       currentConversation: state => state.conversation.currentConversation
     }),
@@ -105,6 +107,9 @@ export default {
       const { avatar, nick, gender } = this.currentUserProfile
       Object.assign(this.form, { avatar, nick, gender })
       this.showEditMyProfile = true
+    },
+    useQQAvatar() {
+      this.form.avatar = `https://q.qlogo.cn/g?b=qq&nk=${this.currentUserId}&s=100`
     }
   }
 }
@@ -132,4 +137,12 @@ export default {
   top 10px
   right 10px
   cursor pointer
+
+.avatar-edit ::v-deep .el-form-item__content {
+  display flex
+}
+
+.avatar-edit ::v-deep .el-button {
+  margin-left 10px
+}
 </style>
