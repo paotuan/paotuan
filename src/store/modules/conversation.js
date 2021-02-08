@@ -171,7 +171,7 @@ const conversationModules = {
         // 更新当前消息列表，从头部插入
         context.state.currentMessageList = [...imReponse.data.messageList, ...currentMessageList]
         filterCallingMessage(context.state.currentMessageList)
-
+        // TODO 拉漫游消息后也要处理一些业务逻辑？看有没有需求吧，目前涉及到的 note 和 log 都会存 localstorage
       })
     },
     /**
