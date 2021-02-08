@@ -10,6 +10,7 @@
     <div v-else class="chat-wrapper">
       <el-row>
         <el-col :span="5">
+          <profile-bar/>
           <side-bar/>
         </el-col>
         <el-col :span="19">
@@ -27,6 +28,7 @@ import { Notification } from 'element-ui'
 import { mapState } from 'vuex'
 import CurrentConversation from './components/conversation/current-conversation'
 import SideBar from './components/layout/side-bar'
+import ProfileBar from './components/layout/profile-bar'
 import Login from './components/user/login'
 import ImagePreviewer from './components/message/image-previewer.vue'
 import { translateGroupSystemNotice } from './utils/common'
@@ -48,6 +50,7 @@ export default {
     SideBar,
     CurrentConversation,
     ImagePreviewer,
+    ProfileBar,
   },
   computed: {
     ...mapState({
@@ -419,10 +422,6 @@ body {
   flex-direction: column;
   padding-top: 60px;
 }
-
-.container
-  position relative
-  height 100vh
 
 .container
   position relative

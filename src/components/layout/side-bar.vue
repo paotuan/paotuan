@@ -1,7 +1,7 @@
 <template>
   <div class="side-bar-wrapper">
     <div class="bar-left">
-      <my-profile />
+<!--      <my-profile />-->
       <div class="tab-items" @click="handleClick">
         <div
           id="conversation-list"
@@ -177,7 +177,7 @@ export default {
 
 <style lang="stylus" scoped>
 .side-bar-wrapper {
-  height: 100%;
+  height: calc(100vh - 80px); // 不能用 $height 因为是 stylus 变量
   color: $black;
   display: flex;
   width: 100%;
@@ -188,7 +188,7 @@ export default {
     flex-shrink: 0;
     flex-direction: column;
     width: 80px;
-    height: $height;
+    height: 100%;
     background-color: $background-deep-dark;
 
     .tab-items {
@@ -286,7 +286,7 @@ export default {
     flex: 1 1 auto;
     width: 100%;
     min-width: 0;
-    height: $height;
+    height: 100%;
     position: relative;
     background-color: $background-dark;
   }
