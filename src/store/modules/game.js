@@ -12,42 +12,49 @@ const gamePrototype = {
   noteUnread: false, // 是否有未读的笔记
 }
 
+const _ = (groupId) => {
+  if (!game.state.list[groupId]) {
+    Vue.set(game.state.list, groupId, JSON.parse(JSON.stringify(gamePrototype)))
+  }
+  return game.state.list[groupId]
+}
+
 const game = {
   state: {
     list: {} // groupId => game
   },
   mutations: {
-    initGame(state, groupId) {
+    initGame(state, groupId) { // 是否不需要了
       Vue.set(state.list, groupId, JSON.parse(JSON.stringify(gamePrototype)))
     },
     toggleBotEnabled(state, { groupId, enabled }) {
-      state.list[groupId].botEnabled = enabled
+      _(groupId).botEnabled = enabled
     },
     toggleLogEnabled(state, { groupId, enabled }) {
-      state.list[groupId].logEnabled = enabled
+      _(groupId).logEnabled = enabled
     },
     insertLog(state, { groupId, log }) {
-      state.list[groupId].logs.push(log)
+      _(groupId).logs.push(log)
     },
     updateLogs(state, { groupId, logs }) {
       // TODO action 里可以存 localstorage
-      state.list[groupId].logs = logs
+      _(groupId).logs = logs
     },
     setGameBgm(state, { groupId, bgm }) {
-      state.list[groupId].bgm = bgm
+      _(groupId).bgm = bgm
     },
     addNote(state, { groupId, note }) {
-      state.list[groupId].notes.push(note)
+      _(groupId).notes.push(note)
     },
     updateNotes(state, { groupId, notes }) {
       // TODO action 里可以存 localstorage
-      state.list[groupId].notes = notes
+      _(groupId).notes = notes
     },
     setNoteUnread(state, { groupId, unread }) {
-      state.list[groupId].noteUnread = unread
+      _(groupId).noteUnread = unread
     },
     setCurrentTab(state, { groupId, tab }) {
-      state.list[groupId].currentTab = tab
+      _(groupId).currentTab = tab
     }
   },
   actions: {
@@ -67,6 +74,7 @@ const game = {
       msglist.filter(msg =>
           msg.conversationType === TIM.TYPES.CONV_GROUP
           && msg.type === TIM.TYPES.MSG_TEXT
+          && context.state.list[msg.to]
           && context.state.list[msg.to].logEnabled
       ).forEach(msg => {
         const log = {
@@ -109,7 +117,7 @@ const game = {
     },
     handleNoteUnread(context, groupId) {
       // 为 note 增加红点，如果用户当前停留在 note tab 则不增加
-      if (context.state.list[groupId].currentTab !== 'note') {
+      if (_(groupId).currentTab !== 'note') {
         context.commit('setNoteUnread', { groupId, unread: true })
       }
     }
