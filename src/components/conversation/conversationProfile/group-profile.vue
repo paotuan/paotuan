@@ -9,6 +9,9 @@
       <div class="info-item">
         <div class="label">
           群头像
+        </div>
+        <div class="content" v-if="!showEditFaceUrl">
+          <avatar :src="groupProfile.avatar"/>
           <i
               class="el-icon-edit"
               v-if="editable"
@@ -18,9 +21,6 @@
           "
               style="cursor:pointer; font-size:16px;"
           />
-        </div>
-        <div class="content" v-if="!showEditFaceUrl">
-          <avatar :src="groupProfile.avatar"/>
         </div>
         <el-input
             ref="editFaceUrl"
@@ -40,20 +40,25 @@
       <div class="info-item">
         <div class="label">
           群名称
-          <i
-              class="el-icon-edit"
-              v-if="editable"
-              @click="
+        </div>
+
+        <div class="content text-ellipsis" :title="groupProfile.name" v-if="!showEditName"
+             @click="
             showEditName = true
             inputFocus('editName')
           "
-              style="cursor:pointer; font-size:16px;"
-          />
-        </div>
-
-        <div class="content text-ellipsis" :title="groupProfile.name" v-if="!showEditName">
+        >
           {{ groupProfile.name || '暂无' }}
         </div>
+<!--        <i-->
+<!--            class="el-icon-edit"-->
+<!--            v-if="editable"-->
+<!--            @click="-->
+<!--            showEditName = true-->
+<!--            inputFocus('editName')-->
+<!--          "-->
+<!--            style="cursor:pointer; font-size:16px;"-->
+<!--        />-->
         <el-input
             ref="editName"
             v-else
@@ -62,6 +67,7 @@
             size="mini"
             @blur="showEditName = false"
             @keydown.enter.native="editName"
+            style="width: 50%"
         />
       </div>
 <!--      <div class="info-item">-->
@@ -202,7 +208,7 @@
           @keydown.enter.native="editNameCard"
         />
       </div>
-      <div class="info-item">
+      <div class="info-item last">
         <div class="label" :class="{'active' : active}">全体禁言</div>
         <el-switch
                 v-model="muteAllMembers"
@@ -552,18 +558,33 @@ export default {
     width 40px
     height 40px
     border-radius 50%
+    margin -10px 0
 .info-item {
-  margin-bottom: 12px;
+  margin: 0 10px
+  padding 15px 0
+  border-top 1px solid #DCDFE6
+  display flex
+  align-items center
+  justify-content space-between
+
+  &.last {
+    border-bottom 1px solid #DCDFE6
+  }
+
+  .el-switch {
+    margin -1px 0
+  }
 
   .label {
     font-size: 14px;
-    color: $secondary;
+    color: $base;
   }
   .active {
-    color: $black
+    color: $base
   }
   .content {
-    color: $background;
+    color: $regular;
+    font-size 14px
     word-wrap: break-word;
     word-break: break-all;
   }
@@ -576,6 +597,7 @@ export default {
     -webkit-line-clamp: 3;
   }
 }
+
 .cursor-pointer {
   cursor: pointer;
 }

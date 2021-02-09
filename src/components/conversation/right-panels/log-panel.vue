@@ -7,6 +7,12 @@
           @input="$store.commit('toggleLogEnabled', { groupId: groupProfile.groupID, enabled: $event })"
       />
     </div>
+    <el-button-group>
+      <el-button size="small">导出为文本</el-button>
+      <el-button size="small">导出为HTML</el-button>
+      <el-button size="small">导出为JSON</el-button>
+      <el-button type="danger" size="small">清空</el-button>
+    </el-button-group>
     <draggable
         handle=".handle"
         ghost-class="moving"
