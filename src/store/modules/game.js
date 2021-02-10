@@ -84,6 +84,9 @@ const game = {
           time: msg.time,
           content: msg.payload.text,
         }
+        if (log.content.startsWith('.') || log.content.startsWith('。')) {
+          return // 这里默认过滤了骰子指令，后续可以考虑做成配置项
+        }
         context.commit('insertLog', { groupId: msg.to, log })
       })
     },
