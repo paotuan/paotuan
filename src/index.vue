@@ -405,7 +405,7 @@ body {
   font-family: 'Microsoft YaHei', '微软雅黑', 'MicrosoftJhengHei', 'Lantinghei SC', 'Open Sans', Arial, 'Hiragino Sans GB', 'STHeiti', 'WenQuanYi Micro Hei', SimSun, sans-serif;
   // font-family  "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif
   // text-shadow: $regular 0 0 0.05em
-  background-color: rgb(49, 56, 64);
+  background-color: rgb(48, 56, 65);
   -ms-scroll-chaining: chained;
   -ms-overflow-style: none;
   -ms-content-zooming: zoom;

@@ -31,7 +31,7 @@
 </template>
 <script>
 import { Form, FormItem } from 'element-ui'
-import logo from '../../assets/image/logo.jpg'
+import logo from '../../assets/image/logo.png'
 import Cookies from 'js-cookie'
 
 export default {
