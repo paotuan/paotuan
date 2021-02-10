@@ -14,10 +14,10 @@
         <el-input v-model="form.appid" placeholder="请输入APPID" type="text" clearable/>
       </el-form-item>
       <el-form-item prop="secret">
-        <el-input v-model="form.secret" placeholder="请输入secret" type="text" clearable/>
+        <el-input v-model="form.secret" placeholder="请输入secret" show-password/>
       </el-form-item>
       <el-form-item prop="userID">
-        <el-input v-model="form.userID" placeholder="请输入用户名，推荐QQ号" type="text" clearable/>
+        <el-input v-model="form.userID" placeholder="请输入QQ号，请勿冒用" type="text" clearable/>
       </el-form-item>
     </el-form>
     <el-button
@@ -42,8 +42,8 @@ export default {
   props: ['initialAppid', 'initialSecret'],
   data() {
     const checkUserID = (rule, value, callback) => {
-      if (!/^[a-zA-Z0-9_]{3,23}$/.test(value)) {
-        callback(new Error('不合法（字母开头+字母/数字，长度4-24)'))
+      if (!/^[0-9]{5,15}$/.test(value)) {
+        callback(new Error('格式不正确'))
       } else {
         callback()
       }
@@ -57,7 +57,7 @@ export default {
       },
       rules: {
         userID: [
-          { required: true, message: '请输入 userID', trigger: 'blur' },
+          { required: true, message: '请输入 QQ', trigger: 'blur' },
           { validator: checkUserID, trigger: 'blur' }
         ],
         appid: [{ required: true, message: '请输入 APPID', trigger: 'blur' }],
@@ -125,6 +125,7 @@ export default {
   color: $black;
   border-radius: 5px;
   box-shadow: 0 11px 20px 0 rgba(0, 0, 0, 0.3);
+  margin-top -300px
 
   .logo {
     width: 130px;

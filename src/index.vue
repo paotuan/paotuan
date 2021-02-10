@@ -19,7 +19,7 @@
       </el-row>
     </div>
     <image-previewer/>
-    <div class="bg"></div>
+<!--    <div class="bg"></div>-->
   </div>
 </template>
 
@@ -74,7 +74,6 @@ export default {
     this.invitedGroup = params.get('g') || '' // 是否是邀请进群的链接
     let userid = Cookies.get('uin') // 是否记住了用户名
     try {
-      // MTQwMDI5NDc0OS84NGU4YjA0N2Q0OTc4MDA1OTQ0OTQ3OGE1MzNhMGM0MzllY2Q1NTAyNGVkZTA1MDNjOTgzNDg0MDU5MzM0ZTky
       [this.initialAppid, this.initialSecret] = atob(sig).split('/').map((value, index) => {
         return index === 0 ? value : value.split('').reverse().join('')
       })
@@ -420,25 +419,12 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding-top: 60px;
+  height $height
 }
 
 .container
   position relative
   height 100vh
-
-// TODO filter mac chrome 会有问题，下次修改可以去掉
-.bg {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  background: url('~@/./assets/image/bg.jpg') no-repeat 0 0;
-  background-size: cover;
-  // filter blur(67px)
-}
 
 .loading {
   height: 100vh;
