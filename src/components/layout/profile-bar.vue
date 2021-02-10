@@ -2,7 +2,7 @@
   <div class="profile-container">
     <my-profile />
     <div class="base-info">
-      <div class="nick">{{ currentUserProfile.nick }}</div>
+      <div class="nick">{{ currentUserProfile.nick || currentUserProfile.userID }}</div>
       <div class="uid">{{ currentUserProfile.userID }}</div>
     </div>
     <div class="header-bar">
