@@ -1,7 +1,7 @@
 <template>
   <div class="group-member-list-wrapper">
     <div class="header">
-      <span class="member-count text-ellipsis">群成员：{{currentConversation.groupProfile.memberCount}}</span>
+      <span class="member-count text-ellipsis">群成员：{{members.length}}</span>
       <i class="el-icon-link" title="复制邀请链接" @click="copyInviteLink" />
       <!-- sdk 限制公开群不能邀请入群，只能申请加群 -->
 <!--      <popover v-model="addGroupMemberVisible">-->
@@ -142,7 +142,7 @@ export default {
         })
     },
     copyInviteLink() {
-      this.$copyText(`点击链接加入群聊一起玩~\n${location.origin}/#/?s=${generateShareSig()}&g=${this.groupProfile.groupID.replace('@TGS#', '')}`)
+      this.$copyText(`${location.origin}/#/?s=${generateShareSig()}&g=${this.groupProfile.groupID.replace('@TGS#', '')}&d=\n点击链接加入群聊一起玩~`)
         .then(() => {
           this.$store.commit('showMessage', {
             type: 'success',

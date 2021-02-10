@@ -118,6 +118,7 @@ export default {
     onReceiveMessage({ data: messageList }) {
       // this.handleVideoMessage(messageList)
       this.handleAt(messageList)
+      this.handleAddGroupTip(messageList)
       this.handleQuitGroupTip(messageList)
       // this.handleCloseGroupLive(messageList)
       this.$store.commit('pushCurrentMessageList', messageList)
@@ -313,6 +314,17 @@ export default {
         window.focus()
         this.$store.dispatch('checkoutConversation', message.conversationID)
         notification.close()
+      }
+    },
+    // 收到有群成员加群通知时，重新拉一把群资料，否则群成员面板不会实时更新
+    handleAddGroupTip(messageList) {
+      const groupTips = messageList.filter(message => {
+        return this.currentConversation.conversationID === message.conversationID &&
+            message.type === this.TIM.TYPES.MSG_GRP_TIP &&
+            message.payload.operationType === this.TIM.TYPES.GRP_TIP_MBR_JOIN
+      })
+      if (groupTips.length > 0) {
+        this.$store.dispatch('getGroupMemberList', this.currentConversation.conversationID.replace('GROUP', ''))
       }
     },
     /**
