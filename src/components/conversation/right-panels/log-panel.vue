@@ -83,8 +83,8 @@ export default {
       this.$store.commit('updateLogs', { groupId: this.groupProfile.groupID, logs: [] })
     },
     exportText() {
-      let lastUser = '';      // 上一个说话人，用于合并会话
-      let result = '';    // 最终结果
+      let lastUser = ''      // 上一个说话人，用于合并会话
+      let result = ''   // 最终结果
       this.currentGame.logs.forEach(log => {
         let user = log.nick || log.from
         if (user !== lastUser) {
@@ -96,8 +96,8 @@ export default {
       this.download('text', result)
     },
     exportHTML() {
-      let lastUser = '';      // 上一个说话人，用于合并会话
-      let result = '';    // 最终结果
+      let lastUser = ''      // 上一个说话人，用于合并会话
+      let result = ''   // 最终结果
       this.currentGame.logs.forEach(log => {
         let user = log.nick || log.from
         if (user !== lastUser) {

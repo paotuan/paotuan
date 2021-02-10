@@ -80,7 +80,7 @@ const game = {
         const log = {
           id: msg.ID,
           from: msg.from,
-          nick: msg.nick,
+          nick: msg.nameCard || msg.nick,
           time: msg.time,
           content: msg.payload.text,
         }
