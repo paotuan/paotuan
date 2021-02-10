@@ -6,6 +6,7 @@
       element-loading-background="rgba(0, 0, 0, 0.8)">
     <div id="wrapper" v-if="!isLogin">
       <login :key="initialAppid" :initial-appid="initialAppid" :initial-secret="initialSecret" @submit="doLogin"/>
+      <div class="meta">意见/建议可移步 <a href="https://github.com/paotuan/paotuan/issues" target="_blank">Github</a>，或加交流群：115699014</div>
     </div>
     <div v-else class="chat-wrapper">
       <el-row>
@@ -385,7 +386,18 @@ export default {
   }
 }
 </script>
+<style scoped>
+.meta {
+  position: absolute;
+  bottom: 10px;
+  color: rgb(243, 243, 243);
+  font-size: 14px;
+}
 
+a, a:visited {
+  color: rgb(243, 243, 243);
+}
+</style>
 <style lang="stylus">
 body {
   overflow: hidden;

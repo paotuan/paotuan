@@ -21,7 +21,8 @@
       </el-form-item>
     </el-form>
     <el-button
-        type="primary"
+        plain
+        type="info"
         @click="submit"
         style="width:100%; margin-top: 6px;"
     >登录
@@ -106,5 +107,9 @@ export default {
   .user-selector {
     width: 100%;
   }
+}
+
+.el-button {
+  margin-top 30px !important
 }
 </style>
