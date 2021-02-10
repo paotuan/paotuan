@@ -46,7 +46,7 @@
                                placement="top" trigger="click" @confirm="kickoutGroupMember(member.userID)">
                   <el-button slot="reference" class="action-btn" title="踢出群聊" type="danger" icon="el-icon-delete" size="mini" circle/>
                 </el-popconfirm>
-                <div class="coc-card">
+                <div class="coc-card" :class="{ isBot: member.userID.startsWith('bot') }">
                   <div>
                     <el-button type="text" size="mini" @click="waitForSoon">查看人物卡</el-button>
                   </div>
@@ -284,6 +284,8 @@ export default {
         margin-left 10px
       .coc-card
         margin-left 20px
+        &.isBot
+          visibility hidden
   .more
     padding 0 20px
     border-bottom 1px solid $border-base
