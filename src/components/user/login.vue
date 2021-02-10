@@ -2,21 +2,21 @@
   <div class="login-wrapper">
     <img class="logo" :src="logo"/>
     <el-form
+        label-position="left" label-width="80px"
         ref="login"
         :rules="rules"
         :model="form"
-        label-width="0"
         style="width:100%;"
         @keydown.enter.native="submit"
     >
       <!-- 线上版本登录方式 -->
-      <el-form-item prop="appid">
+      <el-form-item label="APPID" prop="appid">
         <el-input v-model="form.appid" placeholder="请输入APPID" type="text" clearable/>
       </el-form-item>
-      <el-form-item prop="secret">
+      <el-form-item label="Secret" prop="secret">
         <el-input v-model="form.secret" placeholder="请输入secret" show-password/>
       </el-form-item>
-      <el-form-item prop="userID">
+      <el-form-item label="QQ" prop="userID">
         <el-input v-model="form.userID" placeholder="请输入QQ号，请勿冒用" type="text" clearable/>
       </el-form-item>
     </el-form>
@@ -30,7 +30,7 @@
 </template>
 <script>
 import { Form, FormItem } from 'element-ui'
-import logo from '../../assets/image/logo.png'
+import logo from '../../assets/image/logo.jpg'
 import Cookies from 'js-cookie'
 
 export default {
@@ -79,57 +79,23 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.login-wrapper
-  display flex
-  align-items center
-  flex-direction column
-  width 450px
-  background $white
-  color $black
-  border-radius 5px
-  box-shadow: 0 11px 20px 0 rgba(0, 0, 0, 0.3)
-
-  .row-div
-    display flex
-    justify-content center
-    align-items center
-    flex-direction row
-
-  .logo
-    width 110px
-    height 110px
-
-  .loginBox
-    width 320px
-    margin 0 0 20px 0
-
-    .send-code
-      width 112px
-
-    .login-im-btn
-      width 100%
-
-  .loginFooter
-    color: #8c8a8ac7
-    text-align: center
-    padding: 0 0 20px 0
-    cursor: pointer
-
 .login-wrapper {
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 400px;
+  width: 500px;
   padding: 20px 80px 50px;
-  background: $white;
   color: $black;
-  border-radius: 5px;
-  box-shadow: 0 11px 20px 0 rgba(0, 0, 0, 0.3);
-  margin-top -300px
+  margin-top -200px
+
+  ::v-deep .el-form-item__label {
+    color rgb(243, 243, 243)
+    font-weight 500
+  }
 
   .logo {
-    width: 130px;
-    height: 130px;
+    /*height 400px*/
+    width 50vw
   }
 
   .register-button {
