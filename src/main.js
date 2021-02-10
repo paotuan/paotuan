@@ -18,6 +18,7 @@ import {
   Alert,
   Card,
   ButtonGroup,
+  Switch,
 } from 'element-ui'
 import Avatar from './components/avatar.vue'
 import Index from './index.vue'
@@ -52,6 +53,7 @@ Vue.use(Badge)
 Vue.use(Alert)
 Vue.use(Card)
 Vue.use(ButtonGroup)
+Vue.use(Switch)
 Vue.component('avatar', Avatar)
 new Vue({
   render: h => h(Index)

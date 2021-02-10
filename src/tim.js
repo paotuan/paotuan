@@ -53,7 +53,7 @@ export function enableBot(groupId) {
 
   return new Promise((resolve, reject) => {
     // 登录（重复登录也无所谓）
-    bot.login({ userID: name, userSig: window.genTestUserSig(name, sdkappid, sdksecret).userSig })
+    bot.login({ userID: name, userSig: window.genTestUserSig(name, Number(sdkappid), sdksecret).userSig })
         .then(() => {
           console.log('登录成功')
 

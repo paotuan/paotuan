@@ -9,9 +9,6 @@
       <div class="info-item">
         <div class="label">
           群头像
-        </div>
-        <div class="content" v-if="!showEditFaceUrl">
-          <avatar :src="groupProfile.avatar"/>
           <i
               class="el-icon-edit"
               v-if="editable"
@@ -19,8 +16,11 @@
             showEditFaceUrl = true
             inputFocus('editFaceUrl')
           "
-              style="cursor:pointer; font-size:16px;"
+              style="cursor:pointer; font-size:14px;"
           />
+        </div>
+        <div class="content" v-if="!showEditFaceUrl">
+          <avatar :src="groupProfile.avatar"/>
         </div>
         <el-input
             ref="editFaceUrl"
@@ -30,6 +30,7 @@
             size="mini"
             @blur="showEditFaceUrl = false"
             @keydown.enter.native="editFaceUrl"
+            style="width: 50%"
         />
       </div>
 
@@ -40,14 +41,18 @@
       <div class="info-item">
         <div class="label">
           群名称
-        </div>
-
-        <div class="content text-ellipsis" :title="groupProfile.name" v-if="!showEditName"
-             @click="
+          <i
+              class="el-icon-edit"
+              v-if="editable"
+              @click="
             showEditName = true
             inputFocus('editName')
           "
-        >
+              style="cursor:pointer; font-size:14px;"
+          />
+        </div>
+
+        <div class="content text-ellipsis" :title="groupProfile.name" v-if="!showEditName">
           {{ groupProfile.name || '暂无' }}
         </div>
 <!--        <i-->
@@ -163,7 +168,7 @@
             showEditMessageRemindType = true
             inputFocus('editMessageRemindType')
           "
-              style="cursor:pointer; font-size:16px;"
+              style="cursor:pointer; font-size:14px;"
           />
         </div>
         <div class="content" v-show="!showEditMessageRemindType">
@@ -192,7 +197,7 @@
               showEditNameCard = true
               inputFocus('editNameCard')
             "
-            style="cursor:pointer; font-size:16px;"
+            style="cursor:pointer; font-size:14px;"
           />
         </div>
         <div class="content cursor-pointer" v-if="!showEditNameCard">
@@ -206,16 +211,19 @@
           size="mini"
           @blur="showEditNameCard = false"
           @keydown.enter.native="editNameCard"
+          style="width: 50%"
         />
       </div>
-      <div class="info-item last">
-        <div class="label" :class="{'active' : active}">全体禁言</div>
+      <div class="info-item">
+        <div class="label">全体禁言</div>
         <el-switch
                 v-model="muteAllMembers"
-                active-color="#409eff"
-                inactive-color="#dcdfe6"
                 @change='changeMuteStatus'>
         </el-switch>
+      </div>
+      <div v-if="isOwner" class="info-item">
+        <div class="label">启用骰子</div>
+        <bot-switch/>
       </div>
 <!--      <div v-if="isOwner">-->
 <!--        <el-button type="text" @click="showChangeGroupOwner = true">转让群组</el-button>-->
@@ -228,11 +236,16 @@
 <!--            @keydown.enter.native="changeOwner"-->
 <!--        />-->
 <!--      </div>-->
+    </div>
+    <div class="action-btns">
+      <kp-actions v-if="isOwner"/>
       <div>
-        <el-button type="text" style="color:red;" @click="quitGroup">退出群组</el-button>
-      </div>
-      <div v-if="showDissmissGroup">
-        <el-button type="text" style="color:red;" @click="dismissGroup">解散群组</el-button>
+        <div>
+          <el-button type="text" @click="quitGroup">退出群组</el-button>
+        </div>
+        <div v-if="showDissmissGroup">
+          <el-button type="text" @click="dismissGroup">解散群组</el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -241,10 +254,15 @@
 <script>
 import GroupMemberList from './group-member-list.vue'
 import { Select, Option, Switch } from 'element-ui'
+import KpActions from '../right-panels/widgets/kp-actions'
+import BotSwitch from '../right-panels/widgets/bot-switch'
+
 export default {
   props: ['groupProfile'],
   components: {
     GroupMemberList,
+    KpActions,
+    BotSwitch,
     ElSelect: Select,
     ElOption: Option,
     ElSwitch: Switch,
@@ -567,7 +585,7 @@ export default {
   align-items center
   justify-content space-between
 
-  &.last {
+  &:last-child {
     border-bottom 1px solid #DCDFE6
   }
 
@@ -595,6 +613,19 @@ export default {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+  }
+}
+
+.action-btns {
+  display flex
+  margin 10px 20px
+
+  & > div {
+    width 50%
+
+    &:last-child .el-button {
+      color $danger
+    }
   }
 }
 

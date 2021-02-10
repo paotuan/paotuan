@@ -5,9 +5,9 @@
     <el-tab-pane label="群信息" name="group">
       <group-profile :groupProfile="currentConversation.groupProfile" />
     </el-tab-pane>
-    <el-tab-pane label="主持人面板" name="kp">
-      <kp-panel :groupProfile="currentConversation.groupProfile" />
-    </el-tab-pane>
+<!--    <el-tab-pane label="主持人面板" name="kp">-->
+<!--      <kp-panel :groupProfile="currentConversation.groupProfile" />-->
+<!--    </el-tab-pane>-->
     <el-tab-pane name="note">
       <el-badge slot="label" is-dot :hidden="!currentGame.noteUnread">重要笔记</el-badge>
       <note-panel :group-profile="currentConversation.groupProfile" />
@@ -20,7 +20,7 @@
 <script>
 import { mapState } from 'vuex'
 import GroupProfile from '../conversationProfile/group-profile.vue'
-import KpPanel from './kp-panel'
+// import KpPanel from './kp-panel'
 import LogPanel from './log-panel'
 import NotePanel from './note-panel'
 
@@ -28,7 +28,7 @@ export default {
   name: 'RightPanel',
     components: {
       LogPanel,
-      KpPanel,
+      // KpPanel,
       NotePanel,
       GroupProfile,
     },
