@@ -30,7 +30,7 @@
             size="mini"
             @blur="showEditFaceUrl = false"
             @keydown.enter.native="editFaceUrl"
-            style="width: 50%"
+            style="width: 60%"
         />
       </div>
 
@@ -72,7 +72,7 @@
             size="mini"
             @blur="showEditName = false"
             @keydown.enter.native="editName"
-            style="width: 50%"
+            style="width: 60%"
         />
       </div>
 <!--      <div class="info-item">-->
@@ -99,33 +99,6 @@
 <!--            size="mini"-->
 <!--            @blur="showEditIntroduction = false"-->
 <!--            @keydown.enter.native="editIntroduction"-->
-<!--        />-->
-<!--      </div>-->
-<!--      <div class="info-item">-->
-<!--        <div class="label">-->
-<!--          群公告-->
-<!--          <i-->
-<!--              class="el-icon-edit"-->
-<!--              v-if="editable"-->
-<!--              @click="-->
-<!--            showEditNotification = true-->
-<!--            inputFocus('editNotification')-->
-<!--          "-->
-<!--              style="cursor:pointer; font-size:16px;"-->
-<!--          />-->
-<!--        </div>-->
-<!--        <div class="long-content" :title="groupProfile.notification" v-if="!showEditNotification">-->
-<!--          {{ groupProfile.notification || '暂无' }}-->
-<!--        </div>-->
-
-<!--        <el-input-->
-<!--            ref="editNotification"-->
-<!--            v-else-->
-<!--            autofocus-->
-<!--            v-model="notification"-->
-<!--            size="mini"-->
-<!--            @blur="showEditNotification = false"-->
-<!--            @keydown.enter.native="editNotification"-->
 <!--        />-->
 <!--      </div>-->
 <!--      <div class="info-item" v-if="groupProfile.type !== 'Private'">-->
@@ -211,7 +184,7 @@
           size="mini"
           @blur="showEditNameCard = false"
           @keydown.enter.native="editNameCard"
-          style="width: 50%"
+          style="width: 60%"
         />
       </div>
       <div class="info-item">
@@ -224,6 +197,34 @@
       <div v-if="isOwner" class="info-item">
         <div class="label">启用机器人</div>
         <bot-switch/>
+      </div>
+      <div class="info-item">
+        <div class="label">
+          群公告
+          <i
+              class="el-icon-edit"
+              v-if="editable"
+              @click="
+            showEditNotification = true
+            inputFocus('editNotification')
+          "
+              style="cursor:pointer; font-size:14px;"
+          />
+        </div>
+        <div class="long-content" :title="groupProfile.notification" v-if="!showEditNotification">
+          {{ groupProfile.notification || '暂无' }}
+        </div>
+
+        <el-input
+            ref="editNotification"
+            v-else
+            autofocus
+            v-model="notification"
+            size="mini"
+            @blur="showEditNotification = false"
+            @keydown.enter.native="editNotification"
+            style="width: 60%"
+        />
       </div>
 <!--      <div v-if="isOwner">-->
 <!--        <el-button type="text" @click="showChangeGroupOwner = true">转让群组</el-button>-->
@@ -607,6 +608,10 @@ export default {
     word-break: break-all;
   }
   .long-content {
+    color: $regular;
+    font-size 14px
+    width 60%
+    text-align right
     word-wrap:break-word;
     overflow: hidden;
     text-overflow: ellipsis;
