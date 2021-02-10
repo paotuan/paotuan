@@ -222,7 +222,7 @@
         </el-switch>
       </div>
       <div v-if="isOwner" class="info-item">
-        <div class="label">启用骰子</div>
+        <div class="label">启用机器人</div>
         <bot-switch/>
       </div>
 <!--      <div v-if="isOwner">-->

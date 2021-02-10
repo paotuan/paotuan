@@ -3,29 +3,60 @@
     <div class="header">
       <span class="member-count text-ellipsis">群成员：{{currentConversation.groupProfile.memberCount}}</span>
       <i class="el-icon-link" title="复制邀请链接" @click="copyInviteLink" />
-      <popover v-model="addGroupMemberVisible">
-        <add-group-member></add-group-member>
-        <div slot="reference" class="btn-add-member" title="添加群成员">
-          <span class="tim-icon-friend-add"></span>
-        </div>
-      </popover>
+      <!-- sdk 限制公开群不能邀请入群，只能申请加群 -->
+<!--      <popover v-model="addGroupMemberVisible">-->
+<!--        <add-group-member></add-group-member>-->
+<!--        <div slot="reference" class="btn-add-member" title="添加群成员">-->
+<!--          <span class="tim-icon-friend-add"></span>-->
+<!--        </div>-->
+<!--      </popover>-->
     </div>
     <div class="scroll-content">
       <div class="group-member-list">
         <div v-for="member in members" :key="member.userID">
-          <popover placement="right" :key="member.userID">
-            <group-member-info :member="member" />
+<!--          <popover placement="right" :key="member.userID">-->
+<!--            <group-member-info :member="member" />-->
             <div slot="reference" class="group-member" @click="currentMemberID = member.userID">
-              <avatar :title=getGroupMemberAvatarText(member.role) :src="member.avatar" />
-              <div class="member-name text-ellipsis">
-                <span v-if="member.nameCard" :title=member.nameCard>{{ member.nameCard }}</span>
-                <span v-else-if="member.nick" :title=member.nick>{{ member.nick }}</span>
-                <span v-else :title=member.userID>{{ member.userID }}</span>
+              <div class="info">
+                <avatar :title=getGroupMemberAvatarText(member.role) :src="member.avatar" />
+                <div class="names">
+                  <div class="member-name text-ellipsis">{{ getShowUserNick(member) }}</div>
+                  <div class="member-id">{{ getShowUserId(member) }}</div>
+                </div>
               </div>
-              <el-button type="text" size="mini">查看人物卡</el-button>
-              <el-button type="text" size="mini">导入人物卡</el-button>
+              <div class="actions">
+                <el-popover v-if="isOwner && isBotOfThisGroup(member)" title="修改机器人头像" placement="top" trigger="click">
+                  <el-input
+                      v-model="botAvatar"
+                      placeholder="请输入头像 URL"
+                      @keydown.enter.native="setBotAvatar(member.userID)"
+                  />
+                  <el-button slot="reference" class="action-btn" title="修改机器人头像" icon="el-icon-picture-outline" size="mini" circle/>
+                </el-popover>
+                <el-popover v-if="isOwner" title="修改群名片" placement="top" trigger="click">
+                  <el-input
+                      v-model="nameCard"
+                      placeholder="请输入群名片"
+                      @keydown.enter.native="setGroupMemberNameCard(member.userID)"
+                  />
+                  <el-button slot="reference" class="action-btn" title="修改群名片" icon="el-icon-edit" size="mini" circle/>
+                </el-popover>
+<!--                <el-button v-if="isOwner && member.role !== 'Owner'" type="danger" icon="el-icon-turn-off-microphone" size="mini" circle/>-->
+                <el-popconfirm v-if="isOwner && member.role !== 'Owner'" :title="`将${getShowUserNick(member)}踢出群组？`"
+                               placement="top" trigger="click" @confirm="kickoutGroupMember(member.userID)">
+                  <el-button slot="reference" class="action-btn" title="踢出群聊" type="danger" icon="el-icon-delete" size="mini" circle/>
+                </el-popconfirm>
+                <div class="coc-card">
+                  <div>
+                    <el-button type="text" size="mini" @click="waitForSoon">查看人物卡</el-button>
+                  </div>
+                  <div>
+                    <el-button v-if="isOwner" type="text" size="mini" @click="waitForSoon">导入人物卡</el-button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </popover>
+<!--          </popover>-->
         </div>
       </div>
     </div>
@@ -38,23 +69,26 @@
 <script>
 import { Popover } from 'element-ui'
 import { mapState } from 'vuex'
-import AddGroupMember from './add-group-member.vue'
-import GroupMemberInfo from './group-member-info.vue'
-import { generateShareSig } from '@/tim'
+// import AddGroupMember from './add-group-member.vue'
+// import GroupMemberInfo from './group-member-info.vue'
+import { generateShareSig, setBotAvatar } from '@/tim'
 
 export default {
   data() {
     return {
       addGroupMemberVisible: false,
       currentMemberID: '',
-      count: 30 // 显示的群成员数量
+      count: 30, // 显示的群成员数量
+
+      botAvatar: '', // 机器人头像 url 输入框
+      nameCard: '', // 群名片输入框
     }
   },
   props: ['groupProfile'],
   components: {
     Popover,
-    AddGroupMember,
-    GroupMemberInfo
+    // AddGroupMember,
+    // GroupMemberInfo
   },
   computed: {
     ...mapState({
@@ -66,7 +100,10 @@ export default {
     },
     members() {
       return this.currentMemberList//.slice(0, this.count)
-    }
+    },
+    isOwner() {
+      return this.groupProfile.selfInfo.role === this.TIM.TYPES.GRP_MBR_ROLE_OWNER
+    },
   },
   methods: {
     getGroupMemberAvatarText(role) {
@@ -78,6 +115,24 @@ export default {
         default:
           return '群成员'
       }
+    },
+    getShowUserNick(member) {
+      // 优先级：群名片、昵称、id
+      return member.nameCard || member.nick || member.userID
+    },
+    getShowUserId(member) {
+      if (member.userID.startsWith('bot')) {
+        return '机器人'
+      } else if (member.nameCard || member.nick) {
+        return member.userID
+      } else {
+        return '' // 如果没有设置用户名和昵称，也不显示
+      }
+    },
+    isBotOfThisGroup(member) {
+      // if (!this.groupProfile) return false
+      // 精确判断是自己群的机器人，以防万一其他机器人乱入
+      return this.groupProfile.groupID.replace('@TGS#', 'bot_') === member.userID
     },
     loadMore() {
       this.$store
@@ -101,7 +156,66 @@ export default {
             message: '邀请链接复制失败'
           })
         })
-    }
+    },
+    waitForSoon() {
+      this.$store.commit('showMessage', {
+        type: 'info',
+        message: '敬请期待'
+      })
+    },
+    setBotAvatar() {
+       setBotAvatar(this.currentConversation.groupProfile.groupID, this.botAvatar)
+        .then(() => {
+          this.botAvatar = ''
+          this.$store.commit('showMessage', {
+            message: '修改成功'
+          })
+        })
+        .catch(error => {
+          console.log(error)
+          this.$store.commit('showMessage', {
+            type: 'error',
+            message: '修改头像失败，请检查是否启用机器人，未启用状态不能修改'
+          })
+        })
+    },
+    setGroupMemberNameCard(userID) {
+      this.tim
+        .setGroupMemberNameCard({
+          groupID: this.currentConversation.groupProfile.groupID,
+          userID: userID,
+          nameCard: this.nameCard
+        })
+        .then(() => {
+          this.nameCard = ''
+          this.$store.commit('showMessage', {
+            message: '修改成功'
+          })
+        })
+        .catch(error => {
+          this.$store.commit('showMessage', {
+            type: 'error',
+            message: error.message
+          })
+        })
+    },
+    kickoutGroupMember(userID) {
+      this.tim
+        .deleteGroupMember({
+          groupID: this.currentConversation.groupProfile.groupID,
+          reason: '被群主踢出',
+          userIDList: [userID]
+        })
+        .then(() => {
+          this.$store.commit('deleteGroupMemeber', userID)
+        })
+        .catch(error => {
+          this.$store.commit('showMessage', {
+            type: 'error',
+            message: error.message
+          })
+        })
+    },
   }
 }
 </script>
@@ -139,26 +253,37 @@ export default {
       /*flex-wrap wrap*/
       width 100%
     .group-member
-      /*width 40px*/
       height 70px
       display: flex;
-      /*justify-content center*/
-      /*align-content center*/
-      /*flex-direction: column;*/
-      text-align: center;
-      color: $black;
-      cursor: pointer;
+      align-items center
+      justify-content space-between
+      color: $base;
       margin: 0 10px;
-      /*margin: 0 20px 10px 0;*/
-      /*padding: 10px 0 0 0;*/
       .avatar
         width 40px
         height 40px
         border-radius 50%
+        margin-right 20px
+      .info
+        display flex
+      .names
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       .member-name
+        font-size 14px
+        width: 100px
+        /*text-align center*/
+      .member-id
         font-size 12px
-        width: 100px;
-        text-align center
+        color $secondary
+      .actions
+        display flex
+        align-items center
+      .action-btn
+        margin-left 10px
+      .coc-card
+        margin-left 20px
   .more
     padding 0 20px
     border-bottom 1px solid $border-base
@@ -175,12 +300,16 @@ export default {
 .el-icon-link
   width 30px
   height 30px
-  font-size 28px
+  font-size 24px
   text-align center
   line-height 32px
   cursor pointer
   float right
   &:hover
     color $light-primary
+
+.tim-icon-friend-add
+  font-size 24px
+  margin-right 20px
 
 </style>

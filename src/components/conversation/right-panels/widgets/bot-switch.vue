@@ -24,7 +24,7 @@ export default {
           // todo 这里有时候会报'被邀请加入的成员已是群成员'，触发时机待复现，可以考虑做个容错
           this.$store.commit('showMessage', {
             type: 'error',
-            message: '切换骰子失败，请联系管理员',
+            message: '切换机器人失败，请联系管理员',
           })
           console.log('切换 bot 失败', e)
         })

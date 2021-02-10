@@ -80,6 +80,13 @@ export function disableBot(groupId) {
   return botims[groupId].logout()
 }
 
+export function setBotAvatar(groupId, url) {
+  // 如果 bot 没启用则报错
+  if (!botims[groupId]) return new Promise((_, reject) => reject())
+
+  return botims[groupId].updateMyProfile({ avatar: url })
+}
+
 // 初始化 bot 实例，登录以后调用
 function initBotimInstance(groupId) {
   // new 一个实例
