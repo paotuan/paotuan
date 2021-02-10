@@ -222,7 +222,7 @@ export default {
       if (this.currentConversation.type === 'C2C' && !this.message.isRevoked) { // C2C且没有撤回的消息
         return true
       } else if (this.currentConversation.type === 'GROUP' && !this.message.isRevoked) { // group且没有撤回的消息
-        return this.message.type !== this.TIM.TYPES.MSG_GRP_TIP
+        return this.message.type !== this.TIM.TYPES.MSG_GRP_TIP && this.message.type !== this.TIM.TYPES.MSG_CUSTOM
       }
       return false
     },
@@ -248,7 +248,7 @@ export default {
     },
     messagePosition() {
       if (
-        ['TIMGroupTipElem', 'TIMGroupSystemNoticeElem'].includes(
+        ['TIMGroupTipElem', 'TIMGroupSystemNoticeElem', this.TIM.TYPES.MSG_CUSTOM].includes(
           this.message.type
         )
       ) {
@@ -265,7 +265,7 @@ export default {
     },
     showMessageHeader() {
       if (
-        ['TIMGroupTipElem', 'TIMGroupSystemNoticeElem'].includes(
+        ['TIMGroupTipElem', 'TIMGroupSystemNoticeElem', this.TIM.TYPES.MSG_CUSTOM].includes(
           this.message.type
         )
       ) {

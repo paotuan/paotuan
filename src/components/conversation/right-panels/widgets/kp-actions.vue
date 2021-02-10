@@ -87,7 +87,7 @@ export default {
         priority: this.TIM.TYPES.MSG_PRIORITY_HIGH, // 标注为高优先级
         payload: {
           data: JSON.stringify({ mtype: 'bgm', mdata: bgmData }),
-          description: '主持人设置了新的 bgm，快点击右侧【重要信息】面板查看吧',
+          description: '主持人设置了新的 BGM，快点击右侧【重要笔记】面板查看吧',
         }
       })
       this._sendNoteMessage(message)
@@ -95,7 +95,7 @@ export default {
       this.sendBgmVisible = false
     },
     sendNoteText() {
-      let msg = this.tim.createTextMessage({
+      const msg = this.tim.createTextMessage({
         to: this.groupProfile.groupID,
         conversationType: this.TIM.TYPES.CONV_GROUP,
         priority: this.TIM.TYPES.MSG_PRIORITY_HIGH, // 标注为高优先级
@@ -104,6 +104,7 @@ export default {
         }
       })
       this._sendNoteMessage(msg)
+      this._sendGrayTipMessage('主持人发布了一条新的笔记，快点击右侧【重要笔记】面板查看吧')
       this.textContent = ''
       this.sendTextVisible = false
     },
@@ -117,6 +118,7 @@ export default {
         },
       })
       this._sendNoteMessage(message)
+      this._sendGrayTipMessage('主持人发布了一条新的笔记，快点击右侧【重要笔记】面板查看吧')
       this.$refs.noteImgPicker.value = null
     },
     _sendNoteMessage(message) {
@@ -131,6 +133,18 @@ export default {
             message: error.message
           })
         })
+    },
+    _sendGrayTipMessage(content) {
+      const message = this.tim.createCustomMessage({
+        to: this.groupProfile.groupID,
+        conversationType: this.TIM.TYPES.CONV_GROUP,
+        payload: {
+          data: JSON.stringify({ mtype: 'tip' }),
+          description: content
+        }
+      })
+      this.$store.commit('pushCurrentMessageList', message)
+      this.tim.sendMessage(message)
     }
   }
 }
