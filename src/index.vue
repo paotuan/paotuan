@@ -79,7 +79,7 @@ export default {
         return index === 0 ? value : value.split('').reverse().join('')
       })
     } catch (e) {
-      console.log('invalid sig', sig, e)
+      console.log('invalid sig', sig)
     }
     // 2. 判断是否能自动登录，3个参数俱全都可以
     if (this.initialAppid && this.initialSecret && userid) {
