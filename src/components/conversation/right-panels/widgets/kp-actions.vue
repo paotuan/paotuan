@@ -17,18 +17,20 @@
         @change="sendNoteImage"
         style="display:none"
     />
-    <el-dialog title="设置 bgm" :visible.sync="sendBgmVisible" width="40%">
-      <div>设置 bgm，bgm 将对全部群员可见。如多次设置，则会覆盖之前设置的 bgm。</div>
-      <div>bgm 链接需符合指定的格式</div>
-      <ul>
-        <li>网易云音乐
-          <ul>
-            <li>歌单：https://music.163.com/#/playlist?id=xxxxxxx</li>
-            <li>单曲：https://music.163.com/#/song?id=xxxxxxx</li>
-            <li>专辑：https://music.163.com/#/album?id=xxxxxxx</li>
-          </ul>
-        </li>
-      </ul>
+    <el-dialog title="🎵 设置 BGM" :visible.sync="sendBgmVisible" width="40%">
+      <div class="bgm-usage">
+        <div>设置 BGM，BGM 将对全部群员可见。如多次设置，则会覆盖之前设置的 BGM。</div>
+        <div>BGM 链接需符合指定的格式。</div>
+        <ul>
+          <li>网易云音乐
+            <ul>
+              <li>歌单：<span>https://music.163.com/#/playlist?id=xxxxxxx</span></li>
+              <li>单曲：<span>https://music.163.com/#/song?id=xxxxxxx</span></li>
+              <li>专辑：<span>https://music.163.com/#/album?id=xxxxxxx</span></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
       <el-input placeholder="请输入音乐链接" v-model="bgmLink" />
       <span slot="footer" class="dialog-footer">
         <el-button @click="sendBgmVisible = false">取 消</el-button>
@@ -149,3 +151,16 @@ export default {
   }
 }
 </script>
+<style lang="stylus" scoped>
+.bgm-usage
+  div, li
+    line-height 1.5
+    margin 10px
+    /*.inline-link*/
+    /*  vertical-align unset*/
+  span
+    font-family Monaco, consolas, Monospaced
+    background-color #EBEEF5
+    padding 2px 5px
+    border-radius 5px
+</style>

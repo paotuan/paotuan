@@ -12,47 +12,66 @@
       <i class="iconfont icon-tupian" title="发图片" @click="handleSendImageClick"></i>
       <i class="el-icon-camera" title="发视频" @click="handleSendVideoClick"></i>
       <i class="iconfont icon-wenjian" title="发文件" @click="handleSendFileClick"></i>
-      <i class="iconfont icon-zidingyi" title="发自定义消息" @click="sendCustomDialogVisible = true"></i>
+      <i class="el-icon-warning-outline" title="骰子指南" @click="showDiceUsageVisible = true"></i>
+<!--      <i class="iconfont icon-zidingyi" title="发自定义消息" @click="sendCustomDialogVisible = true"></i>-->
     </div>
-    <el-dialog title="发自定义消息" :visible.sync="sendCustomDialogVisible" width="30%">
-      <el-form label-width="100px">
-        <el-form-item label="data">
-          <el-input v-model="form.data"></el-input>
-        </el-form-item>
-        <el-form-item label="description">
-          <el-input v-model="form.description"></el-input>
-        </el-form-item>
-        <el-form-item label="extension">
-          <el-input v-model="form.extension"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="sendCustomDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="sendCustomMessage">确 定</el-button>
-      </span>
+    <el-dialog title="🎲 如何使用骰子" :visible.sync="showDiceUsageVisible" width="40%">
+      <div class="dice-usage">
+        <div>首先请确保群主启用了群机器人。在启用机器人后，机器人会对群里的骰子指令做出响应。</div>
+        <div>骰子指令以小数点开头（中文句号亦可），接一个合法的骰子表达式。机器人支持多种常见的骰子表达式，有关表达式的细节可以
+          <el-link class="inline-link" type="primary" href="https://greenimp.github.io/rpg-dice-roller/guide/notation/"
+                   target="_blank" :underline="false">参考详细文档</el-link>。
+        </div>
+        <div>常用指令：</div>
+        <ul>
+          <li>基础骰子：<span>.d6</span> → 投掷一个六面骰（骰子面数可替换为任意数字）</li>
+          <li>百分骰：<span>.d%</span> → 投掷一个百分骰，等同于 <span>.d100</span></li>
+          <li>骰子组合：<span>.2d6+d4</span> → 投掷两个六面骰和一个四面骰（支持同时多个骰子和基础运算）</li>
+          <li>COC 奖励骰：<span>.2d%kl1</span> → 投掷两个百分骰，并保留（<b>k</b>eep）最低（<b>l</b>owest）的一个</li>
+          <li>Fate 骰子：<span>.4dF</span> → 投掷四个 Fate 规则的骰子</li>
+        </ul>
+        <div>在骰子表达式后面可以接上动作的描述，以增强指令的可读性，例如 <span>.d% 聆听</span> 。后续也将增加投骰与人物卡的联动效果。</div>
+      </div>
     </el-dialog>
-    <el-dialog title="对IM Web demo的建议和使用感受" :visible.sync="surveyDialogVisible" width="30%">
-      <el-form label-width="100px">
-        <el-form-item label="评分">
-          <div class="block">
-            <el-rate v-model="rate" :colors="colors" show-text></el-rate>
-          </div>
-        </el-form-item>
-        <el-form-item label="建议">
-          <el-input
-            type="textarea"
-            :rows="2"
-            placeholder="请输入内容"
-            resize="none"
-            v-model="suggestion"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="surveyDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="sendSurvey">确 定</el-button>
-      </span>
-    </el-dialog>
+<!--    <el-dialog title="发自定义消息" :visible.sync="sendCustomDialogVisible" width="30%">-->
+<!--      <el-form label-width="100px">-->
+<!--        <el-form-item label="data">-->
+<!--          <el-input v-model="form.data"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="description">-->
+<!--          <el-input v-model="form.description"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="extension">-->
+<!--          <el-input v-model="form.extension"></el-input>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="sendCustomDialogVisible = false">取 消</el-button>-->
+<!--        <el-button type="primary" @click="sendCustomMessage">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
+<!--    <el-dialog title="对IM Web demo的建议和使用感受" :visible.sync="surveyDialogVisible" width="30%">-->
+<!--      <el-form label-width="100px">-->
+<!--        <el-form-item label="评分">-->
+<!--          <div class="block">-->
+<!--            <el-rate v-model="rate" :colors="colors" show-text></el-rate>-->
+<!--          </div>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="建议">-->
+<!--          <el-input-->
+<!--            type="textarea"-->
+<!--            :rows="2"-->
+<!--            placeholder="请输入内容"-->
+<!--            resize="none"-->
+<!--            v-model="suggestion"-->
+<!--          ></el-input>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="surveyDialogVisible = false">取 消</el-button>-->
+<!--        <el-button type="primary" @click="sendSurvey">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
     <el-popover
       trigger="manual"
       v-model="showAtGroupMember"
@@ -155,6 +174,7 @@ export default {
       isSendCustomMessage: false,
       sendCustomDialogVisible: false,
       surveyDialogVisible: false,
+      showDiceUsageVisible: false,
       form: {
         data: '',
         description: '',
@@ -712,4 +732,17 @@ textarea {
 .el-popover {
   padding: 12px 0 0 0 !important;
 }
+
+.dice-usage
+  div, li
+    line-height 1.5
+    margin 10px
+  .inline-link
+    vertical-align unset
+  span
+    font-family Monaco, consolas, Monospaced
+    background-color #EBEEF5
+    padding 2px 5px
+    border-radius 5px
+
 </style>
