@@ -13,7 +13,7 @@
         :value="currentGame.notes"
         @input="$store.commit('updateNotes', { groupId: groupProfile.groupID, notes: $event })">
       <el-card v-for="note in currentGame.notes" :key="note.id" class="card" shadow="hover">
-        <div v-if="note.type === TIM.TYPES.MSG_TEXT">{{ note.payload }}</div>
+        <div v-if="note.type === TIM.TYPES.MSG_TEXT" class="note-text">{{ note.payload }}</div>
         <img v-else-if="note.type === TIM.TYPES.MSG_IMAGE" class="note-img" :src="formatUrl(note.payload)"
              @click="handlePreview(note.payload)"/>
         <div class="tools">
@@ -85,6 +85,11 @@ export default {
 
 .card:hover .tools {
   display: block;
+}
+
+.note-text {
+  font-size: 14px;
+  word-break: break-all;
 }
 
 .note-img {
