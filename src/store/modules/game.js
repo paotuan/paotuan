@@ -123,7 +123,7 @@ const game = {
         } else if (msg.type === TIM.TYPES.MSG_IMAGE) {
           context.commit('addNote', {
             groupId: msg.to,
-            note: { id: msg.ID, type: msg.type, payload: msg.payload.imageInfoArray[0].url }
+            note: { id: msg.ID, type: msg.type, payload: msg.payload.imageInfoArray[0].imageUrl }
           })
           context.dispatch('handleNoteUnread', msg.to)
         }
