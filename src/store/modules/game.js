@@ -19,8 +19,12 @@ const _ = (groupId) => {
   return game.state.list[groupId]
 }
 
+const save = (key, groupId, content) => {
+  localStorage.setItem(`paotuan${key}-${groupId}`, JSON.stringify(content))
+}
+
 const getInitialSavedContent = (key, groupId) => {
-  const saved = localStorage.getItem(`${key}-${groupId}`)
+  const saved = localStorage.getItem(`paotuan${key}-${groupId}`)
   return saved ? JSON.parse(saved) : []
 }
 
@@ -42,22 +46,22 @@ const game = {
     },
     insertLog(state, { groupId, log }) {
       _(groupId).logs.push(log)
-      localStorage.setItem(`log-${groupId}`, JSON.stringify(_(groupId).logs))
+      save('log', groupId, _(groupId).logs)
     },
     updateLogs(state, { groupId, logs }) {
       _(groupId).logs = logs
-      localStorage.setItem(`log-${groupId}`, JSON.stringify(logs))
+      save('log', groupId, logs)
     },
     setGameBgm(state, { groupId, bgm }) {
       _(groupId).bgm = bgm
     },
     addNote(state, { groupId, note }) {
       _(groupId).notes.push(note)
-      localStorage.setItem(`note-${groupId}`, JSON.stringify(_(groupId).notes))
+      save('note', groupId, _(groupId).notes)
     },
     updateNotes(state, { groupId, notes }) {
       _(groupId).notes = notes
-      localStorage.setItem(`note-${groupId}`, JSON.stringify(notes))
+      save('note', groupId, notes)
     },
     setNoteUnread(state, { groupId, unread }) {
       _(groupId).noteUnread = unread

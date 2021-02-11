@@ -20,12 +20,12 @@
           :class="{ active: showGroupList }"
           title="群组列表"
         ></div>
-        <div
-          id="friend-list"
-          class="iconfont icon-contact"
-          :class="{ active: showFriendList }"
-          title="好友列表"
-        ></div>
+<!--        <div-->
+<!--          id="friend-list"-->
+<!--          class="iconfont icon-contact"-->
+<!--          :class="{ active: showFriendList }"-->
+<!--          title="好友列表"-->
+<!--        ></div>-->
         <div
           id="black-list"
           class="iconfont icon-blacklist"
@@ -34,6 +34,8 @@
         ></div>
       </div>
       <div class="bottom">
+        <div class="iconfont icon-zidingyi" @click="globalSettingsVisible = true" title="设置"></div>
+        <global-setting :visible.sync="globalSettingsVisible"/>
         <div class="iconfont icon-tuichu" @click="handleExit" title="退出"></div>
       </div>
     </div>
@@ -52,6 +54,7 @@ import ConversationList from '../conversation/conversation-list'
 import GroupList from '../group/group-list'
 import FriendList from '../friend/friend-list'
 import BlackList from '../blacklist/blacklist'
+import GlobalSetting from './global-setting'
 
 const activeName = {
   CONVERSATION_LIST: 'conversation-list',
@@ -65,12 +68,14 @@ export default {
     ConversationList,
     GroupList,
     FriendList,
-    BlackList
+    BlackList,
+    GlobalSetting
   },
   data() {
     return {
       active: activeName.CONVERSATION_LIST,
-      activeName: activeName
+      activeName: activeName,
+      globalSettingsVisible: false,
     }
   },
   computed: {
@@ -248,7 +253,7 @@ export default {
     }
 
     .bottom {
-      height: 70px;
+      height: 140px;
 
       &>span {
         display: block;
