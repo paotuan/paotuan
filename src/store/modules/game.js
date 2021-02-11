@@ -19,6 +19,11 @@ const _ = (groupId) => {
   return game.state.list[groupId]
 }
 
+const getInitialSavedContent = (key, groupId) => {
+  const saved = localStorage.getItem(`${key}-${groupId}`)
+  return saved ? JSON.parse(saved) : []
+}
+
 const game = {
   state: {
     list: {} // groupId => game
@@ -26,6 +31,8 @@ const game = {
   mutations: {
     initGame(state, groupId) {
       Vue.set(state.list, groupId, JSON.parse(JSON.stringify(gamePrototype)))
+      state.list[groupId].notes = getInitialSavedContent('note', groupId)
+      state.list[groupId].logs = getInitialSavedContent('log', groupId)
     },
     toggleBotEnabled(state, { groupId, enabled }) {
       _(groupId).botEnabled = enabled
@@ -35,20 +42,22 @@ const game = {
     },
     insertLog(state, { groupId, log }) {
       _(groupId).logs.push(log)
+      localStorage.setItem(`log-${groupId}`, JSON.stringify(_(groupId).logs))
     },
     updateLogs(state, { groupId, logs }) {
-      // TODO action 里可以存 localstorage
       _(groupId).logs = logs
+      localStorage.setItem(`log-${groupId}`, JSON.stringify(logs))
     },
     setGameBgm(state, { groupId, bgm }) {
       _(groupId).bgm = bgm
     },
     addNote(state, { groupId, note }) {
       _(groupId).notes.push(note)
+      localStorage.setItem(`note-${groupId}`, JSON.stringify(_(groupId).notes))
     },
     updateNotes(state, { groupId, notes }) {
-      // TODO action 里可以存 localstorage
       _(groupId).notes = notes
+      localStorage.setItem(`note-${groupId}`, JSON.stringify(notes))
     },
     setNoteUnread(state, { groupId, unread }) {
       _(groupId).noteUnread = unread

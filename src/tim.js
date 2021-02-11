@@ -28,7 +28,7 @@ export function initTimInstance(appid, secret) {
 
   // 初始化 SDK 实例
   tim = TIM.create({ SDKAppID: appid })
-
+  tim.setLogLevel(4)
   // 注册 cos
   tim.registerPlugin({ 'cos-js-sdk': COSSDK })
 }
@@ -93,7 +93,7 @@ function initBotimInstance(groupId) {
   let bot = botims[groupId] = createTIM().create({ SDKAppID: sdkappid })
 
   // 无日志级别
-  // bot.setLogLevel(4)
+  bot.setLogLevel(4)
 
   // 注册 cos
   bot.registerPlugin({ 'cos-js-sdk': COSSDK })
