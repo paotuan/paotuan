@@ -18,6 +18,9 @@
 <script>
 import MessageBubble from '../message-bubble'
 import { decodeText, escapeHTML } from '@/utils/decodeText'
+import { ALL_PROPS, ALL_SKILLS } from '@/sdk/card'
+
+const regex = new RegExp(`(${ALL_PROPS.concat(ALL_SKILLS).concat(['sc', 'SC']).join('|')})`, 'g')
 
 export default {
   name: 'TextElement',
@@ -51,8 +54,7 @@ export default {
         // 2. 是群主发的
         const sender = this.$store.state.group.currentMemberList.filter(member => member.userID === this.message.from)
         if (sender.length > 0 && sender[0].role === this.TIM.TYPES.GRP_MBR_ROLE_OWNER) {
-          return this.escape(content).replace(/(侦查|聆听)/g,
-              '<span class="underline" onclick="_onclickspan(\'$1\')">$1</span>')
+          return this.escape(content).replace(regex, '<span class="underline" onclick="_onclickspan(\'$1\')">$1</span>')
         }
       }
       // 不符合条件的
