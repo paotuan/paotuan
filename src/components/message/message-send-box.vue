@@ -103,6 +103,7 @@
         @keydown.down.stop="handleDown"
       >
       </textarea>
+      <ghost-message-send-box :to-account="toAccount" :current-conversation-type="currentConversationType" />
       <el-tooltip
         class="item"
         effect="dark"
@@ -148,7 +149,8 @@ import {
   Tooltip,
   Rate
 } from 'element-ui'
-import { emojiMap, emojiName, emojiUrl } from '../../utils/emojiMap'
+import { emojiMap, emojiName, emojiUrl } from '@/utils/emojiMap'
+import GhostMessageSendBox from './ghost-message-send-box'
 
 export default {
   name: 'message-send-box',
@@ -162,7 +164,8 @@ export default {
     ElRadioGroup: RadioGroup,
     ElRadio: Radio,
     ElTooltip: Tooltip,
-    ElRate: Rate
+    ElRate: Rate,
+    GhostMessageSendBox,
   },
   data() {
     return {

@@ -1,7 +1,7 @@
 <template>
   <message-bubble :isMine=isMine :message=message>
     <template v-for="(item, index) in contentList">
-      <span :key="index" v-if="item.name === 'text'">{{ item.text }}</span>
+      <span :key="index" v-if="item.name === 'text'" v-html="postProcess(item.text)"></span>
       <img v-else-if="item.name === 'img'" :src="item.src" width="20px" height="20px" :key="index"/>
     </template>
   </message-bubble>  
@@ -17,7 +17,7 @@
 
 <script>
 import MessageBubble from '../message-bubble'
-import { decodeText } from '../../../utils/decodeText'
+import { decodeText, escapeHTML } from '@/utils/decodeText'
 
 export default {
   name: 'TextElement',
@@ -41,10 +41,42 @@ export default {
     contentList() {
       return decodeText(this.payload)
     }
+  },
+  methods: {
+    // 文字消息后处理
+    // 目前需要处理的内容：KP发的群消息
+    postProcess(content) {
+      // 1. 群消息
+      if (this.message.conversationType === this.TIM.TYPES.CONV_GROUP) {
+        // 2. 是群主发的
+        const sender = this.$store.state.group.currentMemberList.filter(member => member.userID === this.message.from)
+        if (sender.length > 0 && sender[0].role === this.TIM.TYPES.GRP_MBR_ROLE_OWNER) {
+          return this.escape(content).replace(/(侦查|聆听)/g,
+              '<span class="underline" onclick="_onclickspan(\'$1\')">$1</span>')
+        }
+      }
+      // 不符合条件的
+      return this.escape(content)
+    },
+    escape(content) {
+      return escapeHTML(content)
+    }
   }
 }
-</script>
 
+// 这里用粗暴的模拟输入方式，避免搞各种组件和生命周期
+window._onclickspan = (skill) => {
+  let ghost = document.getElementById('ghost-message-send-box')
+  ghost.innerText = '.d% ' + skill
+  ghost.click()
+}
+</script>
+<style>
+.underline {
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>
 <style lang="stylus" scoped>
 // .chat-bubble
 //   position relative

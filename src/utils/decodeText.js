@@ -59,3 +59,10 @@ export function decodeText (payload) {
     }
   return renderDom
 }
+
+// 转义 html
+export function escapeHTML(html) {
+  const el = document.createElement('div')
+  el.innerText = html
+  return el.innerHTML
+}
