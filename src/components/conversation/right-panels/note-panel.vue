@@ -93,7 +93,7 @@ export default {
 }
 
 .note-img {
-  width: 100%;
+  max-width: 250px;
   cursor: zoom-in;
 }
 
