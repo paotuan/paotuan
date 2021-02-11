@@ -187,7 +187,7 @@
           style="width: 60%"
         />
       </div>
-      <div class="info-item">
+      <div v-if="isOwner" class="info-item">
         <div class="label">全体禁言</div>
         <el-switch
                 v-model="muteAllMembers"
