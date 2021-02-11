@@ -33,7 +33,7 @@ import ProfileBar from './components/layout/profile-bar'
 import Login from './components/user/login'
 import ImagePreviewer from './components/message/image-previewer.vue'
 import { translateGroupSystemNotice } from './utils/common'
-import { initTimInstance } from '@/tim'
+import { initTimInstance, logoutAllBots } from '@/tim'
 import Cookies from 'js-cookie'
 
 export default {
@@ -213,6 +213,7 @@ export default {
       })
       this.$store.commit('toggleIsLogin', false)
       this.$store.commit('reset')
+      logoutAllBots()
     },
     onUpdateConversationList(event) {
       this.$store.commit('updateConversationList', event.data)

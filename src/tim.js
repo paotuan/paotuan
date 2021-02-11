@@ -80,11 +80,19 @@ export function disableBot(groupId) {
   return botims[groupId].logout()
 }
 
+// 设置 bot 头像
 export function setBotAvatar(groupId, url) {
   // 如果 bot 没启用则报错
   if (!botims[groupId]) return new Promise((_, reject) => reject())
 
   return botims[groupId].updateMyProfile({ avatar: url })
+}
+
+// 退出时退出所有骰子
+export function logoutAllBots() {
+  Object.values(botims).forEach(bot => {
+    bot.logout()
+  })
 }
 
 // 初始化 bot 实例，登录以后调用
