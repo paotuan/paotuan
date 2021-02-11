@@ -19,6 +19,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <div class="appid-prefix">PID {{ currentAppid }}</div>
     <el-dialog title="发起会话" :visible.sync="showC2CDialog" width="40%">
       <el-input placeholder="请输入用户ID(QQ号)" v-model="userID" @keydown.enter.native="handleCreateC2C"/>
       <span slot="footer" class="dialog-footer">
@@ -52,6 +53,7 @@ export default {
   computed: {
     ...mapState({
       currentUserId: state => state.user.userID,
+      currentAppid: state => state.user.sdkAppID,
       currentUserProfile: state => state.user.currentUserProfile,
       createGroupModelVisible: state => state.group.createGroupModelVisible,
     }),
@@ -112,6 +114,7 @@ export default {
   display flex
   padding 15px
   background-color $background-deep-dark
+  position relative
 
 .base-info
   display flex
@@ -125,6 +128,13 @@ export default {
 .uid
   font-size 12px
   color $secondary
+
+.appid-prefix
+  position absolute
+  bottom 15px
+  right 15px
+  font-size 12px
+  color $font-dark
 
 .header-bar
   button

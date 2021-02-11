@@ -10,8 +10,8 @@
         @keydown.enter.native="submit"
     >
       <!-- 线上版本登录方式 -->
-      <el-form-item label="APPID" prop="appid">
-        <el-input v-model="form.appid" placeholder="请输入APPID" type="text" clearable/>
+      <el-form-item label="平台ID" prop="appid">
+        <el-input v-model="form.appid" placeholder="请输入平台ID" type="text" clearable/>
       </el-form-item>
       <el-form-item label="Secret" prop="secret">
         <el-input v-model="form.secret" placeholder="请输入secret" show-password/>
