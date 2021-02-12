@@ -1,9 +1,10 @@
 <template>
   <div>
     <el-button type="text" size="mini" @click="visible = true">导入人物卡</el-button>
-    <el-dialog title="导入人物卡" :visible.sync="visible" width="40%">
+    <el-dialog title="导入人物卡(beta)" :visible.sync="visible" width="40%">
       <input ref="chooser" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
              value="选择文件" @change="handleFile" />
+      <div>{{ `为玩家 ${member.nameCard || member.nick || member.userID} 导入人物卡` }}</div>
       <div v-if="user">
         <h3>基本信息</h3>
         <div>{{ `${user.basic.name} ${user.basic.gender} ${user.basic.age}岁 ${user.basic.job}` }}</div>
@@ -32,6 +33,7 @@ import XLSX from 'xlsx'
 import { parseCoCXlsx } from '@/sdk/card'
 
 export default {
+  props: ['member'],
   data() {
     return {
       visible: false,

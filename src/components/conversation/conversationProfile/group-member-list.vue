@@ -50,7 +50,7 @@
                   <div>
                     <el-button type="text" size="mini" @click="waitForSoon">查看人物卡</el-button>
                   </div>
-                  <card-import v-if="isOwner" />
+                  <card-import v-if="isOwner" :member="member" />
                 </div>
               </div>
             </div>
