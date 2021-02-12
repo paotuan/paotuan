@@ -30,7 +30,7 @@
           <li>COC 奖励骰：<span>.2d%kl1</span> → 投掷两个百分骰，并保留（<b>k</b>eep）最低（<b>l</b>owest）的一个</li>
           <li>Fate 骰子：<span>.4dF</span> → 投掷四个 Fate 规则的骰子</li>
         </ul>
-        <div>在骰子表达式后面可以接上动作的描述，以增强指令的可读性，例如 <span>.d% 聆听</span> 。后续也将增加投骰与人物卡的联动效果。</div>
+        <div>在骰子表达式后面可以接上动作的描述，以增强指令的可读性，并可以与人物卡联动，例如 <span>.d% 聆听</span> 。</div>
       </div>
     </el-dialog>
 <!--    <el-dialog title="发自定义消息" :visible.sync="sendCustomDialogVisible" width="30%">-->

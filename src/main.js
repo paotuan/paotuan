@@ -34,7 +34,7 @@ import VueClipboard from 'vue-clipboard2'
 import './assets/icon/iconfont.css'
 import './assets/icon/tim.css'
 
-window.store = store
+// window.store = store
 Vue.prototype.$bus = new Vue() // event Bus 用于无关系组件间的通信。
 Vue.prototype.tim = tim
 Vue.prototype.TIM = TIM
