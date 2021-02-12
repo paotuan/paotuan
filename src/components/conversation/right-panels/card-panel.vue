@@ -51,7 +51,7 @@ export default {
   computed: {
     ...mapState({
       currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID],
-      currentCard: function () { return this.currentGame.cards[this.member] }
+      currentCard: function () { return this.currentGame.cards['o' + this.member] }
     }),
   },
   methods: {

@@ -60,7 +60,7 @@ export default {
       this.$store.dispatch('closeUserCard', { groupId: this.currentConversation.groupProfile.groupID, userId: tab })
     },
     getCardName(tab) {
-      return this.currentGame.cards[tab].basic.name
+      return this.currentGame.cards['o' + tab].basic.name
     }
   }
 }

@@ -39,6 +39,7 @@ const game = {
       Vue.set(state.list, groupId, JSON.parse(JSON.stringify(gamePrototype)))
       state.list[groupId].notes = getInitialSavedContent('note', groupId)
       state.list[groupId].logs = getInitialSavedContent('log', groupId)
+      state.list[groupId].cards = getInitialSavedContent('card', groupId)
     },
     toggleBotEnabled(state, { groupId, enabled }) {
       _(groupId).botEnabled = enabled
@@ -72,7 +73,8 @@ const game = {
       _(groupId).currentTab = tab
     },
     setUserCard(state, { groupId, userId, card }) {
-      Vue.set(_(groupId).cards, userId, card)
+      Vue.set(_(groupId).cards, 'o' + userId, card) // 注意这里加一个字符串，不然纯数字被vue处理后序列化会爆炸
+      save('card', groupId, { ..._(groupId).cards, [`o${userId}`]: card }) // 好像不是立刻生效的，先这么写
     },
     setOpenedUserCards(state, { groupId, list }) {
       _(groupId).openedCards = list
@@ -148,7 +150,7 @@ const game = {
     openUserCard(context, { groupId, userId }) {
       // 如果没有导入过人物卡
       const game = _(groupId)
-      if (!game.cards[userId]) {
+      if (!game.cards['o' + userId]) {
         return new Promise((_, reject) => reject())
       }
       // 如果当前没有打开这个人，就打开
