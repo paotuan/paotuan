@@ -38,7 +38,6 @@ export function parseCoCXlsx(sheet) {
     '意志': sheet['AE3'].v,
     '教育': sheet['AE5'].v,
   }
-  console.log(user)
   // read first column
   const E_LINES = [19, 20, 21, 33, 34, 35, 36, 37, 38, 43, 44, 45]
   for (let i = 15; i <= 46; i++) {

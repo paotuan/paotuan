@@ -22,6 +22,8 @@ import {
   Popover,
   Popconfirm,
   Link,
+  Table,
+  TableColumn,
 } from 'element-ui'
 import Avatar from './components/avatar.vue'
 import Index from './index.vue'
@@ -60,6 +62,8 @@ Vue.use(Switch)
 Vue.use(Popover)
 Vue.use(Popconfirm)
 Vue.use(Link)
+Vue.use(Table)
+Vue.use(TableColumn)
 Vue.component('avatar', Avatar)
 new Vue({
   render: h => h(Index)
