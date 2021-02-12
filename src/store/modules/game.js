@@ -10,6 +10,8 @@ const gamePrototype = {
   bgm: {}, // platform\type\id 平台、类型（单曲、专辑）、歌曲 id
   notes: [], // id\type\payload 主持人笔记
   noteUnread: false, // 是否有未读的笔记
+  cards: {}, // 人物卡。 userID => 人物卡信息
+  openedCards: [], // 当前打开的人物卡 tab [群员ID]
 }
 
 const _ = (groupId) => {
@@ -68,6 +70,12 @@ const game = {
     },
     setCurrentTab(state, { groupId, tab }) {
       _(groupId).currentTab = tab
+    },
+    setUserCard(state, { groupId, userId, card }) {
+      Vue.set(_(groupId).cards, userId, card)
+    },
+    setOpenedUserCards(state, { groupId, list }) {
+      _(groupId).openedCards = list
     }
   },
   actions: {
@@ -134,7 +142,30 @@ const game = {
       if (_(groupId).currentTab !== 'note') {
         context.commit('setNoteUnread', { groupId, unread: true })
       }
-    }
+    },
+    openUserCard(context, { groupId, userId }) {
+      // 如果没有导入过人物卡
+      const game = _(groupId)
+      if (!game.cards[userId]) {
+        return new Promise((_, reject) => reject())
+      }
+      // 如果当前没有打开这个人，就打开
+      if (!game.openedCards.includes(userId)) {
+        context.commit('setOpenedUserCards', { groupId, list: [...game.openedCards, userId] })
+      }
+      // 把当前tab 切换到他的人物卡
+      context.commit('setCurrentTab', { groupId, tab: userId })
+      return new Promise(resolve => resolve())
+    },
+    closeUserCard(context, { groupId, userId }) {
+      const game = _(groupId)
+      // 删除自己
+      context.commit('setOpenedUserCards', { groupId, list: game.openedCards.filter(id => id !== userId) })
+      // 如果删除的正好是当前的tab，就切换到第一个吧
+      if (game.currentTab === userId) {
+        context.commit('setCurrentTab', { groupId, tab: 'group' })
+      }
+    },
   }
 }
 

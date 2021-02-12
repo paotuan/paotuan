@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-button type="text" size="mini" @click="visible = true">导入人物卡</el-button>
-    <el-dialog title="导入人物卡(beta)" :visible.sync="visible" width="40%">
+    <el-dialog title="导入人物卡(beta)" :visible.sync="visible" width="40%" @close="$refs.chooser.value = ''">
       <input ref="chooser" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
              value="选择文件" @change="handleFile" />
       <div>{{ `为玩家 ${member.nameCard || member.nick || member.userID} 导入人物卡` }}</div>
@@ -33,7 +33,7 @@ import XLSX from 'xlsx'
 import { parseCoCXlsx } from '@/sdk/card'
 
 export default {
-  props: ['member'],
+  props: ['groupId', 'member'],
   data() {
     return {
       visible: false,
@@ -54,11 +54,16 @@ export default {
         } catch (e) {
           console.log('xlsx 不合法', e)
         }
-        this.$refs.chooser.value = ''
+        // this.$refs.chooser.value = ''
       }
       reader.readAsArrayBuffer(f)
     },
     onConfirm() {
+      this.$store.commit('setUserCard', { groupId: this.groupId, userId: this.member.userID, card: this.user })
+      this.$store.commit('showMessage', {
+        type: 'success',
+        message: '导入成功'
+      })
       this.visible = false
     }
   }

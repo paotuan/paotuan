@@ -48,9 +48,9 @@
                 </el-popconfirm>
                 <div class="coc-card" :class="{ isBot: member.userID.startsWith('bot') }">
                   <div>
-                    <el-button type="text" size="mini" @click="waitForSoon">查看人物卡</el-button>
+                    <el-button type="text" size="mini" @click="openUserCard(member.userID)">查看人物卡</el-button>
                   </div>
-                  <card-import v-if="isOwner" :member="member" />
+                  <card-import v-if="isOwner" :group-id="groupProfile.groupID" :member="member" />
                 </div>
               </div>
             </div>
@@ -216,6 +216,15 @@ export default {
           })
         })
     },
+    openUserCard(userId) {
+      this.$store.dispatch('openUserCard', { groupId: this.currentConversation.groupProfile.groupID, userId })
+          .catch(() => {
+            this.$store.commit('showMessage', {
+              type: 'warning',
+              message: '该成员尚未导入人物卡'
+            })
+          })
+    }
   }
 }
 </script>

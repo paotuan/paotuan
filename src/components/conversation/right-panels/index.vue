@@ -1,7 +1,7 @@
 <template>
   <el-tabs :value="currentGame.currentTab" type="card"
            @input="$store.commit('setCurrentTab', { groupId: currentConversation.groupProfile.groupID, tab: $event })"
-           @tab-click="handleClick">
+           @tab-click="handleClick" @tab-remove="handleRemove">
     <el-tab-pane label="群信息" name="group">
       <group-profile :groupProfile="currentConversation.groupProfile" />
     </el-tab-pane>
@@ -15,6 +15,9 @@
     <el-tab-pane label="Log 录制" name="log">
       <log-panel :group-profile="currentConversation.groupProfile" />
     </el-tab-pane>
+    <el-tab-pane v-for="tab in extraTabs" :key="tab" :label="getCardName(tab)" :name="tab" :closable="true">
+      <card-panel :member="tab" />
+    </el-tab-pane>
   </el-tabs>
 </template>
 <script>
@@ -23,6 +26,7 @@ import GroupProfile from '../conversationProfile/group-profile.vue'
 // import KpPanel from './kp-panel'
 import LogPanel from './log-panel'
 import NotePanel from './note-panel'
+import CardPanel from './card-panel'
 
 export default {
   name: 'RightPanel',
@@ -30,6 +34,7 @@ export default {
       LogPanel,
       // KpPanel,
       NotePanel,
+      CardPanel,
       GroupProfile,
     },
   data() {
@@ -38,10 +43,10 @@ export default {
     }
   },
   computed: {
-    // todo provide 给下面
     ...mapState({
       currentConversation: state => state.conversation.currentConversation,
-      currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID]
+      currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID],
+      extraTabs: function () { return this.currentGame.openedCards }
     })
   },
   methods: {
@@ -50,6 +55,12 @@ export default {
       if (tab.name === 'note') {
         this.$store.commit('setNoteUnread', { groupId: this.currentConversation.groupProfile.groupID, unread: false })
       }
+    },
+    handleRemove(tab) {
+      this.$store.dispatch('closeUserCard', { groupId: this.currentConversation.groupProfile.groupID, userId: tab })
+    },
+    getCardName(tab) {
+      return this.currentGame.cards[tab].basic.name
     }
   }
 }
