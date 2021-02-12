@@ -50,9 +50,7 @@
                   <div>
                     <el-button type="text" size="mini" @click="waitForSoon">查看人物卡</el-button>
                   </div>
-                  <div>
-                    <el-button v-if="isOwner" type="text" size="mini" @click="waitForSoon">导入人物卡</el-button>
-                  </div>
+                  <card-import v-if="isOwner" />
                 </div>
               </div>
             </div>
@@ -72,6 +70,7 @@ import { mapState } from 'vuex'
 // import AddGroupMember from './add-group-member.vue'
 // import GroupMemberInfo from './group-member-info.vue'
 import { generateShareSig, setBotAvatar } from '@/tim'
+import CardImport from '../right-panels/widgets/card-import'
 
 export default {
   data() {
@@ -86,6 +85,7 @@ export default {
   },
   props: ['groupProfile'],
   components: {
+    CardImport,
     Popover,
     // AddGroupMember,
     // GroupMemberInfo
