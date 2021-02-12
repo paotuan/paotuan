@@ -5,6 +5,7 @@
       <input ref="chooser" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
              value="选择文件" @change="handleFile" />
       <div>{{ `为玩家 ${member.nameCard || member.nick || member.userID} 导入人物卡` }}</div>
+      <el-alert v-if="existedCard" title="该玩家已有人物卡，再次导入将覆盖之前的人物卡" type="warning" show-icon :closable="false"/>
       <div v-if="user">
         <h3>基本信息</h3>
         <div>{{ `${user.basic.name} ${user.basic.gender} ${user.basic.age}岁 ${user.basic.job}` }}</div>
@@ -31,6 +32,7 @@
 <script>
 import XLSX from 'xlsx'
 import { parseCoCXlsx } from '@/sdk/card'
+import { mapState } from 'vuex'
 
 export default {
   props: ['groupId', 'member'],
@@ -39,6 +41,13 @@ export default {
       visible: false,
       user: null,
     }
+  },
+  computed: {
+    ...mapState({
+      existedCard: function(state) {
+        return state.game.list[this.groupId] ? state.game.list[this.groupId].cards['o' + this.member.userID] : null
+      }
+    }),
   },
   methods: {
     handleFile(e) {
