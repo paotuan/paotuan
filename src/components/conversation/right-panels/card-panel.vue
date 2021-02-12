@@ -6,7 +6,7 @@
       <div>{{ `${currentCard.basic.age}岁` }}</div>
       <div>{{ currentCard.basic.job }}</div>
     </div>
-    <div class="tips">点击下方对应的格子可以快速投骰</div>
+    <div class="tips">点击下方对应的格子可以快速投骰，点击表头可以将属性和技能按成功率排序。</div>
     <el-table :data="[currentCard.basic]" row-class-name="row" header-row-class-name="row" @cell-click="onBasicClick">
       <el-table-column prop="hp" label="体力"/>
       <el-table-column prop="san" label="理智"/>

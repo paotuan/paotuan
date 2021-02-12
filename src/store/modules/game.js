@@ -121,6 +121,8 @@ const game = {
           if (data.mtype === 'bgm') {
             context.commit('setGameBgm', { groupId: msg.to, bgm: data.mdata })
             context.dispatch('handleNoteUnread', msg.to)
+          } else if (data.mtype === 'card') {
+            context.commit('setUserCard', { groupId: msg.to, userId: data.mdata.userId, card: data.mdata.card })
           }
         } else if (msg.type === TIM.TYPES.MSG_TEXT) {
           context.commit('addNote', {

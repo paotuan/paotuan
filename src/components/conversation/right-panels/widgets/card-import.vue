@@ -52,7 +52,11 @@ export default {
           this.user = parseCoCXlsx(sheet)
           // console.log(user)
         } catch (e) {
-          console.log('xlsx 不合法', e)
+          console.log(e)
+          this.$store.commit('showMessage', {
+            type: 'error',
+            message: '导入失败，可能是格式不正确或字段缺失'
+          })
         }
         // this.$refs.chooser.value = ''
       }
@@ -60,9 +64,26 @@ export default {
     },
     onConfirm() {
       this.$store.commit('setUserCard', { groupId: this.groupId, userId: this.member.userID, card: this.user })
-      this.$store.commit('showMessage', {
-        type: 'success',
-        message: '导入成功'
+      const message = this.tim.createCustomMessage({
+        to: this.groupId,
+        conversationType: this.TIM.TYPES.CONV_GROUP,
+        priority: this.TIM.TYPES.MSG_PRIORITY_HIGH,
+        payload: {
+          data: JSON.stringify({ mtype: 'card', mdata: { userId: this.member.userID, card: this.user } }),
+          description: `主持人为玩家“${this.member.nameCard || this.member.nick || this.member.userID}”导入了一张人物卡`,
+        }
+      })
+      this.$store.commit('pushCurrentMessageList', message)
+      this.tim.sendMessage(message).then(() => {
+        this.$store.commit('showMessage', {
+          type: 'success',
+          message: '导入成功'
+        })
+      }).catch(() => {
+        this.$store.commit('showMessage', {
+          type: 'error',
+          message: '导入成功，但同步给其他群成员失败，可以重试'
+        })
       })
       this.visible = false
     }
