@@ -54,7 +54,9 @@ export default {
         // 2. 是群主发的
         const sender = this.$store.state.group.currentMemberList.filter(member => member.userID === this.message.from)
         if (sender.length > 0 && sender[0].role === this.TIM.TYPES.GRP_MBR_ROLE_OWNER) {
-          return this.escape(content).replace(regex, '<span class="underline" onclick="_onclickspan(\'$1\')">$1</span>')
+          let prefix = content.match(/(困难|极难|极限)/)
+          prefix = prefix ? prefix[0] : ''
+          return this.escape(content).replace(regex, `<span class="underline" onclick="_onclickspan('${prefix}$1')">$1</span>`)
         }
       }
       // 不符合条件的

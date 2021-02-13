@@ -35,8 +35,8 @@ function decideResult(group, sender, exp, skill, roll) {
   console.log('debug')
   // 0. 判断有没有描述
   if (!skill) return ''
-  // 0. 判断是不是标准 d100
-  if (exp !== 'd100' && exp !== 'd%') return ''
+  // 0. 判断是不是标准 d100 // 不判断了，因为还有奖励骰等特殊情况
+  // if (exp !== 'd100' && exp !== 'd%') return ''
   // 1. 判断有没有人物卡
   const game = Vue.prototype.$store.state.game.list[group]
   if (!game) return ''
@@ -45,9 +45,9 @@ function decideResult(group, sender, exp, skill, roll) {
   // 2. 判断有没有对应的技能
   //   2.1 先判断几个特殊的
   if (skill === '理智' || skill === 'sc' || skill === 'SC') {
-    return roll <= card.basic.san ? `<= ${card.basic.san} 成功` : `> ${card.basic.san} 失败`
+    return roll <= card.basic.san ? `≤ ${card.basic.san} 成功` : `> ${card.basic.san} 失败`
   } else if (skill === '幸运') {
-    return roll <= card.basic.luck ? `<= ${card.basic.luck} 成功` : `> ${card.basic.luck} 失败`
+    return roll <= card.basic.luck ? `≤ ${card.basic.luck} 成功` : `> ${card.basic.luck} 失败`
   }
   //   2.2 判断难度等级
   const isHard = skill.indexOf('困难') >= 0
@@ -60,5 +60,5 @@ function decideResult(group, sender, exp, skill, roll) {
   if (roll > 95) return '大失败'
   // 4. 真实比较
   target = isEx ? Math.floor(target / 5) : (isHard ? Math.floor(target / 2) : target)
-  return roll <= target ? `<= ${target} 成功` : `> ${target} 失败`
+  return roll <= target ? `≤ ${target} 成功` : `> ${target} 失败`
 }
