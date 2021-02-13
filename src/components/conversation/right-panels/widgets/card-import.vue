@@ -4,9 +4,10 @@
     <el-dialog title="导入人物卡(beta)" :visible.sync="visible" width="40%" @close="$refs.chooser.value = ''">
       <input ref="chooser" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
              value="选择文件" @change="handleFile" />
-      <div>{{ `为玩家 ${member.nameCard || member.nick || member.userID} 导入人物卡` }}</div>
+      <div>当前支持的人物卡模版：COC七版人物卡v1.6.0   <el-link type="primary" :underline="false" href="/static/cocv7.xlsx">点击下载</el-link></div>
+      <h3>{{ `为玩家 ${member.nameCard || member.nick || member.userID} 导入人物卡` }}</h3>
       <el-alert v-if="existedCard" title="该玩家已有人物卡，再次导入将覆盖之前的人物卡" type="warning" show-icon :closable="false"/>
-      <div v-if="user">
+      <div v-if="user" class="card-data">
         <h3>基本信息</h3>
         <div>{{ `${user.basic.name} ${user.basic.gender} ${user.basic.age}岁 ${user.basic.job}` }}</div>
         <div>{{ `体力 ${user.basic.hp} | 理智 ${user.basic.san} | 幸运 ${user.basic.luck} | 魔法 ${user.basic.mp}` }}</div>
@@ -103,5 +104,18 @@ export default {
 .user-skill, .user-prop {
   display: grid;
   grid-template-columns: repeat(auto-fill, 120px);
+}
+
+::v-deep .el-link {
+  vertical-align: unset;
+}
+
+.card-data {
+  height: 30vh;
+  overflow: auto;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
 }
 </style>

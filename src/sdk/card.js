@@ -65,6 +65,8 @@ function modifyName(name) {
       return '图书馆'
     case '电子学 Ω':
       return '电子学'
+    case '母语:':
+      return '母语'
     default:
       return name
   }
