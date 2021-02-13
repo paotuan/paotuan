@@ -6,7 +6,7 @@
       <div>{{ `${currentCard.basic.age}岁` }}</div>
       <div>{{ currentCard.basic.job }}</div>
     </div>
-    <div class="tips">点击下方对应的格子可以快速投骰，点击表头可以将属性和技能按成功率排序。</div>
+    <div class="tips">点击下方对应的数值格子可以快速投骰；<br>点击属性名称可以复制；<br>点击表头可以将属性和技能按成功率排序。</div>
     <el-table :data="[currentCard.basic]" row-class-name="row" header-row-class-name="row" @cell-click="onBasicClick">
       <el-table-column prop="hp" label="体力"/>
       <el-table-column prop="san" label="理智"/>
@@ -60,6 +60,18 @@ export default {
       return Object.keys(props).map(name => ({ name, value: props[name] }))
     },
     onCellClick(row, col) {
+      // 1. 如果点属性名称，则复制
+      if (col.label === '属性') {
+        this.$copyText(row.name)
+            .then(() => {
+              this.$store.commit('showMessage', {
+                type: 'success',
+                message: '复制成功'
+              })
+            })
+        return
+      }
+      // 2. 如果点数值，则投骰
       let hard = col.label === '半值' ? '困难' : (col.label === '1/5值' ? '极难' : '')
       // 复用发消息方式
       let ghost = document.getElementById('ghost-message-send-box')
