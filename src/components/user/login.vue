@@ -20,6 +20,10 @@
         <el-input v-model="form.userID" placeholder="请输入QQ号，请勿冒用" type="text" clearable/>
       </el-form-item>
     </el-form>
+    <div style="display: flex;justify-content: space-between">
+      <el-checkbox v-model="form.isRememberUin">记住帐号</el-checkbox>
+      <el-checkbox v-model="form.isAutoLogin">自动登录</el-checkbox>
+    </div>
     <el-button
         plain
         type="info"
@@ -50,11 +54,15 @@ export default {
       }
     }
 
+    console.log(Cookies.get('autologin'), !!Cookies.get('autologin'))
+
     return {
       form: {
         appid: this.initialAppid,
         secret: this.initialSecret,
         userID: Cookies.get('uin'),
+        isRememberUin: !!Cookies.get('uin'),
+        isAutoLogin: Cookies.get('autologin') === 'true', // 注意 cookie 里的是 string，会把 'false' 当成 true
       },
       rules: {
         userID: [
@@ -111,5 +119,9 @@ export default {
 
 .el-button {
   margin-top 30px !important
+}
+
+::v-deep .el-checkbox__label {
+  color rgb(243, 243, 243) !important
 }
 </style>

@@ -74,6 +74,7 @@ export default {
     let sig = params.get('s') || Cookies.get('s') // sig 首选 url 里的，次选 cookie 里的
     this.invitedGroup = params.get('g') || '' // 是否是邀请进群的链接
     let userid = Cookies.get('uin') // 是否记住了用户名
+    let canAutoLogin = Cookies.get('autologin') === 'true' // 是否自动登录. 注意类型
     try {
       [this.initialAppid, this.initialSecret] = atob(sig).split('/').map((value, index) => {
         return index === 0 ? value : value.split('').reverse().join('')
@@ -82,7 +83,7 @@ export default {
       console.log('invalid sig', sig)
     }
     // 2. 判断是否能自动登录，3个参数俱全都可以
-    if (this.initialAppid && this.initialSecret && userid) {
+    if (canAutoLogin && this.initialAppid && this.initialSecret && userid) {
       this.doLogin({ appid: this.initialAppid, secret: this.initialSecret, userID: userid })
     } else {
       // 不能自动登录就保持在登录页面
@@ -158,7 +159,7 @@ export default {
         // 判断要不要自动加群
         if (this.invitedGroup) {
           this.tim.joinGroup({ groupID: '@TGS#' + this.invitedGroup })
-            .then(() => { // TODO 是否需要判断已经在群内
+            .then(() => { // 重复入群也无所谓
               this.$store.commit('showMessage', {
                 type: 'success',
                 message: '邀请入群成功'
@@ -352,12 +353,12 @@ export default {
     /**
      * 登录
      */
-    doLogin({ appid, secret, userID }) {
+    doLogin({ appid, secret, userID, isRememberUin = true, isAutoLogin = true }) {
       // 1. 根据提供的 appid 初始化 tim 实例
       initTimInstance(appid, secret)
       // 2. 初始化实例以后，设置监听器
       this.initListener()
-      // 3. 正式发起登录 TODO 不要放在window
+      // 3. 正式发起登录
       const numappid = Number(appid)
       // 参数校验，之所以放在这里而不是表单的 validate，是因为自动登录逻辑不走表单
       if (numappid > 0) {
@@ -380,7 +381,13 @@ export default {
             })
             // 写 cookie
             Cookies.set('s', btoa(appid + '/' + secret.split('').reverse().join('')), { expires: 7 })
-            Cookies.set('uin', userID, { expires: 7 })
+            Cookies.set('autologin', isAutoLogin)
+            if (isRememberUin) {
+              Cookies.set('uin', userID, { expires: 7 })
+            } else {
+              // 如果不记住用户名，那么也把之前记住的用户名给清掉
+              Cookies.remove('uin')
+            }
           })
           .catch(error => {
             this.loading = false
