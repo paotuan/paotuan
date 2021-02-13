@@ -48,6 +48,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import cnchar from 'cnchar'
 
 export default {
   props: ['member'],
@@ -63,18 +64,22 @@ export default {
       currentCard: function () { return this.currentGame.cards['o' + this.member] }
     }),
     props: function () {
-      return Object.keys(this.currentCard.props).map(name => ({ name, value: this.currentCard.props[name] }))
+      return Object.keys(this.currentCard.props).map(name =>
+          ({ name, value: this.currentCard.props[name], pinyin: cnchar.spell(name, 'first', 'low') }))
     },
     skills: function () {
-      return Object.keys(this.currentCard.skills).map(name => ({ name, value: this.currentCard.skills[name] }))
+      return Object.keys(this.currentCard.skills).map(name =>
+          ({ name, value: this.currentCard.skills[name], pinyin: cnchar.spell(name, 'first', 'low') }))
     },
   },
   methods: {
     filterProps() {
-      return this.searchProp === '' ? this.props : this.props.filter(skill => skill.name.includes(this.searchProp))
+      return this.searchProp === '' ? this.props :
+          this.props.filter(prop => prop.name.includes(this.searchProp) || prop.pinyin.includes(this.searchProp.toLowerCase()))
     },
     filterSkills() {
-      return this.searchSkill === '' ? this.skills : this.skills.filter(skill => skill.name.includes(this.searchSkill))
+      return this.searchSkill === '' ? this.skills :
+          this.skills.filter(skill => skill.name.includes(this.searchSkill) || skill.pinyin.includes(this.searchSkill.toLowerCase()))
     },
     onCellClick(row, col) {
       // 1. 如果点属性名称，则复制

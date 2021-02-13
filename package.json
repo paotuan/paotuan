@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.21.0",
+    "cnchar": "^3.0.1",
     "core-js": "^2.6.11",
     "cos-js-sdk-v5": "^0.5.22",
     "element-ui": "^2.13.0",
