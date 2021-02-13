@@ -19,7 +19,7 @@
     <el-table :data="mapData(currentCard.props)" stripe
               row-class-name="row" header-row-class-name="row" @cell-click="onCellClick">
       <el-table-column prop="name" label="属性"/>
-      <el-table-column prop="value" sortable label="成功率"/>
+      <el-table-column prop="value" sortable label="%"/>
       <el-table-column label="半值">
         <template slot-scope="scope">{{ Math.floor(scope.row.value / 2) }}</template>
       </el-table-column>
@@ -32,8 +32,9 @@
     </div>
     <el-table :data="mapData(currentCard.skills)" stripe
               row-class-name="row" header-row-class-name="row" @cell-click="onCellClick">
-      <el-table-column prop="name" label="属性"/>
-      <el-table-column prop="value" sortable label="成功率"/>
+      <el-table-column type="selection" width="30" class-name="select-col"/>
+      <el-table-column prop="name" label="属性" width="105"/>
+      <el-table-column prop="value" sortable label="%"/>
       <el-table-column label="半值">
         <template slot-scope="scope">{{ Math.floor(scope.row.value / 2) }}</template>
       </el-table-column>
@@ -100,4 +101,7 @@ export default {
 
 .section-title
   margin-bottom 0
+
+::v-deep .select-col .cell
+  text-overflow unset
 </style>
