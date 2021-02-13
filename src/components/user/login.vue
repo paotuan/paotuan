@@ -54,8 +54,6 @@ export default {
       }
     }
 
-    console.log(Cookies.get('autologin'), !!Cookies.get('autologin'))
-
     return {
       form: {
         appid: this.initialAppid,
