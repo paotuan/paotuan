@@ -13,10 +13,11 @@
       <el-table-column prop="luck" label="幸运"/>
       <el-table-column prop="mp" label="魔法"/>
     </el-table>
-    <div>
+    <div class="section">
       <h4 class="section-title">基础属性</h4>
+      <el-input v-model="searchProp" clearable prefix-icon="el-icon-search" size="mini" style="width: 150px" />
     </div>
-    <el-table :data="mapData(currentCard.props)" stripe
+    <el-table :data="filterProps()" stripe
               row-class-name="row" header-row-class-name="row" @cell-click="onCellClick">
       <el-table-column prop="name" label="属性"/>
       <el-table-column prop="value" sortable label="%"/>
@@ -27,10 +28,11 @@
         <template slot-scope="scope">{{ Math.floor(scope.row.value / 5) }}</template>
       </el-table-column>
     </el-table>
-    <div>
+    <div class="section">
       <h4 class="section-title">技能表</h4>
+      <el-input v-model="searchSkill" clearable prefix-icon="el-icon-search" size="mini" style="width: 150px" />
     </div>
-    <el-table :data="mapData(currentCard.skills)" stripe
+    <el-table :data="filterSkills()" stripe
               row-class-name="row" header-row-class-name="row" @cell-click="onCellClick">
       <el-table-column type="selection" width="30" class-name="select-col"/>
       <el-table-column prop="name" label="属性" width="105"/>
@@ -49,15 +51,30 @@ import { mapState } from 'vuex'
 
 export default {
   props: ['member'],
+  data() {
+    return {
+      searchProp: '',
+      searchSkill: ''
+    }
+  },
   computed: {
     ...mapState({
       currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID],
       currentCard: function () { return this.currentGame.cards['o' + this.member] }
     }),
+    props: function () {
+      return Object.keys(this.currentCard.props).map(name => ({ name, value: this.currentCard.props[name] }))
+    },
+    skills: function () {
+      return Object.keys(this.currentCard.skills).map(name => ({ name, value: this.currentCard.skills[name] }))
+    },
   },
   methods: {
-    mapData(props) {
-      return Object.keys(props).map(name => ({ name, value: props[name] }))
+    filterProps() {
+      return this.searchProp === '' ? this.props : this.props.filter(skill => skill.name.includes(this.searchProp))
+    },
+    filterSkills() {
+      return this.searchSkill === '' ? this.skills : this.skills.filter(skill => skill.name.includes(this.searchSkill))
     },
     onCellClick(row, col) {
       // 1. 如果点属性名称，则复制
@@ -84,7 +101,7 @@ export default {
         ghost.innerText = '.d% ' + col.label
         ghost.click()
       }
-    }
+    },
   }
 }
 </script>
@@ -110,6 +127,11 @@ export default {
     padding: 6px 0;
   }
 }
+
+.section
+  display flex
+  justify-content space-between
+  align-items flex-end
 
 .section-title
   margin-bottom 0
