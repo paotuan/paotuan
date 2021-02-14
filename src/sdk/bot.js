@@ -32,7 +32,6 @@ function sendGroupMessage(bot, groupId, string) {
 }
 
 function decideResult(group, sender, exp, skill, roll) {
-  console.log('debug')
   // 0. 判断有没有描述
   if (!skill) return ''
   // 0. 判断是不是标准 d100 // 不判断了，因为还有奖励骰等特殊情况
@@ -48,11 +47,14 @@ function decideResult(group, sender, exp, skill, roll) {
     return roll <= card.basic.san ? `≤ ${card.basic.san} 成功` : `> ${card.basic.san} 失败`
   } else if (skill === '幸运') {
     return roll <= card.basic.luck ? `≤ ${card.basic.luck} 成功` : `> ${card.basic.luck} 失败`
+  } else if (skill === '灵感') {
+    return roll <= card.props['智力'] ? `≤ ${card.props['智力']} 成功` : `> ${card.props['智力']} 失败`
   }
   //   2.2 判断难度等级
   const isHard = skill.indexOf('困难') >= 0
   const isEx = skill.indexOf('极难') >= 0 || skill.indexOf('极限') >= 0
   skill = skill.replace(/(困难|极难|极限)/g, '')
+  if (skill === '侦查') skill = '侦察' // 人物卡模版里的是后者
   let target = card.props[skill] || card.skills[skill]
   if (!target) return '' // 没有技能。技能值为 0 应该也不可能
   // 3. 判断大成功大失败

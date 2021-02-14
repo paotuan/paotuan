@@ -90,7 +90,7 @@ export default {
         if (user !== lastUser) {
           result += `${user} ${this.formatTime(log.time)}\n`
         }
-        result += log.content
+        result += log.content + '\n'
         lastUser = user
       })
       this.download('text', result)

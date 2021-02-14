@@ -79,7 +79,6 @@ export default {
       }
     },
     handleCreateChat(cmd) {
-      console.log(cmd)
       if (cmd === 'c2c') {
         this.showC2CDialog = true
       } else {

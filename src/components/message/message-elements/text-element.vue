@@ -20,7 +20,7 @@ import MessageBubble from '../message-bubble'
 import { decodeText, escapeHTML } from '@/utils/decodeText'
 import { ALL_PROPS, ALL_SKILLS } from '@/sdk/card'
 
-const regex = new RegExp(`(${ALL_PROPS.concat(ALL_SKILLS).concat(['sc', 'SC']).join('|')})`, 'g')
+const regex = new RegExp(`(${ALL_PROPS.concat(ALL_SKILLS).join('|')})`, 'g')
 
 export default {
   name: 'TextElement',

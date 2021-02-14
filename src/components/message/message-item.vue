@@ -243,7 +243,6 @@ export default {
       return this.currentConversation.type
     },
     isMine() {
-      // console.log(this.currentUserProfile, this.currentConversation);
       return this.message.flow === 'out'
     },
     messagePosition() {
