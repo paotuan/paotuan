@@ -3,6 +3,7 @@
     <div class="header">
       <span class="member-count text-ellipsis">群成员：{{members.length}}</span>
       <i class="el-icon-link" title="复制邀请链接" @click="copyInviteLink" />
+      <i class="el-icon-refresh" title="刷新群成员信息" @click="refreshGroupMember" />
       <!-- sdk 限制公开群不能邀请入群，只能申请加群 -->
 <!--      <popover v-model="addGroupMemberVisible">-->
 <!--        <add-group-member></add-group-member>-->
@@ -157,11 +158,15 @@ export default {
           })
         })
     },
-    waitForSoon() {
-      this.$store.commit('showMessage', {
-        type: 'info',
-        message: '敬请期待'
-      })
+    refreshGroupMember() {
+      // 群成员更新资料后不会自动同步，这里给个功能让玩家可以手动刷新
+      this.$store.dispatch('getGroupMemberList', this.currentConversation.groupProfile.groupID)
+        .then(() => {
+          this.$store.commit('showMessage', {
+            type: 'success',
+            message: '刷新成功'
+          })
+        })
     },
     setBotAvatar() {
        setBotAvatar(this.currentConversation.groupProfile.groupID, this.botAvatar)
@@ -308,7 +313,7 @@ export default {
 //   line-height: 30px;
 // }
 
-.el-icon-link
+.el-icon-link, .el-icon-refresh
   width 30px
   height 30px
   font-size 24px
@@ -318,6 +323,12 @@ export default {
   float right
   &:hover
     color $light-primary
+
+// 一些视觉效果调整
+.el-icon-refresh
+  margin-right 10px
+  font-size 22px
+  margin-top -1px
 
 .tim-icon-friend-add
   font-size 24px

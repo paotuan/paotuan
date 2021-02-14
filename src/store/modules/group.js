@@ -17,7 +17,9 @@ const groupModules = {
       state.createGroupModelVisible = visible
     },
     updateCurrentMemberList(state, memberList) {
-      state.currentMemberList = [...state.currentMemberList, ...memberList]
+      // 按照文档说法，免费版最多20个人，所以不用考虑分页的问题
+      // 这里就直接覆盖了。因为有时候偶现能出现人数重复的问题
+      state.currentMemberList = memberList //[...state.currentMemberList, ...memberList]
     },
     deleteGroupMemeber(state, userID) {
       state.currentMemberList = state.currentMemberList.filter((member) => member.userID !== userID)
@@ -43,8 +45,8 @@ const groupModules = {
     getGroupMemberList(context, groupID) {
       return tim.getGroupMemberList({
         groupID: groupID,
-        offset: context.state.currentMemberList.length,
-        count: 30
+        offset: 0, //context.state.currentMemberList.length,
+        count: 30 // 按照文档说法，免费版最多20个人，所以不用考虑分页的问题
       }).then((imResponse) => {
         context.commit('updateCurrentMemberList', imResponse.data.memberList)
         return imResponse
