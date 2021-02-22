@@ -78,6 +78,11 @@ const game = {
     },
     setOpenedUserCards(state, { groupId, list }) {
       _(groupId).openedCards = list
+    },
+    reset(state) {
+      Object.assign(state, {
+        list: {},
+      })
     }
   },
   actions: {

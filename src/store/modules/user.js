@@ -57,7 +57,7 @@ const user = {
         tim.setMessageRead({ conversationID: context.rootState.conversation.currentConversation.conversationID })
       }
       tim.logout().then(() => {
-        context.commit('toggleIsLogin')
+        // context.commit('toggleIsLogin') 这个逻辑完全被 reset 覆盖了
         context.commit('stopComputeCurrent')
         context.commit('reset')
       })

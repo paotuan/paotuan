@@ -118,6 +118,7 @@ export default {
 
     onReceiveMessage({ data: messageList }) {
       // this.handleVideoMessage(messageList)
+      console.log('onreceivemsg', messageList)
       this.handleAt(messageList)
       this.handleAddGroupTip(messageList)
       this.handleQuitGroupTip(messageList)
@@ -212,7 +213,7 @@ export default {
         message: `${this.kickedOutReason(event.data.type)}被踢出，请重新登录。`,
         type: 'error'
       })
-      this.$store.commit('toggleIsLogin', false)
+      // this.$store.commit('toggleIsLogin', false)
       this.$store.commit('reset')
       logoutAllBots()
     },
