@@ -31,6 +31,7 @@
         style="width:100%; margin-top: 6px;"
     >登录
     </el-button>
+    <a href="https://docs.qq.com/doc/DSW1TdXhhSmdpamRX" target="_blank">使用指南与常见问题</a>
   </div>
 </template>
 <script>
@@ -121,5 +122,11 @@ export default {
 
 ::v-deep .el-checkbox__label {
   color rgb(243, 243, 243) !important
+}
+
+a, a:visited {
+  color: rgb(243, 243, 243);
+  font-size: 14px;
+  margin-top 10px
 }
 </style>
