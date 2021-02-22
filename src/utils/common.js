@@ -34,7 +34,7 @@ export const errorMap = {
   620: '用户不存在',
   621: '密码错误'
 }
-export function filterCallingMessage(currentMessageList) {
+// export function filterCallingMessage(currentMessageList) {
   // currentMessageList.forEach((item) => {
   //   if (item.callType) {   // 对于自己伪造的消息不需要解析
   //     return
@@ -72,4 +72,4 @@ export function filterCallingMessage(currentMessageList) {
   //   }
   //
   // })
-}
+// }

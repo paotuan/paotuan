@@ -87,11 +87,23 @@ const game = {
       }
     },
     toggleBotEnabled(context, { groupId, enabled }) {
-      return (enabled ? enableBot : disableBot)(groupId)
-          .then(resp => {
-            context.commit('toggleBotEnabled', { groupId, enabled })
-            return resp
-          })
+      return new Promise(((resolve, reject) => {
+        (enabled ? enableBot : disableBot)(groupId)
+            .then(() => {
+              context.commit('toggleBotEnabled', { groupId, enabled })
+              resolve()
+            })
+            .catch(e => {
+              // 按照文档说明，重复加群也是成功，但还是会偶现失败，所以做个兜底，给 sdk 擦屁股
+              if (e.toString().includes('被邀请加入的用户已经是群成员')) {
+                console.log('[bot.switch]already in group')
+                context.commit('toggleBotEnabled', { groupId, enabled })
+                resolve() // 也是成功
+              } else {
+                reject(e)
+              }
+            })
+      }))
     },
     insertGameLogs(context, msglist) {
       msglist.filter(msg =>

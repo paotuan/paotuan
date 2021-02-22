@@ -2,7 +2,7 @@ import tim from 'tim'
 import TIM from '@/sdk'
 import store from '..'
 import { titleNotify } from '../../utils'
-import { filterCallingMessage } from '../../utils/common'
+
 const conversationModules = {
   state: {
     currentConversation: {},
@@ -121,10 +121,10 @@ const conversationModules = {
         // 筛选出当前会话的消息
         const result = data.filter(item => item.conversationID === state.currentConversation.conversationID)
         state.currentMessageList = [...state.currentMessageList, ...result]
-        filterCallingMessage(state.currentMessageList)
+        // filterCallingMessage(state.currentMessageList)
       } else if (data.conversationID === state.currentConversation.conversationID) {
         state.currentMessageList = [...state.currentMessageList, data]
-        filterCallingMessage(state.currentMessageList)
+        // filterCallingMessage(state.currentMessageList)
       }
     },
     /**
@@ -170,7 +170,7 @@ const conversationModules = {
         context.state.isCompleted = imReponse.data.isCompleted
         // 更新当前消息列表，从头部插入
         context.state.currentMessageList = [...imReponse.data.messageList, ...currentMessageList]
-        filterCallingMessage(context.state.currentMessageList)
+        // filterCallingMessage(context.state.currentMessageList)
         // TODO 拉漫游消息后也要处理一些业务逻辑？看有没有需求吧，目前涉及到的 note 和 log 都会存 localstorage
       })
     },
