@@ -37,6 +37,15 @@ export function generateShareSig() {
   return btoa(sdkappid + '/' + sdksecret.split('').reverse().join(''))
 }
 
+export function registerListeners(tim, listenerMap, scope) {
+  for (let event in listenerMap) {
+    // 可能会出现由于页面刷新、重新登录等导致多次注册监听器的情况
+    // 这里最简单粗暴的办法是每次注册之前反注册一次原来的监听器
+    tim.off(event, listenerMap[event], scope)
+    tim.on(event, listenerMap[event], scope)
+  }
+}
+
 // ==========================================================================
 
 const botims = {} // 群id -> 群骰子
@@ -107,6 +116,7 @@ function initBotimInstance(groupId) {
   bot.registerPlugin({ 'cos-js-sdk': COSSDK })
 
   // 设置监听器
+  // TODO 这里暂时没问题，但理论上有问题，需要改成非匿名函数，要解决 this 的问题 todo class BotContext
   bot.on(TIM.EVENT.SDK_NOT_READY, () => console.log('sdk not ready'))
   bot.on(TIM.EVENT.ERROR, e => console.log(e.data))
   bot.on(TIM.EVENT.KICKED_OUT, e => {
