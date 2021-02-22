@@ -20,7 +20,9 @@
 - 不能看到陌生人的跑团，同理陌生人也看不到你的跑团
 
 ### 如何使用？
-使用手册撰写中，可以先看下[视频](https://www.bilibili.com/video/BV15K4y1H7tf/)
+[bilibili 视频](https://www.bilibili.com/video/BV15K4y1H7tf/)
+
+[使用手册与常见问题](https://docs.qq.com/doc/DSW1TdXhhSmdpamRX)
 
 任何意见建议，欢迎 issues 或加群 115699014 讨论
 
