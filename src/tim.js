@@ -50,34 +50,97 @@ export function registerListeners(tim, listenerMap, scope) {
 
 const botims = {} // 群id -> 群骰子
 
+class BotContext {
+  constructor(groupId) {
+    this.bot = createTIM().create({ SDKAppID: sdkappid })
+    this.groupId = groupId
+    this.name = groupId.replace('@TGS#', 'bot_') // bot 名字每个群唯一，避免冲突
+    this.init()
+  }
+
+  init() {
+    // 无日志级别
+    this.bot.setLogLevel(4)
+    // 注册 cos
+    this.bot.registerPlugin({ 'cos-js-sdk': COSSDK })
+    // register listeners
+    registerListeners(this.bot, {
+      [TIM.EVENT.SDK_READY]: this.onReadyStateUpdate,
+      [TIM.EVENT.SDK_NOT_READY]: this.onReadyStateUpdate,
+      [TIM.EVENT.KICKED_OUT]: this.onKickedOut,
+      [TIM.EVENT.ERROR]: this.onSdkError,
+      [TIM.EVENT.MESSAGE_RECEIVED]: this.onMessageReceived,
+    }, this)
+  }
+
+  enable() {
+    return new Promise((resolve, reject) => {
+      // 登录（重复登录也无所谓）
+      this.bot.login({ userID: this.name, userSig: window.genTestUserSig(this.name, Number(sdkappid), sdksecret).userSig })
+          .then(() => {
+            console.log('登录成功')
+
+            // 判断是否加群，先让它加群
+            // 这个接口倒不用在 sdk ready 后调用？否则写起来麻烦一点 TODO 后面最好还是改一下严谨起见
+            this.bot.joinGroup({ groupID: this.groupId })
+                .then(resp => resolve(resp.data))
+                .catch(e => reject(e))
+
+          })
+          .catch(e => {
+            console.log('登录失败', e)
+            reject(e)
+          })
+    })
+  }
+
+  disable() {
+    // logout 一定是 logout
+    // disable 不一定要 logout，只是我们选择了这种方式实现7·吗i
+    return this.bot.logout()
+  }
+
+  logout() {
+    return this.bot.logout()
+  }
+
+  setAvatar(url) {
+    return this.bot.updateMyProfile({ avatar: url })
+  }
+
+  onReadyStateUpdate({ name }) {
+    console.log('[bot]' + name)
+    const isSDKReady = name === TIM.EVENT.SDK_READY
+    if (isSDKReady) {
+      // 把自己的昵称改为 bot，也不做重复判断了，实际应该不会有人一直无聊开开关关
+      // 也不等待成功了，失败也无所谓
+      // 如果用户想自定义 bot 的名字，可以改它的群名片
+      // 注意要在 sdk ready 后调用
+      this.bot.updateMyProfile({ nick: 'bot' })
+    }
+  }
+
+  onSdkError(e) {
+    console.log(e.data)
+  }
+
+  onKickedOut(e) {
+    // TODO 给用户提示
+    console.log('sdk kick reason ' + e.data.type)
+  }
+
+  onMessageReceived({ data: msglist }) {
+    msglist.forEach(msg => handleMessage(this.bot, msg))
+  }
+}
+
 // 为某个群启用 bot
 export function enableBot(groupId) {
   // 如果这个群的 bot 实例还没有初始化，就新建一个
   if (!botims[groupId]) {
-    initBotimInstance(groupId)
+    botims[groupId] = new BotContext(groupId)
   }
-
-  const bot = botims[groupId]
-  const name = groupId.replace('@TGS#', 'bot_') // bot 名字每个群唯一，避免冲突
-
-  return new Promise((resolve, reject) => {
-    // 登录（重复登录也无所谓）
-    bot.login({ userID: name, userSig: window.genTestUserSig(name, Number(sdkappid), sdksecret).userSig })
-        .then(() => {
-          console.log('登录成功')
-
-          // 判断是否加群，先让它加群
-          // 这个接口倒不用在 sdk ready 后调用？否则写起来麻烦一点 TODO 后面最好还是改一下严谨起见
-          bot.joinGroup({ groupID: groupId })
-              .then(resp => resolve(resp.data))
-              .catch(e => reject(e))
-
-        })
-        .catch(e => {
-          console.log('登录失败', e)
-          reject(e)
-        })
-  })
+  return botims[groupId].enable()
 }
 
 // 为某个群禁用 bot
@@ -86,7 +149,7 @@ export function disableBot(groupId) {
   if (!botims[groupId]) return new Promise(resolve => resolve())
 
   // 目前是退出登录，也可以还是在线但是不处理消息
-  return botims[groupId].logout()
+  return botims[groupId].disable()
 }
 
 // 设置 bot 头像
@@ -94,44 +157,12 @@ export function setBotAvatar(groupId, url) {
   // 如果 bot 没启用则报错
   if (!botims[groupId]) return new Promise((_, reject) => reject())
 
-  return botims[groupId].updateMyProfile({ avatar: url })
+  return botims[groupId].setAvatar(url)
 }
 
 // 退出时退出所有骰子
 export function logoutAllBots() {
   Object.values(botims).forEach(bot => {
     bot.logout()
-  })
-}
-
-// 初始化 bot 实例，登录以后调用
-function initBotimInstance(groupId) {
-  // new 一个实例
-  let bot = botims[groupId] = createTIM().create({ SDKAppID: sdkappid })
-
-  // 无日志级别
-  bot.setLogLevel(4)
-
-  // 注册 cos
-  bot.registerPlugin({ 'cos-js-sdk': COSSDK })
-
-  // 设置监听器
-  // TODO 这里暂时没问题，但理论上有问题，需要改成非匿名函数，要解决 this 的问题 todo class BotContext
-  bot.on(TIM.EVENT.SDK_NOT_READY, () => console.log('sdk not ready'))
-  bot.on(TIM.EVENT.ERROR, e => console.log(e.data))
-  bot.on(TIM.EVENT.KICKED_OUT, e => {
-    // TODO 给用户提示
-    console.log('sdk kick reason ' + e.data.type)
-  })
-  bot.on(TIM.EVENT.SDK_READY, () => {
-    console.log('sdk ready')
-    // 把自己的昵称改为 bot，也不做重复判断了，实际应该不会有人一直无聊开开关关
-    // 也不等待成功了，失败也无所谓
-    // 如果用户想自定义 bot 的名字，可以改它的群名片
-    // 注意要在 sdk ready 后调用
-    bot.updateMyProfile({ nick: 'bot' })
-  })
-  bot.on(TIM.EVENT.MESSAGE_RECEIVED, function (event) {
-    event.data.forEach(msg => handleMessage(bot, msg))
   })
 }
