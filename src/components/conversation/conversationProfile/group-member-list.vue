@@ -2,7 +2,7 @@
   <div class="group-member-list-wrapper">
     <div class="header">
       <span class="member-count text-ellipsis">群成员：{{members.length}}</span>
-      <i class="el-icon-link" title="复制邀请链接" @click="copyInviteLink" />
+      <i class="el-icon-link" title="复制邀请链接" @click="inviteDialogShow = true" />
       <i class="el-icon-refresh" title="刷新群成员信息" @click="refreshGroupMember" />
       <!-- sdk 限制公开群不能邀请入群，只能申请加群 -->
 <!--      <popover v-model="addGroupMemberVisible">-->
@@ -62,6 +62,20 @@
 <!--    <div class="more">-->
 <!--      <el-button v-if="showLoadMore" type="text" @click="loadMore">查看更多</el-button>-->
 <!--    </div>-->
+    <el-dialog title="邀请入群" :visible.sync="inviteDialogShow" width="40%">
+      <div class="invite-dialog">
+        <div>
+          <h3>分享给网页</h3>
+          <el-button type="primary" @click="copyInviteLink">复制邀请链接</el-button>
+          <div class="desc">复制后发给小伙伴，小伙伴点击链接在新窗口中打开，登录后即可自动进群</div>
+        </div>
+        <div>
+          <h3>分享给小程序</h3>
+          <img :src="getInviteQRCodeUrl()" />
+          <div class="desc">使用【跑团IO】小程序扫描上方二维码，登录后即可自动进群</div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -82,6 +96,7 @@ export default {
 
       botAvatar: '', // 机器人头像 url 输入框
       nameCard: '', // 群名片输入框
+      inviteDialogShow: false // 邀请面板
     }
   },
   props: ['groupProfile'],
@@ -135,12 +150,16 @@ export default {
       // 精确判断是自己群的机器人，以防万一其他机器人乱入
       return this.groupProfile.groupID.replace('@TGS#', 'bot_') === member.userID
     },
-    loadMore() {
-      this.$store
-        .dispatch('getGroupMemberList', this.groupProfile.groupID)
-        .then(() => {
-          this.count += 30
-        })
+    // loadMore() {
+    //   this.$store
+    //     .dispatch('getGroupMemberList', this.groupProfile.groupID)
+    //     .then(() => {
+    //       this.count += 30
+    //     })
+    // },
+    getInviteQRCodeUrl() {
+      const data = `${generateShareSig()}/${this.groupProfile.groupID.replace('@TGS#', '')}`
+      return 'https://api.pwmqr.com/qrcode/create/?url=' + data
     },
     copyInviteLink() {
       this.$copyText(`${location.origin}/#/?s=${generateShareSig()}&g=${this.groupProfile.groupID.replace('@TGS#', '')}&d=\n点击链接加入群聊一起玩~`)
@@ -333,5 +352,20 @@ export default {
 .tim-icon-friend-add
   font-size 24px
   margin-right 20px
+
+.invite-dialog
+  display flex
+  & > div
+    width 50%
+  h3
+    margin-top 0
+    margin-bottom 2em
+  img
+    width 50%
+  .el-button
+    width 80%
+  .desc
+    width 80%
+    margin-top 1em
 
 </style>
