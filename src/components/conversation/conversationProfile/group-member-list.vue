@@ -71,8 +71,9 @@
         </div>
         <div>
           <h3>分享给小程序</h3>
+          <img :src="minacode" />
           <img :src="getInviteQRCodeUrl()" />
-          <div class="desc">使用【跑团IO】小程序扫描上方二维码，登录后即可自动进群</div>
+          <div class="desc">①微信扫描左边二维码打开【跑团IO】小程序<br />②在小程序登录页面扫描右边二维码，自动填充信息<br />③输入自己的QQ后登录即可自动进群</div>
         </div>
       </div>
     </el-dialog>
@@ -86,6 +87,7 @@ import { mapState } from 'vuex'
 // import GroupMemberInfo from './group-member-info.vue'
 import { generateShareSig, setBotAvatar } from '@/tim'
 import CardImport from '../right-panels/widgets/card-import'
+import minacode from '../../../assets/image/minacode.jpg'
 
 export default {
   data() {
@@ -96,7 +98,8 @@ export default {
 
       botAvatar: '', // 机器人头像 url 输入框
       nameCard: '', // 群名片输入框
-      inviteDialogShow: false // 邀请面板
+      inviteDialogShow: false, // 邀请面板
+      minacode: minacode
     }
   },
   props: ['groupProfile'],

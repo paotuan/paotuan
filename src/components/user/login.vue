@@ -32,11 +32,16 @@
     >登录
     </el-button>
     <a href="https://docs.qq.com/doc/DSW1TdXhhSmdpamRX" target="_blank">使用指南与常见问题</a>
+    <el-popover trigger="click">
+      <img :src="minacode" />
+      <a href="#" slot="reference">小程序版本</a>
+    </el-popover>
   </div>
 </template>
 <script>
-import { Form, FormItem } from 'element-ui'
+import {Form, FormItem, Popover} from 'element-ui'
 import logo from '../../assets/image/logo.png'
+import minacode from '../../assets/image/minacode.jpg'
 import Cookies from 'js-cookie'
 
 export default {
@@ -44,6 +49,7 @@ export default {
   components: {
     ElForm: Form,
     ElFormItem: FormItem,
+    ElPopover: Popover,
   },
   props: ['initialAppid', 'initialSecret'],
   data() {
@@ -72,6 +78,7 @@ export default {
         secret: [{ required: true, message: '请输入 secret', trigger: 'blur' }]
       },
       logo: logo,
+      minacode: minacode,
     }
   },
   methods: {
