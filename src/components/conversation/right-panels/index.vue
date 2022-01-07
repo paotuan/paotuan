@@ -1,38 +1,41 @@
 <template>
-  <el-tabs :value="currentGame.currentTab" type="card"
-           @input="$store.commit('setCurrentTab', { groupId: currentConversation.groupProfile.groupID, tab: $event })"
-           @tab-click="handleClick" @tab-remove="handleRemove">
-    <el-tab-pane label="群信息" name="group">
-      <group-profile :groupProfile="currentConversation.groupProfile" />
-    </el-tab-pane>
-<!--    <el-tab-pane label="主持人面板" name="kp">-->
-<!--      <kp-panel :groupProfile="currentConversation.groupProfile" />-->
-<!--    </el-tab-pane>-->
-    <el-tab-pane name="note">
-      <el-badge slot="label" is-dot :hidden="!currentGame.noteUnread">重要笔记</el-badge>
-      <note-panel :group-profile="currentConversation.groupProfile" />
-    </el-tab-pane>
-    <el-tab-pane label="Log 录制" name="log">
-      <log-panel :group-profile="currentConversation.groupProfile" />
-    </el-tab-pane>
-    <el-tab-pane v-for="tab in extraTabs" :key="tab" :label="getCardName(tab)" :name="tab" :closable="true">
-      <card-panel :member="tab" />
-    </el-tab-pane>
+  <el-tabs
+      :value="currentGame.currentTab"
+      type="card"
+      class="group-right-panels"
+      @input="$store.commit('setCurrentTab', { groupId: currentConversation.groupProfile.groupID, tab: $event })"
+      @tab-click="handleClick"
+      @tab-remove="handleRemove"
+  >
+    <template v-for="tab in allTabs">
+      <el-tab-pane v-if="tab === 'group'" :key="tab" label="群信息" :name="tab">
+        <group-profile :groupProfile="currentConversation.groupProfile" />
+      </el-tab-pane>
+      <el-tab-pane v-else-if="tab === 'note'" :key="tab" :name="tab">
+        <el-badge slot="label" is-dot :hidden="!currentGame.noteUnread">重要笔记</el-badge>
+        <note-panel :group-profile="currentConversation.groupProfile" />
+      </el-tab-pane>
+      <el-tab-pane v-else-if="tab === 'log'" :key="tab" label="Log 录制" :name="tab">
+        <log-panel :group-profile="currentConversation.groupProfile" />
+      </el-tab-pane>
+      <el-tab-pane v-else :key="tab" :label="getCardName(tab)" :name="tab" :closable="true">
+        <card-panel :member="tab" />
+      </el-tab-pane>
+    </template>
   </el-tabs>
 </template>
 <script>
 import { mapState } from 'vuex'
 import GroupProfile from '../conversationProfile/group-profile.vue'
-// import KpPanel from './kp-panel'
 import LogPanel from './log-panel'
 import NotePanel from './note-panel'
 import CardPanel from './card-panel'
+import Sortable from 'sortablejs'
 
 export default {
   name: 'RightPanel',
     components: {
       LogPanel,
-      // KpPanel,
       NotePanel,
       CardPanel,
       GroupProfile,
@@ -46,7 +49,19 @@ export default {
     ...mapState({
       currentConversation: state => state.conversation.currentConversation,
       currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID],
-      extraTabs: function () { return this.currentGame.openedCards }
+      allTabs() { return this.currentGame.openedCards }
+    })
+  },
+  mounted() {
+    // init sortable
+    const tabsWrapper = document.querySelector('.group-right-panels div[role=tablist]')
+    Sortable.create(tabsWrapper, {
+      onEnd: ({ newIndex, oldIndex }) => {
+        // splice 会改变原数组，是否不好？不过无所谓，不管了
+        const tab = this.allTabs.splice(oldIndex, 1)[0]
+        this.allTabs.splice(newIndex, 0, tab)
+        this.$store.commit('setOpenedUserCards', { groupId: this.currentConversation.groupProfile.groupID, list: this.allTabs })
+      }
     })
   },
   methods: {

@@ -11,7 +11,7 @@ const gamePrototype = {
   notes: [], // id\type\payload 主持人笔记
   noteUnread: false, // 是否有未读的笔记
   cards: {}, // 人物卡。 userID => 人物卡信息
-  openedCards: [], // 当前打开的人物卡 tab [群员ID]
+  openedCards: ['group', 'note', 'log'], // 当前打开的所有 tab ['group', 'note', 'log', 群员ID]
 }
 
 const _ = (groupId) => {
