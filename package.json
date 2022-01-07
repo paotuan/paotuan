@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node node_modules/@vue/cli-service/bin/vue-cli-service.js serve",
     "serve": "node node_modules/@vue/cli-service/bin/vue-cli-service.js serve",
-    "build": "node node_modules/@vue/cli-service/bin/vue-cli-service.js build",
+    "build": "node node_modules/@vue/cli-service/bin/vue-cli-service.js build --report",
     "lint": "node node_modules/@vue/cli-service/bin/vue-cli-service.js lint src --ext .vue,.js --fix"
   },
   "dependencies": {
