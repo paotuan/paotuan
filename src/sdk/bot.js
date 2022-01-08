@@ -1,5 +1,5 @@
 import TIM from './index'
-import { DiceRoll } from 'rpg-dice-roller'
+import { DiceRoll } from '@dice-roller/rpg-dice-roller'
 import Vue from 'vue'
 
 export function handleMessage(bot, msg) {

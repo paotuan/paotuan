@@ -9,15 +9,14 @@
     "lint": "node node_modules/@vue/cli-service/bin/vue-cli-service.js lint src --ext .vue,.js --fix"
   },
   "dependencies": {
+    "@dice-roller/rpg-dice-roller": "^5.1.0",
     "axios": "^0.21.0",
     "cnchar": "^3.0.1",
     "core-js": "^2.6.11",
-    "cos-js-sdk-v5": "^0.5.22",
     "element-ui": "^2.13.0",
     "js-cookie": "^2.2.1",
-    "md5": "^2.3.0",
-    "rpg-dice-roller": "^4.5.2",
     "sortablejs": "^1.14.0",
+    "tim-upload-plugin": "^1.0.4",
     "vue": "^2.6.11",
     "vue-clipboard2": "^0.3.1",
     "vuedraggable": "^2.24.3",
@@ -44,6 +43,19 @@
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not ie <= 8"
+    "not ie >= 0",
+    "not bb      >= 0",
+    "not and_chr >= 0",
+    "not and_ff  >= 0",
+    "not and_qq  >= 0",
+    "not and_uc  >= 0",
+    "not android >= 0",
+    "not ie_mob  >= 0",
+    "not ios_saf >= 0",
+    "not op_mini all",
+    "not op_mob  >= 0",
+    "not kaios  >= 0",
+    "not samsung  >= 0",
+    "not baidu  >= 0"
   ]
 }

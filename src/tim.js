@@ -1,6 +1,6 @@
 import TIM, { createTIM } from '@/sdk'
 import { handleMessage } from '@/sdk/bot'
-import COSSDK from 'cos-js-sdk-v5'
+import TIMUploadPlugin from 'tim-upload-plugin'
 
 let tim = null
 let sdkappid = null
@@ -30,7 +30,7 @@ export function initTimInstance(appid, secret) {
   tim = TIM.create({ SDKAppID: appid })
   tim.setLogLevel(4)
   // 注册 cos
-  tim.registerPlugin({ 'cos-js-sdk': COSSDK })
+  tim.registerPlugin({ 'tim-upload-plugin': TIMUploadPlugin })
 }
 
 export function generateShareSig() {
@@ -62,7 +62,7 @@ class BotContext {
     // 无日志级别
     this.bot.setLogLevel(4)
     // 注册 cos
-    this.bot.registerPlugin({ 'cos-js-sdk': COSSDK })
+    this.bot.registerPlugin({ 'tim-upload-plugin': TIMUploadPlugin })
     // register listeners
     registerListeners(this.bot, {
       [TIM.EVENT.SDK_READY]: this.onReadyStateUpdate,
