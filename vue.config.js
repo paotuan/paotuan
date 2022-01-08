@@ -20,6 +20,21 @@ module.exports = {
     config.optimization.splitChunks({
         chunks: 'all'
     })
+    // cdn
+    config.externals({
+      vue: 'Vue',
+      'element-ui': 'ELEMENT',
+      xlsx: 'XLSX',
+    })
+    config.plugin('html').tap((args) => {
+      args[0].cdns = `
+        <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.runtime.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.13.0/index.js" crossorigin="anonymous"></script>
+        <link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.13.0/theme-chalk/index.css" rel="stylesheet">
+        <script src="https://cdn.bootcdn.net/ajax/libs/xlsx/0.16.9/xlsx.mini.min.js" crossorigin="anonymous"></script>
+      `
+      return args
+    })
   },
   css: {
     extract: true,
