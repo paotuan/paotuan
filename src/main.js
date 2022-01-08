@@ -40,6 +40,7 @@ Vue.prototype.tim = tim
 Vue.prototype.TIM = TIM
 Vue.prototype.$store = store
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$prompt = MessageBox.prompt
 Vue.use(Button)
 Vue.use(Row)
 Vue.use(Col)

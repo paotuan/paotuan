@@ -17,7 +17,7 @@
         <div v-for="member in members" :key="member.userID">
 <!--          <popover placement="right" :key="member.userID">-->
 <!--            <group-member-info :member="member" />-->
-            <div slot="reference" class="group-member" @click="currentMemberID = member.userID">
+            <div slot="reference" class="group-member">
               <div class="info">
                 <avatar :title=getGroupMemberAvatarText(member.role) :src="member.avatar" />
                 <div class="names">
@@ -26,42 +26,63 @@
                 </div>
               </div>
               <div class="actions">
-                <el-popover v-if="isOwner && isBotOfThisGroup(member)" title="修改机器人头像" placement="top" trigger="click">
-                  <el-input
-                      v-model="botAvatar"
-                      placeholder="请输入头像 URL"
-                      @keydown.enter.native="setBotAvatar(member.userID)"
-                  />
-                  <el-button slot="reference" class="action-btn" title="修改机器人头像" icon="el-icon-picture-outline" size="mini" circle/>
-                </el-popover>
-                <el-popover v-if="isOwner" title="修改群名片" placement="top" trigger="click">
-                  <el-input
-                      v-model="nameCard"
-                      placeholder="请输入群名片"
-                      @keydown.enter.native="setGroupMemberNameCard(member.userID)"
-                  />
-                  <el-button slot="reference" class="action-btn" title="修改群名片" icon="el-icon-edit" size="mini" circle/>
-                </el-popover>
-<!--                <el-button v-if="isOwner && member.role !== 'Owner'" type="danger" icon="el-icon-turn-off-microphone" size="mini" circle/>-->
-                <el-popconfirm v-if="isOwner && member.role !== 'Owner'" :title="`将${getShowUserNick(member)}踢出群组？`"
-                               placement="top" trigger="click" @confirm="kickoutGroupMember(member.userID)">
-                  <el-button slot="reference" class="action-btn" title="踢出群聊" type="danger" icon="el-icon-delete" size="mini" circle/>
-                </el-popconfirm>
-                <div class="coc-card" :class="{ isBot: member.userID.startsWith('bot') }">
-                  <div>
-                    <el-button type="text" size="mini" @click="openUserCard(member.userID)">查看人物卡</el-button>
-                  </div>
-                  <card-import v-if="isOwner" :group-id="groupProfile.groupID" :member="member" />
-                </div>
+                <el-button
+                    v-if="!member.userID.startsWith('bot')"
+                    class="action-btn"
+                    title="查看人物卡"
+                    icon="el-icon-tickets"
+                    size="mini"
+                    circle
+                    @click="openUserCard(member.userID)"
+                />
+                <el-dropdown v-if="isOwner" trigger="click" @command="handleDropdownCommand">
+                  <el-button class="action-btn" title="更多操作" icon="el-icon-more" size="mini" circle/>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                        v-if="!member.userID.startsWith('bot')"
+                        icon="el-icon-circle-plus-outline"
+                        :command="`ImportCard:${member.userID}`"
+                    >
+                      导入人物卡
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                        v-if="isBotOfThisGroup(member)"
+                        icon="el-icon-picture-outline"
+                        :command="`SetAvatar:${member.userID}`"
+                    >
+                      修改头像
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                        icon="el-icon-edit"
+                        :command="`SetNick:${member.userID}`"
+                    >
+                      修改群名片
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                        v-if="member.role !== 'Owner'"
+                        icon="el-icon-delete"
+                        style="color: #F56C6C"
+                        :command="`Kick:${member.userID}`"
+                    >
+                      踢出群聊
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
               </div>
             </div>
 <!--          </popover>-->
         </div>
       </div>
     </div>
-<!--    <div class="more">-->
-<!--      <el-button v-if="showLoadMore" type="text" @click="loadMore">查看更多</el-button>-->
-<!--    </div>-->
+    <!-- 人物卡导入 -->
+    <card-import
+        v-if="isOwner"
+        :visible="!!importCardMemberID"
+        :group-id="groupProfile.groupID"
+        :member-id="importCardMemberID"
+        @update:visible="importCardMemberID = null"
+    />
+
     <el-dialog title="邀请入群" :visible.sync="inviteDialogShow" width="40%">
       <div class="invite-dialog">
         <div>
@@ -81,10 +102,7 @@
 </template>
 
 <script>
-import { Popover } from 'element-ui'
 import { mapState } from 'vuex'
-// import AddGroupMember from './add-group-member.vue'
-// import GroupMemberInfo from './group-member-info.vue'
 import { generateShareSig, setBotAvatar } from '@/tim'
 import CardImport from '../right-panels/widgets/card-import'
 import minacode from '../../../assets/image/minacode.jpg'
@@ -93,21 +111,16 @@ export default {
   data() {
     return {
       addGroupMemberVisible: false,
-      currentMemberID: '',
       count: 30, // 显示的群成员数量
 
-      botAvatar: '', // 机器人头像 url 输入框
-      nameCard: '', // 群名片输入框
       inviteDialogShow: false, // 邀请面板
-      minacode: minacode
+      minacode: minacode,
+      importCardMemberID: null, // 当前正在导入人物卡的成员
     }
   },
   props: ['groupProfile'],
   components: {
     CardImport,
-    Popover,
-    // AddGroupMember,
-    // GroupMemberInfo
   },
   computed: {
     ...mapState({
@@ -153,13 +166,6 @@ export default {
       // 精确判断是自己群的机器人，以防万一其他机器人乱入
       return this.groupProfile.groupID.replace('@TGS#', 'bot_') === member.userID
     },
-    // loadMore() {
-    //   this.$store
-    //     .dispatch('getGroupMemberList', this.groupProfile.groupID)
-    //     .then(() => {
-    //       this.count += 30
-    //     })
-    // },
     getInviteQRCodeUrl() {
       const data = `${generateShareSig()}/${this.groupProfile.groupID.replace('@TGS#', '')}`
       return 'https://api.pwmqr.com/qrcode/create/?url=' + data
@@ -190,10 +196,9 @@ export default {
           })
         })
     },
-    setBotAvatar() {
-       setBotAvatar(this.currentConversation.groupProfile.groupID, this.botAvatar)
+    setBotAvatar(url) {
+       setBotAvatar(this.currentConversation.groupProfile.groupID, url)
         .then(() => {
-          this.botAvatar = ''
           this.$store.commit('showMessage', {
             message: '修改成功'
           })
@@ -206,15 +211,14 @@ export default {
           })
         })
     },
-    setGroupMemberNameCard(userID) {
+    setGroupMemberNameCard(userID, value) {
       this.tim
         .setGroupMemberNameCard({
           groupID: this.currentConversation.groupProfile.groupID,
           userID: userID,
-          nameCard: this.nameCard
+          nameCard: value
         })
         .then(() => {
-          this.nameCard = ''
           this.$store.commit('showMessage', {
             message: '修改成功'
           })
@@ -251,6 +255,49 @@ export default {
               message: '该成员尚未导入人物卡'
             })
           })
+    },
+    handleDropdownCommand(command) {
+      const [action, userID] = command.split(':')
+      switch (action) {
+        case 'ImportCard':
+          this.importCardMemberID = userID
+          break
+        case 'SetAvatar':
+          this.$prompt('请输入头像 URL', '修改机器人头像', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputPlaceholder: '头像 URL'
+          }).then(({ value }) => {
+            this.setBotAvatar(value)
+          }).catch(() => {
+            /* cancel */
+          })
+          break
+        case 'SetNick':
+          this.$prompt('请输入群名片', '修改群名片', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputPlaceholder: '群名片'
+          }).then(({ value }) => {
+            this.setGroupMemberNameCard(userID, value)
+          }).catch(() => {
+            /* cancel */
+          })
+          break
+        case 'Kick': {
+          const member = this.members.find(member => member.userID === userID)
+          this.$confirm(`将${this.getShowUserNick(member)}踢出群组？`, '踢出群聊', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.kickoutGroupMember(userID)
+          }).catch(() => {
+            /* cancel */
+          })
+          break
+        }
+      }
     }
   }
 }
@@ -318,22 +365,9 @@ export default {
         align-items center
       .action-btn
         margin-left 10px
-      .coc-card
-        margin-left 20px
-        &.isBot
-          visibility hidden
   .more
     padding 0 20px
     border-bottom 1px solid $border-base
-
-// .add-group-member {
-//   cursor: pointer;
-// }
-// .add-button {
-//   border: 1px solid gray;
-//   text-align: center;
-//   line-height: 30px;
-// }
 
 .el-icon-link, .el-icon-refresh
   width 30px

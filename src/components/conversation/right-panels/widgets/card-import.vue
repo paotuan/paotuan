@@ -1,7 +1,6 @@
 <template>
   <div>
-    <el-button type="text" size="mini" @click="visible = true">导入人物卡</el-button>
-    <el-dialog title="导入人物卡(beta)" :visible.sync="visible" width="40%" @close="$refs.chooser.value = ''">
+    <el-dialog v-if="member" title="导入人物卡(beta)" :visible="visible" width="40%" @close="onClose" @update:visible="$emit('update:visible', $event)">
       <input ref="chooser" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
              value="选择文件" @change="handleFile" />
       <div>当前支持的人物卡模版：COC七版人物卡v1.6.0   <el-link type="primary" :underline="false" href="/static/cocv7.xlsx">点击下载</el-link></div>
@@ -36,19 +35,22 @@ import { parseCoCXlsx } from '@/sdk/card'
 import { mapState } from 'vuex'
 
 export default {
-  props: ['groupId', 'member'],
+  props: ['groupId', 'memberId', 'visible'],
   data() {
     return {
-      visible: false,
       user: null,
     }
   },
   computed: {
     ...mapState({
       existedCard: function(state) {
-        return state.game.list[this.groupId] ? state.game.list[this.groupId].cards['o' + this.member.userID] : null
-      }
+        return state.game.list[this.groupId] ? state.game.list[this.groupId].cards['o' + this.memberId] : null
+      },
+      currentMemberList: state => state.group.currentMemberList
     }),
+    member() {
+      return this.memberId ? this.currentMemberList.find(member => member.userID === this.memberId) : null
+    }
   },
   methods: {
     handleFile(e) {
@@ -95,7 +97,11 @@ export default {
           message: '导入成功，但同步给其他群成员失败，可以重试'
         })
       })
-      this.visible = false
+      this.$emit('update:visible', false)
+    },
+    onClose() {
+      this.$refs.chooser.value = ''
+      this.user = null
     }
   }
 }
