@@ -7,11 +7,7 @@
         show-icon
     />
     <bgm :bgm="currentGame.bgm"/>
-    <draggable
-        class="card-list"
-        ghost-class="moving"
-        :value="currentGame.notes"
-        @input="$store.commit('updateNotes', { groupId: groupProfile.groupID, notes: $event })">
+    <div ref="draggable" class="card-list">
       <el-card v-for="note in currentGame.notes" :key="note.id" class="card" shadow="hover">
         <div v-if="note.type === TIM.TYPES.MSG_TEXT" class="note-text">{{ note.payload }}</div>
         <img v-else-if="note.type === TIM.TYPES.MSG_IMAGE" class="note-img" :src="formatUrl(note.payload)"
@@ -21,23 +17,33 @@
           <el-button icon="el-icon-close" size="mini" circle @click="handleDelete(note.id)"/>
         </div>
       </el-card>
-    </draggable>
+    </div>
   </div>
 </template>
 <script>
 import bgm from './widgets/bgm'
 import { mapState } from 'vuex'
-import draggable from 'vuedraggable'
+import Sortable from 'sortablejs'
 
 export default {
   props: ['groupProfile'],
   components: {
     bgm,
-    draggable,
   },
   computed: {
     ...mapState({
       currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID]
+    })
+  },
+  mounted() {
+    Sortable.create(this.$refs.draggable, {
+      ghostClass: 'moving',
+      onEnd: ({ newIndex, oldIndex }) => {
+        // splice 会改变原数组，是否不好？不过无所谓，不管了
+        const tab = this.currentGame.notes.splice(oldIndex, 1)[0]
+        this.currentGame.notes.splice(newIndex, 0, tab)
+        this.$store.commit('updateNotes', { groupId: this.groupProfile.groupID, notes: this.currentGame.notes })
+      }
     })
   },
   methods: {

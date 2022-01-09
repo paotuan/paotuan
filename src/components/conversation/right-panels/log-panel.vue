@@ -15,30 +15,23 @@
         <el-button type="danger" size="small" @click="clearAllLogs">清空</el-button>
       </el-button-group>
     </div>
-<!--    <el-card v-show="currentGame.logs.length > 0" shadow="never">-->
-      <draggable
-          class="log-container"
-          handle=".handle"
-          ghost-class="moving"
-          :value="currentGame.logs"
-          @input="$store.commit('updateLogs', { groupId: groupProfile.groupID, logs: $event })">
-        <div v-for="log in currentGame.logs" :key="log.id" class="log-item">
-          <div>
-            <i class="el-icon-rank handle"/>
-            <div :title="log.from" class="nick">{{ log.nick || log.from }}</div>
-            <div :title="formatTime(log.time)" class="content">{{ log.content }}</div>
-          </div>
-          <i class="el-icon-close delete" @click="onDeleteLog(log.id)"/>
+    <div ref="draggable" class="log-container">
+      <div v-for="log in currentGame.logs" :key="log.id" class="log-item">
+        <div>
+          <i class="el-icon-rank handle"/>
+          <div :title="log.from" class="nick">{{ log.nick || log.from }}</div>
+          <div :title="formatTime(log.time)" class="content">{{ log.content }}</div>
         </div>
-      </draggable>
-<!--    </el-card>-->
+        <i class="el-icon-close delete" @click="onDeleteLog(log.id)"/>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import { Switch } from 'element-ui'
 import { mapState } from 'vuex'
-import draggable from 'vuedraggable'
 import { getFullDate } from '@/utils/date'
+import Sortable from 'sortablejs'
 
 // 提供默认 css TODO 进一步优化
 const INITIAL_CSS = `
@@ -62,12 +55,23 @@ export default {
   props: ['groupProfile'],
   components: {
     ElSwitch: Switch,
-    draggable,
   },
   computed: {
     ...mapState({
       currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile.groupID]
     }),
+  },
+  mounted() {
+    Sortable.create(this.$refs.draggable, {
+      handle: '.handle',
+      ghostClass: 'moving',
+      onEnd: ({ newIndex, oldIndex }) => {
+        // splice 会改变原数组，是否不好？不过无所谓，不管了
+        const tab = this.currentGame.logs.splice(oldIndex, 1)[0]
+        this.currentGame.logs.splice(newIndex, 0, tab)
+        this.$store.commit('updateLogs', { groupId: this.groupProfile.groupID, logs: this.currentGame.logs })
+      }
+    })
   },
   methods: {
     formatTime(time) {
@@ -111,24 +115,24 @@ export default {
         }
         lastUser = user
       })
-      if (result !== '') result += '</div>';
+      if (result !== '') result += '</div>'
       // add css
-      result += `<style>${INITIAL_CSS}</style>`;
-      this.download('html', result);
+      result += `<style>${INITIAL_CSS}</style>`
+      this.download('html', result)
     },
     exportJson() {
-      this.download('json', JSON.stringify(this.currentGame.logs));
+      this.download('json', JSON.stringify(this.currentGame.logs))
     },
     // 将字符串作为文件下载
     // type: text/html/json
     download(type, text) {
-      const element = document.createElement('a');
-      element.setAttribute('href', `data:${type}/plain;charset=utf-8,` + encodeURIComponent(text));
-      element.setAttribute('download', `log.${type === 'text' ? 'txt' : type}`);
-      element.style.display = 'none';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
+      const element = document.createElement('a')
+      element.setAttribute('href', `data:${type}/plain;charset=utf-8,` + encodeURIComponent(text))
+      element.setAttribute('download', `log.${type === 'text' ? 'txt' : type}`)
+      element.style.display = 'none'
+      document.body.appendChild(element)
+      element.click()
+      document.body.removeChild(element)
     }
   }
 }
