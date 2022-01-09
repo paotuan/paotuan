@@ -52,7 +52,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import cnchar from 'cnchar'
+import { ALL_PROPS, ALL_SKILLS } from '@/sdk/card'
 
 export default {
   props: ['member'],
@@ -69,11 +69,11 @@ export default {
     }),
     props: function () {
       return Object.keys(this.currentCard.props).map(name =>
-          ({ name, value: this.currentCard.props[name], pinyin: cnchar.spell(name, 'first', 'low') }))
+          ({ name, value: this.currentCard.props[name], pinyin: ALL_PROPS[name] || '' }))
     },
     skills: function () {
       return Object.keys(this.currentCard.skills).map(name =>
-          ({ name, value: this.currentCard.skills[name], pinyin: cnchar.spell(name, 'first', 'low') }))
+          ({ name, value: this.currentCard.skills[name], pinyin: ALL_SKILLS[name] || '' }))
     },
   },
   methods: {
