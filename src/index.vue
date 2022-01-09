@@ -9,29 +9,15 @@
       <div class="meta">意见/建议可移步 <a href="https://github.com/paotuan/paotuan/issues" target="_blank">Github</a>，或加交流群：115699014</div>
     </div>
     <div v-else class="chat-wrapper">
-      <el-row>
-        <el-col :span="5">
-          <profile-bar/>
-          <side-bar/>
-        </el-col>
-        <el-col :span="19">
-          <current-conversation/>
-        </el-col>
-      </el-row>
+      <Main />
     </div>
-    <image-previewer/>
-<!--    <div class="bg"></div>-->
   </div>
 </template>
 
 <script>
 import { Notification } from 'element-ui'
 import { mapState } from 'vuex'
-import CurrentConversation from './components/conversation/current-conversation'
-import SideBar from './components/layout/side-bar'
-import ProfileBar from './components/layout/profile-bar'
 import Login from './components/user/login'
-import ImagePreviewer from './components/message/image-previewer.vue'
 import { translateGroupSystemNotice } from './utils/common'
 import { initTimInstance, logoutAllBots, registerListeners } from 'tim'
 import Cookies from 'js-cookie'
@@ -49,10 +35,7 @@ export default {
   },
   components: {
     Login,
-    SideBar,
-    CurrentConversation,
-    ImagePreviewer,
-    ProfileBar,
+    Main: () => import('./components/user/main')
   },
   computed: {
     ...mapState({

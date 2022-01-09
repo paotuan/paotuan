@@ -33,7 +33,7 @@
     </el-button>
     <a href="https://docs.qq.com/doc/DSW1TdXhhSmdpamRX" target="_blank">使用指南与常见问题</a>
     <el-popover trigger="click">
-      <img :src="minacode" />
+      <img src="https://s4.ax1x.com/2022/01/09/7APghQ.jpg" crossorigin="anonymous" />
       <a href="#" slot="reference">小程序版本</a>
     </el-popover>
   </div>

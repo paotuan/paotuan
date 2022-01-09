@@ -12,8 +12,8 @@ module.exports = {
       .set('@', resolve('src'))
       .set('tim', resolve('src/sdk/tim.js'))
     // 删除预加载
-    config.plugins.delete('preload')
-    config.plugins.delete('prefetch')
+    // config.plugins.delete('preload')
+    // config.plugins.delete('prefetch')
     // 压缩代码
     config.optimization.minimize(true)
     // 分割代码
