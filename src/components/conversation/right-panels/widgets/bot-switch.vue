@@ -3,6 +3,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import { loadLibs } from '@/sdk/bot'
 
 export default {
   data() {
@@ -17,19 +18,21 @@ export default {
     })
   },
   methods: {
-    onBotSwitch(enabled) {
+    async onBotSwitch(enabled) {
       this.botSwitchLoading = true
-      this.$store.dispatch('toggleBotEnabled', { groupId: this.groupID, enabled })
-        .catch((e) => {
-          this.$store.commit('showMessage', {
-            type: 'error',
-            message: '切换机器人失败，请联系管理员',
-          })
-          console.log('切换 bot 失败', e)
+      try {
+        // 加载骰子所需的库
+        await loadLibs()
+        await this.$store.dispatch('toggleBotEnabled', { groupId: this.groupID, enabled })
+      } catch(e) {
+        this.$store.commit('showMessage', {
+          type: 'error',
+          message: '切换机器人失败，请联系管理员',
         })
-        .finally(() => {
-          this.botSwitchLoading = false
-        })
+        console.log('切换 bot 失败', e)
+      } finally {
+        this.botSwitchLoading = false
+      }
     },
   }
 }

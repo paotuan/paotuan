@@ -1,6 +1,38 @@
 import TIM from './index'
-import { DiceRoll } from '@dice-roller/rpg-dice-roller'
 import Vue from 'vue'
+import { _loadScript } from '../utils'
+
+// region 加载 骰子 相关库
+let DiceRoll = null
+
+const loadRandomJs = new Promise(resolve => {
+  if (window.Random) {
+    resolve()
+    return
+  }
+
+  _loadScript('./random-js.umd.min.js', resolve)
+})
+
+const loadMathJs = new Promise(resolve => {
+  if (window.math) {
+    resolve()
+    return
+  }
+
+  _loadScript('https://cdn.bootcdn.net/ajax/libs/mathjs/10.0.0/math.min.js', resolve)
+})
+
+const loadDiceRoller = Promise.all([loadRandomJs, loadMathJs]).then(() => {
+  // rpg-dice-roller 依赖 RandomJs 和 MathJs，所以必须前两个加载好了以后再加载这个
+  return import('@dice-roller/rpg-dice-roller').then(({ DiceRoll: lib }) => DiceRoll = lib)
+})
+
+export function loadLibs() {
+  return loadDiceRoller
+}
+
+// endregion
 
 export function handleMessage(bot, msg) {
   if (msg.conversationType === TIM.TYPES.CONV_GROUP) {

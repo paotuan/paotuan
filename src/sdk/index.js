@@ -1,3 +1,5 @@
+import { _loadScript } from '../utils'
+
 /**
  * 这个文件的作用是替换原生的 TIM 引入
  * import TIM from 'tim-js-sdk'
@@ -66,12 +68,4 @@ const loadLibSig = new Promise(resolve => {
 // 加载 TIM 和 libSig SDK，加载成功后才能登录
 export function loadSDKs() {
   return Promise.all([loadTimSDK, loadLibSig])
-}
-
-function _loadScript(src, callback) {
-  const script = document.createElement('script')
-  script.addEventListener('load', callback)
-  script.src = src
-  const firstScript = document.getElementsByTagName('script')[0]
-  firstScript.parentNode.insertBefore(script, firstScript)
 }

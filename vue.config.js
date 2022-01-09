@@ -42,9 +42,6 @@ module.exports = {
         <script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/2.2.1/js.cookie.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.bootcdn.net/ajax/libs/Sortable/1.14.0/Sortable.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.bootcdn.net/ajax/libs/vue-clipboard2/0.3.1/vue-clipboard.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.bootcdn.net/ajax/libs/mathjs/10.0.0/math.min.js" crossorigin="anonymous"></script>
-        <script src="random-js.umd.min.js"></script>
-        <script src="https://cdn.bootcdn.net/ajax/libs/xlsx/0.16.9/xlsx.mini.min.js" crossorigin="anonymous"></script>
       `
       return args
     })

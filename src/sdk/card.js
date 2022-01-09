@@ -1,3 +1,5 @@
+import { _loadScript } from '../utils'
+
 export const ALL_PROPS = `
   力量 体质 体型 敏捷 外貌 智力 灵感 意志 教育 理智 幸运 
 `.trim().split(/\s+/)
@@ -72,3 +74,13 @@ function modifyName(name) {
       return name
   }
 }
+
+// 加载 xlsx
+export const loadXlsx = new Promise(resolve => {
+  if (window.XLSX) {
+    resolve()
+    return
+  }
+
+  _loadScript('https://cdn.bootcdn.net/ajax/libs/xlsx/0.16.9/xlsx.mini.min.js', resolve)
+})

@@ -30,8 +30,8 @@
   </div>
 </template>
 <script>
-import XLSX from 'xlsx'
-import { parseCoCXlsx } from '@/sdk/card'
+// import XLSX from 'xlsx'
+import { loadXlsx, parseCoCXlsx } from '@/sdk/card'
 import { mapState } from 'vuex'
 
 export default {
@@ -57,20 +57,22 @@ export default {
       const files = e.target.files, f = files[0]
       const reader = new FileReader()
       reader.onload = (e) => {
-        try {
-          const data = new Uint8Array(e.target.result)
-          const workbook = XLSX.read(data, { type: 'array' })
-          const sheet = workbook.Sheets[workbook.SheetNames[0]]
-          this.user = parseCoCXlsx(sheet)
-          // console.log(user)
-        } catch (e) {
-          console.log(e)
-          this.$store.commit('showMessage', {
-            type: 'error',
-            message: '导入失败，可能是格式不正确或字段缺失'
-          })
-        }
-        // this.$refs.chooser.value = ''
+        // 异步加载 xlsx 库。其实都通过 cdn 了这里不异步加载问题也不大，不过这里可以留一个例子探索下 cdn+异步的实现
+        loadXlsx.then(() => {
+          try {
+            const data = new Uint8Array(e.target.result)
+            const workbook = window.XLSX.read(data, { type: 'array' })
+            const sheet = workbook.Sheets[workbook.SheetNames[0]]
+            this.user = parseCoCXlsx(sheet)
+            // console.log(user)
+          } catch (e) {
+            console.log(e)
+            this.$store.commit('showMessage', {
+              type: 'error',
+              message: '导入失败，可能是格式不正确或字段缺失'
+            })
+          }
+        })
       }
       reader.readAsArrayBuffer(f)
     },
