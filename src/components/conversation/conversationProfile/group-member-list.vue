@@ -103,7 +103,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { generateShareSig, setBotAvatar } from '@/tim'
+import { generateShareSig, setBotAvatar } from 'tim'
 import CardImport from '../right-panels/widgets/card-import'
 import minacode from '../../../assets/image/minacode.jpg'
 

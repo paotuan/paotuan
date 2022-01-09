@@ -10,7 +10,7 @@ module.exports = {
   chainWebpack: config => {
     config.resolve.alias
       .set('@', resolve('src'))
-      .set('tim', resolve('src/tim.js'))
+      .set('tim', resolve('src/sdk/tim.js'))
     // 删除预加载
     config.plugins.delete('preload')
     config.plugins.delete('prefetch')

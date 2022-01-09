@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { enableBot, disableBot } from '@/tim'
+import { enableBot, disableBot } from 'tim'
 import TIM from '@/sdk'
 
 const gamePrototype = {

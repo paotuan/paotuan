@@ -2,7 +2,7 @@
   <div
       class="container"
       v-loading="loading"
-      element-loading-text="正在拼命初始化..."
+      element-loading-text="正在拼命初始化……首次加载需要更多资源，请耐心等待"
       element-loading-background="rgba(0, 0, 0, 0.8)">
     <div id="wrapper" v-if="!isLogin">
       <login :key="initialAppid" :initial-appid="initialAppid" :initial-secret="initialSecret" @submit="doLogin"/>
@@ -33,8 +33,9 @@ import ProfileBar from './components/layout/profile-bar'
 import Login from './components/user/login'
 import ImagePreviewer from './components/message/image-previewer.vue'
 import { translateGroupSystemNotice } from './utils/common'
-import { initTimInstance, logoutAllBots, registerListeners } from '@/tim'
+import { initTimInstance, logoutAllBots, registerListeners } from 'tim'
 import Cookies from 'js-cookie'
+import { loadSDKs } from './sdk'
 
 export default {
   title: 'paotuan',
@@ -281,14 +282,6 @@ export default {
         this.$store.dispatch('checkoutConversation', conversationID)
       }
     },
-    isJsonStr(str) {
-      try {
-        JSON.parse(str)
-        return true
-      } catch {
-        return false
-      }
-    },
     /**
      * 使用 window.Notification 进行全局的系统通知
      * @param {Message} message
@@ -354,52 +347,49 @@ export default {
     /**
      * 登录
      */
-    doLogin({ appid, secret, userID, isRememberUin = true, isAutoLogin = true }) {
-      // 1. 根据提供的 appid 初始化 tim 实例
-      initTimInstance(appid, secret)
-      // 2. 初始化实例以后，设置监听器
-      this.initListener()
-      // 3. 正式发起登录
+    async doLogin({ appid, secret, userID, isRememberUin = true, isAutoLogin = true }) {
+      // 0. 参数校验，之所以放在这里而不是表单的 validate，是因为自动登录逻辑不走表单
       const numappid = Number(appid)
-      // 参数校验，之所以放在这里而不是表单的 validate，是因为自动登录逻辑不走表单
-      if (numappid > 0) {
-        this.loading = true
-        const userSig = window.genTestUserSig(userID, numappid, secret).userSig
-        this.tim
-          .login({ userID, userSig })
-          .then(() => {
-            this.$store.commit('toggleIsLogin', true)
-            this.$store.commit('startComputeCurrent')
-            this.$store.commit({
-              type: 'GET_USER_INFO',
-              userID: userID,
-              userSig: userSig,
-              sdkAppID: appid
-            })
-            this.$store.commit('showMessage', {
-              type: 'success',
-              message: '登录成功'
-            })
-            // 写 cookie
-            Cookies.set('s', btoa(appid + '/' + secret.split('').reverse().join('')), { expires: 7 })
-            Cookies.set('autologin', isAutoLogin)
-            if (isRememberUin) {
-              Cookies.set('uin', userID, { expires: 7 })
-            } else {
-              // 如果不记住用户名，那么也把之前记住的用户名给清掉
-              Cookies.remove('uin')
-            }
-          })
-          .catch(error => {
-            this.loading = false
-            this.$store.commit('showMessage', {
-              message: '登录失败：' + error.message,
-              type: 'error'
-            })
-          })
-      } else {
+      if (numappid <= 0) {
+        this.$store.commit('showMessage', { message: '登录失败：参数不合法', type: 'error' })
+        return
+      }
+      this.loading = true
+      // 1. 确保 TIM 和 libsig SDK 加载完成
+      await loadSDKs()
+      // 2. 根据提供的 appid 初始化 tim 实例
+      initTimInstance(appid, secret)
+      // 3. 初始化实例以后，设置监听器
+      this.initListener()
+      // 4. 正式发起登录
+      const userSig = window.genTestUserSig(userID, numappid, secret).userSig
+      try {
+        await this.tim.login({ userID, userSig })
+        this.$store.commit('toggleIsLogin', true)
+        this.$store.commit('startComputeCurrent')
+        this.$store.commit({
+          type: 'GET_USER_INFO',
+          userID: userID,
+          userSig: userSig,
+          sdkAppID: appid
+        })
         this.$store.commit('showMessage', {
-          message: '登录失败：参数不合法',
+          type: 'success',
+          message: '登录成功'
+        })
+        // 写 cookie
+        Cookies.set('s', btoa(appid + '/' + secret.split('').reverse().join('')), { expires: 7 })
+        Cookies.set('autologin', isAutoLogin)
+        if (isRememberUin) {
+          Cookies.set('uin', userID, { expires: 7 })
+        } else {
+          // 如果不记住用户名，那么也把之前记住的用户名给清掉
+          Cookies.remove('uin')
+        }
+      } catch(error) {
+        this.loading = false
+        this.$store.commit('showMessage', {
+          message: '登录失败：' + error.message,
           type: 'error'
         })
       }

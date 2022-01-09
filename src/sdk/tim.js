@@ -1,4 +1,4 @@
-import TIM, { createTIM } from '@/sdk'
+import TIM from '@/sdk'
 import { handleMessage } from '@/sdk/bot'
 import TIMUploadPlugin from 'tim-upload-plugin'
 
@@ -52,7 +52,7 @@ const botims = {} // 群id -> 群骰子
 
 class BotContext {
   constructor(groupId) {
-    this.bot = createTIM().create({ SDKAppID: sdkappid })
+    this.bot = window.TIMC().create({ SDKAppID: sdkappid })
     this.groupId = groupId
     this.name = groupId.replace('@TGS#', 'bot_') // bot 名字每个群唯一，避免冲突
     this.init()

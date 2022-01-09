@@ -55,7 +55,7 @@ import GroupList from '../group/group-list'
 import FriendList from '../friend/friend-list'
 import BlackList from '../blacklist/blacklist'
 import GlobalSetting from './global-setting'
-import { logoutAllBots } from '@/tim'
+import { logoutAllBots } from 'tim'
 
 const activeName = {
   CONVERSATION_LIST: 'conversation-list',
