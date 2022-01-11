@@ -72,22 +72,22 @@
 <!--        <el-button type="primary" @click="sendSurvey">确 定</el-button>-->
 <!--      </span>-->
 <!--    </el-dialog>-->
-    <el-popover
-      trigger="manual"
-      v-model="showAtGroupMember"
-      placement="top"
-      style="max-height:500px;overflow-y:scroll;"
-    >
-      <el-radio-group
-        v-model="atUserID"
-        style="display:flex;flex-decoration: column;"
-        v-for="member in memberList"
-        :key="member.userID"
-        @change="handleSelectAtUser"
-      >
-        <el-radio :label="member.userID">{{ member.nameCard || member.nick || member.userID }}</el-radio>
-      </el-radio-group>
-    </el-popover>
+<!--    <el-popover-->
+<!--      trigger="manual"-->
+<!--      v-model="showAtGroupMember"-->
+<!--      placement="top"-->
+<!--      style="max-height:500px;overflow-y:scroll;"-->
+<!--    >-->
+<!--      <el-radio-group-->
+<!--        v-model="atUserID"-->
+<!--        style="display:flex;flex-decoration: column;"-->
+<!--        v-for="member in memberList"-->
+<!--        :key="member.userID"-->
+<!--        @change="handleSelectAtUser"-->
+<!--      >-->
+<!--        <el-radio :label="member.userID">{{ member.nameCard || member.nick || member.userID }}</el-radio>-->
+<!--      </el-radio-group>-->
+<!--    </el-popover>-->
     <div class="bottom">
       <textarea
         ref="text-input"
@@ -99,8 +99,6 @@
         @blur="focus = false"
         @keydown.enter.exact.prevent="handleEnter"
         @keyup.ctrl.enter.prevent.exact="handleLine"
-        @keydown.up.stop="handleUp"
-        @keydown.down.stop="handleDown"
       >
       </textarea>
       <ghost-message-send-box :to-account="toAccount" :current-conversation-type="currentConversationType" />
