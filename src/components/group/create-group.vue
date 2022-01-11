@@ -15,8 +15,8 @@
 <!--          <el-option label="AVChatRoom" :value="TIM.TYPES.GRP_AVCHATROOM"></el-option>-->
 <!--        </el-select>-->
 <!--      </el-form-item>-->
-      <el-form-item label="群头像地址">
-        <el-input v-model="form.avatar"></el-input>
+      <el-form-item label="群头像">
+        <image-upload v-model="form.avatar" />
       </el-form-item>
 <!--      <el-form-item label="群简介">-->
 <!--        <el-input type="textarea" v-model="form.introduction" :maxlength="240"></el-input>-->
@@ -64,8 +64,10 @@ import {
   Radio,
   RadioGroup
 } from 'element-ui'
+import ImageUpload from '../image-upload'
 export default {
   components: {
+    ImageUpload,
     ElForm: Form,
     ElFormItem: FormItem,
     ElInput: Input,

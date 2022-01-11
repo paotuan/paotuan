@@ -3,7 +3,7 @@
     <el-dialog title="编辑个人资料" :visible.sync="showEditMyProfile" width="40%">
       <el-form v-model="form" label-width="60px">
         <el-form-item label="头像" class="avatar-edit">
-          <el-input v-model="form.avatar" placeholder="头像地址(URL)" />
+          <image-upload v-model="form.avatar" style="flex-grow: 1" />
           <el-button type="primary" @click="useQQAvatar">使用我的QQ头像</el-button>
         </el-form-item>
         <el-form-item label="昵称">
@@ -36,14 +36,14 @@
 </template>
 
 <script>
-import { Popover, Form, FormItem, RadioGroup, Radio } from 'element-ui'
+import { Form, FormItem, RadioGroup, Radio } from 'element-ui'
 import { mapState } from 'vuex'
-import ProfileCard from './profile-card'
+import ImageUpload from './image-upload'
+
 export default {
   name: 'MyProfile',
   components: {
-    ElPopover: Popover,
-    ProfileCard,
+    ImageUpload,
     ElForm: Form,
     ElFormItem: FormItem,
     ElRadioGroup: RadioGroup,
@@ -126,8 +126,8 @@ export default {
     width: 100%;
     height: 100%;
   .popover
-    padding none 
-    border none 
+    padding none
+    border none
     border-radius 30px
 .my-avatar
   cursor pointer
