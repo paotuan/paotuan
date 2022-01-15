@@ -1,5 +1,5 @@
 <template>
-  <div id="message-send-box-wrapper" :style="focus ? {'backgroundColor': 'white'} : {}" @drop="dropHandler">
+  <div id="message-send-box-wrapper" class="background-blur" @drop="dropHandler">
     <div class="send-header-bar">
       <el-popover placement="top" width="400" trigger="click">
         <div class="emojis">

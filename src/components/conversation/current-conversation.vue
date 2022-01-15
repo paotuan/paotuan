@@ -1,7 +1,7 @@
 <template>
-  <div class="current-conversation-wrapper">
+  <div class="current-conversation-wrapper scene-bg" :style="`background-image: url(${backgroundUrl})`">
     <div class="current-conversation" @scroll="onScroll" v-if="showCurrentConversation">
-      <div class="header">
+      <div class="header background-blur">
         <div class="name">{{ name }}</div>
 <!--        <div class="btn-more-info"-->
 <!--          :class="showConversationProfile ? '' : 'left-arrow'"-->
@@ -10,7 +10,7 @@
 <!--          title="查看详细信息">-->
 <!--        </div>-->
       </div>
-      <div class="content">
+      <div class="content scene-bg">
         <div class="message-list" ref="message-list" @scroll="this.onScroll">
           <div class="more" v-if="!isCompleted">
             <el-button
@@ -66,7 +66,9 @@ export default {
       currentConversation: state => state.conversation.currentConversation,
       currentUnreadCount: state => state.conversation.currentConversation.unreadCount,
       currentMessageList: state => state.conversation.currentMessageList,
-      isCompleted: state => state.conversation.isCompleted
+      isCompleted: state => state.conversation.isCompleted,
+      groupProfile: state => state.conversation.currentConversation.groupProfile,
+      currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile?.groupID],
     }),
     ...mapGetters(['toAccount', 'hidden']),
     // 是否显示当前会话组件
@@ -85,6 +87,9 @@ export default {
     },
     showMessageSendBox() {
       return this.currentConversation.type !== this.TIM.TYPES.CONV_SYSTEM
+    },
+    backgroundUrl() {
+      return this.currentGame?.scene
     }
   },
   mounted() {
@@ -275,5 +280,10 @@ export default {
 .show-more {
   text-align: right;
   padding: 10px 20px 0 0;
+}
+.scene-bg {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 </style>

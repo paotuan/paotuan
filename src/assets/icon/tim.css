@@ -49,3 +49,9 @@
 .tim-icon-angle-middle:before {
   content: "\e906";
 }
+
+/* 临时放这 */
+.background-blur {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(5px);
+}

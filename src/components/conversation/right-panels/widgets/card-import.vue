@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog v-if="member" title="导入人物卡(beta)" :visible="visible" width="40%" @close="onClose" @update:visible="$emit('update:visible', $event)">
+    <el-dialog v-if="member" title="导入人物卡(beta)" :visible="visible" width="40%" append-to-body @close="onClose" @update:visible="$emit('update:visible', $event)">
       <input ref="chooser" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
              value="选择文件" @change="handleFile" />
       <div>当前支持的人物卡模版：COC七版人物卡v1.6.0   <el-link type="primary" :underline="false" href="/static/cocv7.xlsx">点击下载</el-link></div>

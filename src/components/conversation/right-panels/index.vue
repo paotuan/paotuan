@@ -2,7 +2,7 @@
   <el-tabs
       :value="currentGame.currentTab"
       type="card"
-      class="group-right-panels"
+      class="group-right-panels background-blur"
       @input="$store.commit('setCurrentTab', { groupId: currentConversation.groupProfile.groupID, tab: $event })"
       @tab-click="handleClick"
       @tab-remove="handleRemove"

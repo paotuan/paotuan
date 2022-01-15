@@ -12,6 +12,7 @@ const gamePrototype = {
   noteUnread: false, // 是否有未读的笔记
   cards: {}, // 人物卡。 userID => 人物卡信息
   openedCards: ['group', 'note', 'log'], // 当前打开的所有 tab ['group', 'note', 'log', 群员ID]
+  scene: '' // 当前游戏场景图片
 }
 
 const _ = (groupId) => {
@@ -79,6 +80,9 @@ const game = {
     setOpenedUserCards(state, { groupId, list }) {
       _(groupId).openedCards = list
     },
+    setScene(state, { groupId, sceneUrl }) {
+      _(groupId).scene = sceneUrl
+    },
     reset(state) {
       Object.assign(state, {
         list: {},
@@ -142,6 +146,8 @@ const game = {
             context.dispatch('handleNoteUnread', msg.to)
           } else if (data.mtype === 'card') {
             context.commit('setUserCard', { groupId: msg.to, userId: data.mdata.userId, card: data.mdata.card })
+          } else if (data.mtype === 'scene') {
+            context.commit('setScene', { groupId: msg.to, sceneUrl: data.mdata })
           }
         } else if (msg.type === TIM.TYPES.MSG_TEXT) {
           context.commit('addNote', {
