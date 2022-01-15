@@ -83,7 +83,7 @@
         @update:visible="importCardMemberID = null"
     />
 
-    <el-dialog title="邀请入群" :visible.sync="inviteDialogShow" width="40%">
+    <el-dialog title="邀请入群" :visible.sync="inviteDialogShow" width="40%" append-to-body>
       <div class="invite-dialog">
         <div>
           <h3>分享给网页</h3>
