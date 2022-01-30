@@ -13,9 +13,20 @@
       <el-form-item label="平台ID" prop="appid">
         <el-input v-model="form.appid" placeholder="请输入平台ID" type="text" clearable/>
       </el-form-item>
-      <el-form-item label="Secret" prop="secret">
+      <el-form-item label="Secret" prop="secret" style="margin-bottom: 0">
         <el-input v-model="form.secret" placeholder="请输入secret" show-password/>
       </el-form-item>
+      <el-popover trigger="click" placement="right" width="300">
+        <div class="popover">
+          <div style="font-weight: bold">如果你是玩家：</div>
+          <div>请向游戏主持人索取邀请链接，通过邀请链接在新窗口打开后，会自动填充平台 ID 和 secret。您无需关心它们的具体含义。</div>
+          <br />
+          <div style="font-weight: bold">如果你是主持人：</div>
+          <div>您需要在<a href="https://console.cloud.tencent.com/im" target="_blank">腾讯云后台</a>获取这两个值。操作方法可见<a href="https://docs.qq.com/doc/DSW1TdXhhSmdpamRX" target="_blank">使用指南</a>中的【功能相关】章节。
+          </div>
+        </div>
+        <a href="#" class="form-tip" slot="reference"><i class="el-icon-warning-outline" /> 平台 ID 和 secret 应该填什么？</a>
+      </el-popover>
       <el-form-item label="QQ" prop="userID">
         <el-input v-model="form.userID" placeholder="请输入QQ号，请勿冒用" type="text" clearable/>
       </el-form-item>
@@ -135,5 +146,15 @@ a, a:visited {
   color: rgb(243, 243, 243);
   font-size: 14px;
   margin-top 10px
+}
+
+.form-tip {
+  margin-left: 80px;
+  text-decoration: none;
+  line-height: 30px;
+}
+
+.popover a {
+  color #00A4FF
 }
 </style>
