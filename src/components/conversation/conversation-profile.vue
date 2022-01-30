@@ -4,21 +4,21 @@
       v-if="currentConversation.type === TIM.TYPES.CONV_C2C"
       :userProfile="currentConversation.userProfile"
     />
-    <group-profile
-      v-else-if="currentConversation.type === TIM.TYPES.CONV_GROUP"
-      :groupProfile="currentConversation.groupProfile"
-    />
+<!--    <group-profile-->
+<!--      v-else-if="currentConversation.type === TIM.TYPES.CONV_GROUP"-->
+<!--      :groupProfile="currentConversation.groupProfile"-->
+<!--    />-->
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import GroupProfile from './conversationProfile/group-profile.vue'
+// import GroupProfile from './conversationProfile/group-profile.vue'
 import UserProfile from './conversationProfile/user-profile.vue'
 export default {
   name: 'ConversationProfile',
   components: {
-    GroupProfile,
+    // GroupProfile,
     UserProfile
   },
   data() {
@@ -33,7 +33,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.conversation-profile-wrapper 
+.conversation-profile-wrapper
   background-color $white
   height 100%
   overflow-y scroll

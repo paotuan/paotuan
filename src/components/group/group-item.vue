@@ -1,15 +1,22 @@
 <template>
   <div @click="handleGroupClick" class="scroll-container">
     <div class="group-item">
-      <avatar :src="group.avatar" />
+      <avatar :src="avatar" />
       <div class="group-name text-ellipsis">{{ group.name }}</div>
     </div>
   </div>
 </template>
 
 <script>
+import {expandCosUrl} from '@/utils'
+
 export default {
   props: ['group'],
+  computed: {
+    avatar() {
+      return expandCosUrl(this.group.avatar)
+    }
+  },
   data() {
     return {
       visible: false,

@@ -9,7 +9,8 @@
   >
     <template v-for="tab in allTabs">
       <el-tab-pane v-if="tab === 'group'" :key="tab" label="群信息" :name="tab">
-        <group-profile :groupProfile="currentConversation.groupProfile" />
+        <!-- 因为内部状态多，用 key 重置之 -->
+        <group-profile :key="currentConversation.groupProfile.groupID" :group-profile="currentConversation.groupProfile" />
       </el-tab-pane>
       <el-tab-pane v-else-if="tab === 'note'" :key="tab" :name="tab">
         <el-badge slot="label" is-dot :hidden="!currentGame.noteUnread">重要笔记</el-badge>

@@ -55,6 +55,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { isToday, getDate, getTime } from '../../utils/date'
+import {expandCosUrl} from '@/utils'
 export default {
   name: 'conversation-item',
   props: ['conversation'],
@@ -91,7 +92,7 @@ export default {
     avatar: function() {
       switch (this.conversation.type) {
         case 'GROUP':
-          return this.conversation.groupProfile.avatar
+          return expandCosUrl(this.conversation.groupProfile.avatar)
         case 'C2C':
           return this.conversation.userProfile.avatar
         default:

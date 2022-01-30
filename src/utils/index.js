@@ -43,3 +43,23 @@ export function _loadScript(src, callback) {
   const firstScript = document.getElementsByTagName('script')[0]
   firstScript.parentNode.insertBefore(script, firstScript)
 }
+
+// 压缩 cos url，主要是处理群头像 100 字节的限制
+export function shortenCosUrl(url) {
+  let avatar = url.trim()
+  let matchCosUrl = avatar.match(/^https:\/\/cos\.ap-shanghai\.myqcloud\.com\/(.{4})-shanghai-(.+)\?.+/)
+  if (matchCosUrl) {
+    return `!${matchCosUrl[1]}${matchCosUrl[2]}` // 用 ！开头表示特殊 url，然后把其他重复的去掉，应该刚好 100 字节
+  } else {
+    return avatar
+  }
+}
+
+// 还原 cos url
+export function expandCosUrl(url) {
+  if (url.startsWith('!')) {
+    return `https://cos.ap-shanghai.myqcloud.com/${url.slice(1, 5)}-shanghai-${url.slice(5)}`
+  } else {
+    return url
+  }
+}

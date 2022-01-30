@@ -12,26 +12,20 @@
           <i
               class="el-icon-edit"
               v-if="editable"
-              @click="
-            showEditFaceUrl = true
-            inputFocus('editFaceUrl')
-          "
+              @click="showEditFaceUrl = true"
               style="cursor:pointer; font-size:14px;"
           />
         </div>
-        <div class="content" v-if="!showEditFaceUrl">
-          <avatar :src="groupProfile.avatar"/>
+        <div class="content">
+          <avatar :src="displayAvatar"/>
         </div>
-        <el-input
-            ref="editFaceUrl"
-            v-else
-            autofocus
-            v-model="avatar"
-            size="mini"
-            @blur="showEditFaceUrl = false"
-            @keydown.enter.native="editFaceUrl"
-            style="width: 60%"
-        />
+        <el-dialog title="设置群头像" :visible.sync="showEditFaceUrl" width="40%" append-to-body>
+          <image-upload v-model="avatar" />
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="showEditFaceUrl = false">取 消</el-button>
+            <el-button type="primary" :disabled="avatar.trim().length === 0" @click="editFaceUrl">确 定</el-button>
+          </span>
+        </el-dialog>
       </div>
 
 <!--      <div class="info-item">-->
@@ -251,16 +245,18 @@
     </div>
   </div>
 </template>
-
 <script>
 import GroupMemberList from './group-member-list.vue'
 import { Select, Option, Switch } from 'element-ui'
 import KpActions from '../right-panels/widgets/kp-actions'
 import BotSwitch from '../right-panels/widgets/bot-switch'
+import ImageUpload from '@/components/image-upload'
+import {expandCosUrl, shortenCosUrl} from '@/utils'
 
 export default {
   props: ['groupProfile'],
   components: {
+    ImageUpload,
     GroupMemberList,
     KpActions,
     BotSwitch,
@@ -279,7 +275,8 @@ export default {
       showEditMessageRemindType: false,
       showEditNameCard: false,
       name: this.groupProfile.name,
-      avatar: this.groupProfile.avatar,
+      avatar: expandCosUrl(this.groupProfile.avatar),
+      displayAvatar: expandCosUrl(this.groupProfile.avatar),
       introduction: this.groupProfile.introduction,
       notification: this.groupProfile.notification,
       joinOption: this.groupProfile.joinOption,
@@ -332,27 +329,6 @@ export default {
       }
     }
   },
-  watch: {
-    groupProfile(groupProfile) {
-      Object.assign(this, {
-        showEditName: false,
-        showEditFaceUrl: false,
-        showEditIntroduction: false,
-        showEditNotification: false,
-        showEditJoinOption: false,
-        showChangeGroupOwner: false,
-        showEditNameCard: false,
-        name: groupProfile.name,
-        avatar: groupProfile.avatar,
-        introduction: groupProfile.introduction,
-        notification: groupProfile.notification,
-        joinOption: groupProfile.joinOption,
-        messageRemindType: groupProfile.messageRemindType,
-        nameCard: groupProfile.selfInfo.nameCard || '',
-        muteAllMembers: groupProfile.muteAllMembers,
-      })
-    }
-  },
   methods: {
     inputFocus(ref) {
       this.$nextTick(() => {
@@ -379,10 +355,11 @@ export default {
       this.tim
         .updateGroupProfile({
           groupID: this.groupProfile.groupID,
-          avatar: this.avatar.trim()
+          avatar: shortenCosUrl(this.avatar)
         })
         .then(() => {
           this.showEditFaceUrl = false
+          this.displayAvatar = this.avatar.trim()
         })
         .catch(error => {
           this.$store.commit('showMessage', {
@@ -569,7 +546,6 @@ export default {
   }
 }
 </script>
-
 <style lang="stylus">
 .group-info-content
   padding 10px 10px
