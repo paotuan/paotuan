@@ -1,6 +1,6 @@
 <template>
   <div class="current-conversation-wrapper scene-bg" :style="`background-image: url(${backgroundUrl})`">
-    <div class="current-conversation" @scroll="onScroll" v-if="showCurrentConversation">
+    <div class="current-conversation" @scroll="onScroll">
       <div class="header background-blur">
         <div class="name">{{ name }}</div>
 <!--        <div class="btn-more-info"-->
@@ -71,10 +71,6 @@ export default {
       currentGame: state => state.game.list[state.conversation.currentConversation.groupProfile?.groupID],
     }),
     ...mapGetters(['toAccount', 'hidden']),
-    // 是否显示当前会话组件
-    showCurrentConversation() {
-      return !!this.currentConversation.conversationID
-    },
     name() {
       if (this.currentConversation.type === 'C2C') {
         return this.currentConversation.userProfile.nick || this.toAccount
