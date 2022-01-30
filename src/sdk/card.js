@@ -135,5 +135,5 @@ export const loadXlsx = new Promise(resolve => {
     return
   }
 
-  _loadScript('https://cdn.bootcdn.net/ajax/libs/xlsx/0.16.9/xlsx.mini.min.js', resolve)
+  _loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.mini.min.js', resolve)
 })

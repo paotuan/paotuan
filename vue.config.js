@@ -35,13 +35,13 @@ module.exports = {
     })
     config.plugin('html').tap((args) => {
       args[0].cdns = `
-        <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.runtime.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.13.0/index.js" crossorigin="anonymous"></script>
-        <link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.13.0/theme-chalk/index.css" rel="stylesheet">
-        <script src="https://cdn.bootcdn.net/ajax/libs/vuex/3.1.2/vuex.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/2.2.1/js.cookie.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.bootcdn.net/ajax/libs/Sortable/1.14.0/Sortable.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.bootcdn.net/ajax/libs/vue-clipboard2/0.3.1/vue-clipboard.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.runtime.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.13.0/index.js" crossorigin="anonymous"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.13.0/theme-chalk/index.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.1.2/vuex.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-clipboard2/0.3.1/vue-clipboard.min.js" crossorigin="anonymous"></script>
       `
       return args
     })
