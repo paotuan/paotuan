@@ -15,7 +15,7 @@
       <i class="el-icon-warning-outline" title="骰子指南" @click="showDiceUsageVisible = true"></i>
 <!--      <i class="iconfont icon-zidingyi" title="发自定义消息" @click="sendCustomDialogVisible = true"></i>-->
     </div>
-    <el-dialog title="🎲 如何使用骰子" :visible.sync="showDiceUsageVisible" width="40%">
+    <el-dialog title="🎲 如何使用骰子" :visible.sync="showDiceUsageVisible" width="40%" append-to-body>
       <div class="dice-usage">
         <div>首先请确保群主启用了群机器人。在启用机器人后，机器人会对群里的骰子指令做出响应。</div>
         <div>骰子指令以小数点开头（中文句号亦可），接一个合法的骰子表达式。机器人支持多种常见的骰子表达式，有关表达式的细节可以
